@@ -2,6 +2,7 @@ package info.itsthesky.DiSky.skript.commands;
 
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.localization.Language;
+import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.skript.events.skript.EventDiSkyCommand;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,7 +13,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandListener extends ListenerAdapter {
     public static MessageReceivedEvent lastCommandEvent;
@@ -28,8 +32,8 @@ public class CommandListener extends ListenerAdapter {
 
         for (CommandData storage : CommandFactory.getInstance().getCommands()) {
             CommandObject command = storage.getCommand();
+            List<String> globalPrefixes = Arrays.asList(BotManager.prefixes.values().toArray(new String[0]).clone());
             for (Expression<String> prefix : command.getPrefixes()) {
-
                 for (String alias : command.getUsableAliases()) {
                     Message message = e.getMessage();
                     TextChannel textChannel = null;
@@ -65,11 +69,17 @@ public class CommandListener extends ListenerAdapter {
                         usedCommand = mentions ? content.split(" ")[0].replaceFirst("!", "") : content.split(" ")[0];
                     }
 
+                    String usedPrefixes = usedCommand.split("")[0].toLowerCase(Locale.ROOT);
+                    String rawCommand = usedCommand.substring(1);
+
                     if (nonNull(usedCommand)) {
-                        if (nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) {
-                            event.setPrefix(rawPrefix);
+                        if ((nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) || (globalPrefixes.contains(usedPrefixes) && usedCommand.equalsIgnoreCase(usedPrefixes + rawCommand))) {
+                            if (nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) {
+                                event.setPrefix(rawPrefix);
+                            } else {
+                                event.setPrefix(usedPrefixes);
+                            }
                             try {
-                                //event.setArguments(content.replaceFirst(rawPrefix, "").replaceFirst(alias, ""));
                                 event.setArguments(content.substring((usedCommand).length() + 1));
                             } catch (StringIndexOutOfBoundsException e1) {
                                 event.setArguments(null);
@@ -94,7 +104,6 @@ public class CommandListener extends ListenerAdapter {
                 }
 
             }
-
         }
     }
 

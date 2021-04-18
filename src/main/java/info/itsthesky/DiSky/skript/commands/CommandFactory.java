@@ -251,9 +251,6 @@ public class CommandFactory {
                 prefixes.add(prefixExpr);
             }
             for (String prefix : BotManager.prefixes.values()) {
-                if (prefix.startsWith("\"") && prefix.endsWith("\"")) {
-                    prefix = prefix.substring(1, prefix.length() - 1);
-                }
                 Expression<String> prefixExpr = VariableString.newInstance(prefix, StringMode.MESSAGE);
                 if (((VariableString) prefixExpr).isSimple()) {
                     prefixExpr = new SimpleLiteral<>(prefix, false);

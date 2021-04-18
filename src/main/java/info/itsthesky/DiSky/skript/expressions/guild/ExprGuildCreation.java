@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 
 @Name("Guild Date Creation")
 @Description("Return the date when the guild were created.")
-@Examples("reply with \"This guild was made in %date creation of event-guild%\"")
+@Examples("reply with \"This guild was made in %creation date of event-guild%\"")
 @Since("1.3")
 public class ExprGuildCreation extends SimpleExpression<String> {
 
