@@ -92,6 +92,41 @@ public class Types {
 						return null;
 					}
 				}));
+		Classes.registerClass(new ClassInfo<>(AudioSite.class, "audiosite")
+				.user("audiosites?")
+				.name("Audio Site")
+				.description("Represent a website were audio could be found and loaded.")
+				.usage("youtube, soundcloud")
+				.since("1.8.1")
+				.parser(new Parser<AudioSite>() {
+
+					@Override
+					public boolean canParse(ParseContext context) {
+						return context.equals(ParseContext.COMMAND);
+					}
+
+					@Override
+					public String toString(AudioSite c, int flags) {
+						return c.name().toLowerCase(Locale.ROOT);
+					}
+
+					@Override
+					public String toVariableNameString(AudioSite c) {
+						return c.name().toLowerCase(Locale.ROOT);
+					}
+
+					@Override
+					public String getVariableNamePattern() {
+						return "[a-z ]+";
+					}
+
+					@Nullable
+					@Override
+					public AudioSite parse(String s, ParseContext context) {
+						for (AudioSite site : AudioSite.values()) if (site.name().toLowerCase(Locale.ROOT).replace("_", " ").equalsIgnoreCase(s)) return site;
+						return null;
+					}
+				}));
 		Classes.registerClass(new ClassInfo<>(JDA.class, "bot")
 				.user("bots?")
 				.name("Discord Bot")
