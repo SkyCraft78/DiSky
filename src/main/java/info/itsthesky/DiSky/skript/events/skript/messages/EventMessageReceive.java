@@ -59,7 +59,7 @@ public class EventMessageReceive extends Event {
             @Nullable
             @Override
             public User get(final @NotNull EventMessageReceive event) {
-                return event.getEvent().getMember().getUser();
+                return event.getEvent().getMember() == null ? null : event.getEvent().getMember().getUser();
             }
         }, 0);
 
