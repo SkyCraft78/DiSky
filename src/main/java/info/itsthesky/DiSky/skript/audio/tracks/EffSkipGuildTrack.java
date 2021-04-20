@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -23,20 +24,22 @@ import org.bukkit.event.Event;
 @Name("Skip Guild Track")
 @Description("Skip the track from the specific guild.")
 @Examples("skip current track of event-guild")
-@Since("1.6-pre2")
+@Since("1.6-pre2, 1.8 (added store pattern)")
 public class EffSkipGuildTrack extends Effect {
 
     static {
         Skript.registerEffect(EffSkipGuildTrack.class, // [the] [bot] [(named|with name)] %string%
-                "["+ Utils.getPrefixName() +"] skip [current] track (from|of) [the] [guild] %guild%");
+                "["+ Utils.getPrefixName() +"] skip [current] track (from|of) [the] [guild] %guild% [and store (it|the new track) in %-object%]");
     }
 
     private Expression<Guild> exprGuild;
+    private Expression<Object> exprVar;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprGuild = (Expression<Guild>) exprs[0];
+        if (exprs.length == 2) exprVar = (Expression<Object>) exprs[1];
         return true;
     }
 
@@ -45,8 +48,11 @@ public class EffSkipGuildTrack extends Effect {
     protected void execute(Event e) {
         Guild guild = exprGuild.getSingle(e);
         if (guild == null) return;
-        GuildAudioManager manager = AudioUtils.getGuildAudioPlayer(guild);
-        manager.trackScheduler.nextTrack();
+        AudioTrack track = AudioUtils.skipTrack(guild);
+        if (exprVar == null) return;
+        if (exprVar instanceof Variable) {
+            Utils.setSkriptVariable((Variable<?>) exprVar, track, e);
+        }
     }
 
     @Override
