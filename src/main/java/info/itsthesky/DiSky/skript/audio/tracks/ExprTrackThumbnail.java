@@ -28,7 +28,7 @@ public class ExprTrackThumbnail extends SimplePropertyExpression<AudioTrack, Str
     @Nullable
     @Override
     public String convert(AudioTrack entity) {
-        return "https://img.youtube.com/vi/"+entity.getIdentifier()+"/0.jpg";
+        return "https://img.youtube.com/vi/"+entity.getIdentifier()+"/maxresdefault.jpg";
     }
 
     @Override
