@@ -19,7 +19,7 @@ import org.bukkit.event.Event;
 @Name("Guilds of Bot")
 @Description("Return all guilds of a specific guild.")
 @Examples("set {_guilds::*} to guilds of bot named \"MyBot\"")
-@Since("1.8.1")
+@Since("1.9")
 public class ExprGuilds extends SimpleExpression<Guild> {
 
 	static {

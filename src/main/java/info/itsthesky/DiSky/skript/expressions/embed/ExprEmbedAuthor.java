@@ -69,7 +69,7 @@ public class ExprEmbedAuthor extends SimplePropertyExpression<EmbedBuilder, Stri
             case SET:
                 String value = delta[0].toString();
                 for (EmbedBuilder embed : getExpr().getArray(e)) {
-                    MessageEmbed builded = embed.build();
+                    MessageEmbed builded = embed.isEmpty() ? null : embed.build();
                     embed.setAuthor(
                             value,
                             (builded == null || builded.getAuthor() == null) ? null : builded.getAuthor().getUrl(),

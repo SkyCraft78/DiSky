@@ -97,13 +97,8 @@ public class Types {
 				.name("Audio Site")
 				.description("Represent a website were audio could be found and loaded.")
 				.usage("youtube, soundcloud")
-				.since("1.8.1")
+				.since("1.9")
 				.parser(new Parser<AudioSite>() {
-
-					@Override
-					public boolean canParse(ParseContext context) {
-						return context.equals(ParseContext.COMMAND);
-					}
 
 					@Override
 					public String toString(AudioSite c, int flags) {

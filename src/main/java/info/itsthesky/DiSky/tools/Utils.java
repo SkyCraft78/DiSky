@@ -1,6 +1,8 @@
 package info.itsthesky.DiSky.tools;
 
+import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Variable;
+import ch.njol.skript.lang.VariableString;
 import ch.njol.skript.util.Date;
 import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.Variables;
@@ -25,6 +27,8 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -34,6 +38,37 @@ public class Utils extends ListenerAdapter {
     private static final Number defaultNumber = 0;
     private static final Boolean defaultBoolean = false;
     private static final Object defaultObject = "";
+    public static final Field VARIABLE_NAME;
+    public static boolean variableNameGetterExists = Skript.methodExists(Variable.class, "getName");
+
+    static {
+
+        if (!variableNameGetterExists) {
+
+            Field _VARIABLE_NAME = null;
+            try {
+                _VARIABLE_NAME = Variable.class.getDeclaredField("name");
+                _VARIABLE_NAME.setAccessible(true);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+                Skript.error("Skript's 'variable name' method could not be resolved.");
+            }
+            VARIABLE_NAME = _VARIABLE_NAME;
+
+        } else {
+            VARIABLE_NAME = null;
+        }
+
+    }
+
+    @Nullable
+    public static Guild getGuildFromEvent(Event event) {
+        Guild guild = null;
+        try {
+            guild = (Guild) event.getClass().getDeclaredMethod("getEvent()").getClass().getDeclaredMethod("getGuild()").invoke(event);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) { }
+        return guild;
+    }
 
     private static  <T> Object getDefaultValue(T object) {
         if (object instanceof String) {
@@ -59,6 +94,19 @@ public class Utils extends ListenerAdapter {
             builder.append(cars.split("")[r]);
         }
         return builder.toString();
+    }
+
+    public static VariableString getVariableName(Variable<?> var) {
+        if (variableNameGetterExists) {
+            return var.getName();
+        } else {
+            try {
+                return (VariableString) VARIABLE_NAME.get(var);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static boolean containURL(String input) {

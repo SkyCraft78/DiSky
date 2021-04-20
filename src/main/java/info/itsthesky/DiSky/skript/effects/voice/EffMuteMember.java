@@ -18,7 +18,7 @@ import org.bukkit.event.Event;
 @Name("Mute / Unmute Member")
 @Description("Mute or unmute a member in a guild.")
 @Examples("mute event-member")
-@Since("1.8.1")
+@Since("1.9")
 public class EffMuteMember extends Effect {
 
     static {

@@ -17,7 +17,7 @@ import org.bukkit.event.Event;
 @Name("Deafen / UnDeafen Member")
 @Description("Deafen or UnDeafen a member in a guild.")
 @Examples("deafen event-member")
-@Since("1.8.1")
+@Since("1.9")
 public class EffDeafenMember extends Effect {
 
     static {

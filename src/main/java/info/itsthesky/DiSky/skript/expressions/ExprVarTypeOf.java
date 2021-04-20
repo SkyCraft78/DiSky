@@ -14,7 +14,7 @@ import org.bukkit.event.Event;
 
 @Name("Type of Variable")
 @Description("Get the Skript type of a Skript variable.")
-@Since("1.8.1")
+@Since("1.9")
 public class ExprVarTypeOf extends SimpleExpression<String> {
     static {
         Skript.registerExpression(ExprVarTypeOf.class, String.class, ExpressionType.SIMPLE,

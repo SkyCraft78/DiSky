@@ -70,7 +70,7 @@ public class CommandListener extends ListenerAdapter {
                     }
 
                     String usedPrefixes = usedCommand.split("")[0].toLowerCase(Locale.ROOT);
-                    String rawCommand = usedCommand.substring(1);
+                    String rawCommand = "";
 
                     if (nonNull(usedCommand)) {
                         if ((nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) || (globalPrefixes.contains(usedPrefixes) && usedCommand.equalsIgnoreCase(usedPrefixes + rawCommand))) {

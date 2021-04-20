@@ -17,7 +17,7 @@ import org.bukkit.event.Event;
 @Name("Move Member")
 @Description("Move a member to another voice channel.")
 @Examples("move event-member to voice channel with id \"818182473502294073\"")
-@Since("1.8.1")
+@Since("1.9")
 public class EffMoveMember extends Effect {
 
     static {

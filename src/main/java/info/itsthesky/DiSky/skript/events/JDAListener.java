@@ -1,19 +1,14 @@
 package info.itsthesky.DiSky.skript.events;
 
 import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.events.skript.*;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceJoin;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceLeave;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceMove;
-import info.itsthesky.DiSky.skript.events.skript.command.EventCommand;
 import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildBan;
 import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildUnban;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberBoost;
-import info.itsthesky.DiSky.skript.events.skript.members.EventMemberJoin;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberLeave;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageDelete;
-import info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit.EventMessageEdit;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageReceive;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventPrivateMessage;
 import info.itsthesky.DiSky.skript.events.skript.nickname.EventNickChange;
@@ -25,11 +20,8 @@ import info.itsthesky.DiSky.skript.events.skript.role.EventRoleDelete;
 import info.itsthesky.DiSky.skript.events.skript.role.EventRoleRemove;
 import info.itsthesky.DiSky.skript.events.skript.slashcommand.EventSlashCommand;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.SlashCommand;
-import info.itsthesky.DiSky.tools.object.command.DiscordCommand;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
@@ -41,7 +33,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.role.RoleCreateEvent;
@@ -62,11 +53,6 @@ public class JDAListener extends ListenerAdapter {
         if (e.isFromGuild()) {
             /* Message receive */
             event.add(new EventMessageReceive(e));
-            // -------------
-            /* Command event */
-            if (!e.isWebhookMessage()) {
-                event.add(new EventCommand(e));
-            }
         } else {
             if (e.getAuthor().isBot()) return;
             event.add(new EventPrivateMessage(e));
