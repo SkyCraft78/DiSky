@@ -22,7 +22,7 @@ import java.awt.*;
 @Name("Default Bot Prefix")
 @Description("Get, set or clear the default prefix of a bot. This prefix will be added to every prefixes in commands.")
 @Examples("set default prefix of event-bot to \".\"")
-@Since("1.8.1")
+@Since("1.9")
 public class ExprBotPrefix extends SimplePropertyExpression<Object, String> {
 
     static {

@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 @Name("On Member Role Remove")
 @Description("Run when any role is removed from a member.")
 @Examples("on member role remove:")
-@Since("1.8.1")
+@Since("1.9")
 public class EventRoleRemove extends Event {
 
     static {

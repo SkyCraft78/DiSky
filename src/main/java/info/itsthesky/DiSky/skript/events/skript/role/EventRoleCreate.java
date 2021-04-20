@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 @Name("On Role Create")
 @Description("Run when any role is created in a guild")
 @Examples("on role create:")
-@Since("1.8.1")
+@Since("1.9")
 public class EventRoleCreate extends Event {
 
     static {

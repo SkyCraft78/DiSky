@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 @Name("On Member Role Add")
 @Description("Run when any role is added to a member.")
 @Examples("on member role add:")
-@Since("1.8.1")
+@Since("1.9")
 public class EventRoleAdd extends Event {
 
     static {

@@ -11,7 +11,6 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 @Name("Voice Channel Move")
 @Description("Fired when any member is moved to another voice channel.")
 @Examples("on member channel move:")
-@Since("1.8.1")
+@Since("1.9")
 public class EventVoiceMove extends Event {
 
     static {
@@ -31,7 +30,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public VoiceChannel get(final @NotNull EventVoiceMove event) {
-                return event.getE().getChannelJoined();
+                return event.getEvent().getChannelJoined();
             }
         }, 0);
 
@@ -39,7 +38,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public GuildChannel get(final @NotNull EventVoiceMove event) {
-                return event.getE().getChannelJoined();
+                return event.getEvent().getChannelJoined();
             }
         }, 0);
 
@@ -47,7 +46,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public Guild get(final @NotNull EventVoiceMove event) {
-                return event.getE().getGuild();
+                return event.getEvent().getGuild();
             }
         }, 0);
 
@@ -55,7 +54,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public JDA get(final @NotNull EventVoiceMove event) {
-                return event.getE().getJDA();
+                return event.getEvent().getJDA();
             }
         }, 0);
 
@@ -63,7 +62,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public Member get(final @NotNull EventVoiceMove event) {
-                return event.getE().getEntity();
+                return event.getEvent().getEntity();
             }
         }, 0);
 
@@ -71,7 +70,7 @@ public class EventVoiceMove extends Event {
             @Nullable
             @Override
             public User get(final @NotNull EventVoiceMove event) {
-                return event.getE().getEntity().getUser();
+                return event.getEvent().getEntity().getUser();
             }
         }, 0);
 
@@ -85,7 +84,7 @@ public class EventVoiceMove extends Event {
         this.e = e;
     }
 
-    public GuildVoiceMoveEvent getE() {
+    public GuildVoiceMoveEvent getEvent() {
         return e;
     }
 

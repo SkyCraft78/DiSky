@@ -13,58 +13,44 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.DiSky.managers.music.AudioUtils;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.PlayError;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
 @Name("Play Audio")
-@Description("Play an URL or an input (if it's only text, DiSky will search the input within Youtube). Also connect to bot to the member channel.\nCould send multiple error, see 'Audio Player Error' for more information.")
-@Examples("play \"escanor ost remix\" in event-guild to event-member")
-@Since("1.6")
+@Description("")
+@Examples("play {_r::1} in event-guild to event-member")
+@Since("1.6, 1.9 (rework using search)")
 public class EffPlayAudio extends Effect {
 
     static {
         Skript.registerEffect(EffPlayAudio.class, // [the] [bot] [(named|with name)] %string%
-                "["+ Utils.getPrefixName() +"] play [input] %string% in [the] [guild] %guild% to [the] [member] %member%");
+                "["+ Utils.getPrefixName() +"] play [tracks] %tracks% in [the] [voice] [channel] %voicechannel/channel%");
     }
 
-    private Expression<String> exprInput;
-    private Expression<Guild> exprGuild;
-    private Expression<Member> exprMember;
+    private Expression<AudioTrack> exprTracks;
+    private Expression<GuildChannel> exprChannel;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprInput = (Expression<String>) exprs[0];
-        exprGuild = (Expression<Guild>) exprs[1];
-        exprMember = (Expression<Member>) exprs[2];
+        exprTracks = (Expression<AudioTrack>) exprs[0];
+        exprChannel = (Expression<GuildChannel>) exprs[1];
         return true;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected void execute(Event e) {
-        String input = exprInput.getSingle(e);
-        Guild guild = exprGuild.getSingle(e);
-        Member member = exprMember.getSingle(e);
-        if (input == null || guild == null || member == null) return;
-        AudioTrack[] tracks = AudioUtils.search(input);
-        ExprLastAudioError.lastError = PlayError.NONE;
-        ExprLastPlayedAudio.lastTrack = null;
-        if (tracks == null || tracks.length == 0) {
-            ExprLastAudioError.lastError = PlayError.NOT_FOUND;
-            return;
-        }
-        if (member.getVoiceState().getChannel() == null) {
-            ExprLastAudioError.lastError = PlayError.MEMBER_NOT_CONNECTED;
-            return;
-        }
-        AudioUtils.play(guild, AudioUtils.getGuildAudioPlayer(guild), tracks[0], member);
+        AudioTrack[] tracks = exprTracks.getAll(e);
+        GuildChannel channel = exprChannel.getSingle(e);
+        if (tracks == null || channel == null) return;
+        if (!channel.getType().equals(ChannelType.VOICE)) return;
+        AudioUtils.play(channel.getGuild(), (VoiceChannel) channel, tracks);
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "play input " + exprInput.toString(e, debug) + " in guild " + exprGuild.toString(e, debug);
+        return "play tracks " + exprTracks.toString(e, debug) + " in voice channel " + exprChannel.toString(e, debug);
     }
 
 }

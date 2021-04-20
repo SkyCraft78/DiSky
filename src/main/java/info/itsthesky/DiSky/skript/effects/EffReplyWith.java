@@ -12,7 +12,6 @@ import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.skript.commands.CommandEvent;
-import info.itsthesky.DiSky.skript.events.skript.command.EventCommand;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageReceive;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventPrivateMessage;
 import info.itsthesky.DiSky.skript.events.skript.slashcommand.EventSlashCommand;
@@ -26,7 +25,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import org.apache.commons.lang.Validate;
 import org.bukkit.event.Event;
 
 import java.util.Arrays;
@@ -85,8 +83,6 @@ public class EffReplyWith extends Effect {
                     eventPrivate = (EventPrivateMessage) e;
                 } else if (e instanceof EventMessageReceive) {
                     channel = ((EventMessageReceive) e).getEvent().getTextChannel();
-                } else if (e instanceof EventCommand) {
-                    channel = (TextChannel) ((EventCommand) e).getEvent().getChannel();
                 } else if (e instanceof CommandEvent) {
                     channel = (TextChannel) ((CommandEvent) e).getMessageChannel();
                 } else if (e instanceof EventSlashCommand) {

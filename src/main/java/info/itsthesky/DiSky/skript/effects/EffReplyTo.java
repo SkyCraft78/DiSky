@@ -10,27 +10,15 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.commands.CommandEvent;
-import info.itsthesky.DiSky.skript.events.skript.command.EventCommand;
-import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageReceive;
-import info.itsthesky.DiSky.skript.events.skript.messages.EventPrivateMessage;
-import info.itsthesky.DiSky.skript.events.skript.slashcommand.EventSlashCommand;
 import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.commands.CommandHook;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.bukkit.event.Event;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Name("Reply To message")
 @Description("Reply TO a message, using the Discord's reply system.")

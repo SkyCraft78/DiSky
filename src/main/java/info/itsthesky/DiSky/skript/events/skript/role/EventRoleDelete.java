@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @Name("On Role Delete")
 @Description("Run when any role is deleted in a guild")
 @Examples("on role delete:")
-@Since("1.8.1")
+@Since("1.9")
 public class EventRoleDelete extends Event {
 
     static {
