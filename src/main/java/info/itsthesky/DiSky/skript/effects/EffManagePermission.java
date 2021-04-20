@@ -10,6 +10,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.skript.scope.role.ScopeRole;
+import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -55,67 +56,27 @@ public class EffManagePermission extends Effect {
         if (entity instanceof TextChannel) channel = (TextChannel) entity;
         if (entity instanceof GuildChannel && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) channel = (TextChannel) entity;
 
-        if (channel != null ) {
-            /* IF IN CHANNEL */
-
-            if (entity instanceof Member) {
-                Member member = (Member) target;
-                if (isAllow) {
-                    channel.createPermissionOverride(member).setAllow(perm).queue();
-                } else {
-                    channel.createPermissionOverride(member).setDeny(perm).queue();
-                }
-            } else if (entity instanceof Role) {
-                Role role = (Role) target;
-                if (isAllow) {
-                    channel.createPermissionOverride(role).setAllow(perm).queue();
-                } else {
-                    channel.createPermissionOverride(role).setDeny(perm).queue();
-                }
-            } else if (entity instanceof RoleBuilder) {
-                RoleBuilder role = (RoleBuilder) target;
-                if (isAllow) {
-                    role.addAllow(perm);
-                    ScopeRole.lastBuilder = role;
-                } else {
-                    role.addDeny(perm);
-                    ScopeRole.lastBuilder = role;
-                }
+        if (target instanceof Role) {
+            Role role = (Role) target;
+            if (isAllow) {
+                channel.upsertPermissionOverride(role).setAllow(perm).queue(null, DiSkyErrorHandler::logException);
+            } else {
+                channel.upsertPermissionOverride(role).setDeny(perm).queue(null, DiSkyErrorHandler::logException);
             }
-
-
-            /* END CHANNEL */
-        } else {
-            /* IF GLOBALLY */
-
-            Guild guild = null;
-            if (entity instanceof Member) {
-                Member member = (Member) target;
-                guild = member.getGuild();
-            } else if (entity instanceof Role) {
-                Role role = (Role) target;
-                guild = role.getGuild();
+        } if (target instanceof RoleBuilder) {
+            RoleBuilder role = (RoleBuilder) target;
+            if (isAllow) {
+                role.addAllow(perm);
+            } else {
+                role.addDeny(perm);
             }
-            if (guild == null) return;
-
-            for (GuildChannel channel1 : guild.getChannels()) {
-                if (target instanceof RoleBuilder) return;
-                if (target instanceof Role) {
-                    if (isAllow) {
-                        channel1.createPermissionOverride((Role) target).setAllow(perm).queue();
-                    } else {
-                        channel1.createPermissionOverride((Role) target).setDeny(perm).queue();
-                    }
-                } else {
-                    if (isAllow) {
-                        channel1.createPermissionOverride((Member) target).setAllow(perm).queue();
-                    } else {
-                        channel1.createPermissionOverride((Member) target).setDeny(perm).queue();
-                    }
-                }
+        } else if (target instanceof Member) {
+            Member member = (Member) target;
+            if (isAllow) {
+                channel.upsertPermissionOverride(member).setAllow(perm).queue(null, DiSkyErrorHandler::logException);
+            } else {
+                channel.upsertPermissionOverride(member).setDeny(perm).queue(null, DiSkyErrorHandler::logException);
             }
-
-            /* END GLOBALLY */
         }
 
     }

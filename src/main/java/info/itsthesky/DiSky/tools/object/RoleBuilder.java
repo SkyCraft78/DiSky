@@ -34,12 +34,12 @@ public class RoleBuilder {
     }
 
     public Role create(Guild guild) {
-       RoleAction manager = guild
-               .createRole()
-               .setHoisted(this.separate)
-               .setColor(this.color)
-               .setName(this.name)
-               .setMentionable(this.mentionable);
+        RoleAction manager = guild
+                .createRole()
+                .setHoisted(this.separate)
+                .setColor(this.color)
+                .setName(this.name)
+                .setMentionable(this.mentionable);
         Role finalRole = manager.complete();
 
         for (Permission perm : this.allow) {
@@ -55,7 +55,7 @@ public class RoleBuilder {
                     .queue();
         }
 
-       return finalRole;
+        return finalRole;
     }
 
     public String getName() {
