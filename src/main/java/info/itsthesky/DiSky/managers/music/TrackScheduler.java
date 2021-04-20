@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,6 +27,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private final BlockingQueue<AudioTrack> queue;
     private final Guild guild;
     private final JDA bot;
+    private boolean shouldFiredEnd = true;
 
     /**
      * @param player The audio player this scheduler uses
@@ -48,19 +50,23 @@ public class TrackScheduler extends AudioEventAdapter {
         }
     }
 
+    public void shuffleQueue() {
+        Collections.shuffle((List<?>) queue);
+    }
+
     /**
      * Start the next track, stopping the current one if it is playing.
      */
-    public void nextTrack() {
-        player.startTrack(queue.poll(), false);
+    public AudioTrack nextTrack() {
+        AudioTrack next = queue.poll();
+        shouldFiredEnd = false;
+        player.startTrack(next, false);
+        shouldFiredEnd = true;
+        return next;
     }
 
     public BlockingQueue<AudioTrack> getQueue() {
         return queue;
-    }
-
-    public void shuffleQueue() {
-        Collections.shuffle(Arrays.asList(queue.toArray()));
     }
 
     public void clearQueue() {
@@ -70,13 +76,14 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackEnd(
-                track,
-                guild,
-                bot,
-                channel
-        )));
+        if (!shouldFiredEnd) return;
+       VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
+       Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackEnd(
+               track,
+               guild,
+               bot,
+               channel
+       )));
     }
 
     @Override

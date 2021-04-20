@@ -9,15 +9,8 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.DiSky.managers.WebhookManager;
-import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.skript.audio.ExprLastAudioError;
-import info.itsthesky.DiSky.skript.audio.ExprLastPlayedAudio;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.PlayError;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.event.Event;
 
 @Name("Register Webhooks")

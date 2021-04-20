@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio.tracks;
+package info.itsthesky.DiSky.skript.audio.manage;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -15,15 +15,15 @@ import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 
-@Name("Shuffle Guild Queue")
-@Description("Shuffle the current queue of a specific guild.")
-@Examples("shuffle queue of event-guild")
-@Since("1.7")
-public class EffShuffleGuildQueue extends Effect {
+@Name("Disconnect Bot From Guild")
+@Description("Disconnect the bot from a specific guild.")
+@Examples("disconnect bot of event-guild")
+@Since("1.9")
+public class EffDisconnectBot extends Effect {
 
     static {
-        Skript.registerEffect(EffShuffleGuildQueue.class,
-                "["+ Utils.getPrefixName() +"] shuffle [current] queue (from|of) [the] [guild] %guild%");
+        Skript.registerEffect(EffDisconnectBot.class,
+                "["+ Utils.getPrefixName() +"] (close connection|disconnect) [the] bot of [the] [guild] %guild%");
     }
 
     private Expression<Guild> exprGuild;
@@ -40,13 +40,13 @@ public class EffShuffleGuildQueue extends Effect {
     protected void execute(Event e) {
         Guild guild = exprGuild.getSingle(e);
         if (guild == null) return;
-        GuildAudioManager manager = AudioUtils.getGuildAudioPlayer(guild);
-        manager.trackScheduler.shuffleQueue();
+        guild.getAudioManager().setSendingHandler(null);
+        guild.getAudioManager().closeAudioConnection();
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "shuffle current queue of guild " + exprGuild.toString(e, debug);
+        return "disconnect bot of guild " + exprGuild.toString(e, debug);
     }
 
 }

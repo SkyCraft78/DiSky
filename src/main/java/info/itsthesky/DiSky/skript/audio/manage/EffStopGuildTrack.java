@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio.tracks;
+package info.itsthesky.DiSky.skript.audio.manage;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,38 +8,30 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.DiSky.managers.music.AudioUtils;
 import info.itsthesky.DiSky.managers.music.GuildAudioManager;
-import info.itsthesky.DiSky.skript.audio.ExprLastAudioError;
-import info.itsthesky.DiSky.skript.audio.ExprLastPlayedAudio;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.PlayError;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 
-@Name("Skip Guild Track")
-@Description("Skip the track from the specific guild.")
-@Examples("skip current track of event-guild")
-@Since("1.6-pre2, 1.8 (added store pattern)")
-public class EffSkipGuildTrack extends Effect {
+@Name("Stop Guild Queue")
+@Description("Stop the current queue and clear it. See also 'pause' effect.")
+@Examples("stop current queue of event-guild")
+@Since("1.9")
+public class EffStopGuildTrack extends Effect {
 
     static {
-        Skript.registerEffect(EffSkipGuildTrack.class, // [the] [bot] [(named|with name)] %string%
-                "["+ Utils.getPrefixName() +"] skip [current] track (from|of) [the] [guild] %guild% [and store (it|the new track) in %-object%]");
+        Skript.registerEffect(EffStopGuildTrack.class,
+                "["+ Utils.getPrefixName() +"] stop [current] queue (from|of) [the] [guild] %guild%");
     }
 
     private Expression<Guild> exprGuild;
-    private Expression<Object> exprVar;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprGuild = (Expression<Guild>) exprs[0];
-        if (exprs.length == 2) exprVar = (Expression<Object>) exprs[1];
         return true;
     }
 
@@ -48,11 +40,9 @@ public class EffSkipGuildTrack extends Effect {
     protected void execute(Event e) {
         Guild guild = exprGuild.getSingle(e);
         if (guild == null) return;
-        AudioTrack track = AudioUtils.skipTrack(guild);
-        if (exprVar == null) return;
-        if (exprVar instanceof Variable) {
-            Utils.setSkriptVariable((Variable<?>) exprVar, track, e);
-        }
+        GuildAudioManager manager = AudioUtils.getGuildAudioPlayer(guild);
+        manager.trackScheduler.clearQueue();
+        manager.getPlayer().destroy();
     }
 
     @Override

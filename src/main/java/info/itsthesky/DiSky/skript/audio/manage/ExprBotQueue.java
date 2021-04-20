@@ -1,18 +1,14 @@
-package info.itsthesky.DiSky.skript.audio.tracks;
+package info.itsthesky.DiSky.skript.audio.manage;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.managers.music.TrackScheduler;
 import info.itsthesky.DiSky.tools.MultiplyPropertyExpression;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 

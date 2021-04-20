@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio.tracks;
+package info.itsthesky.DiSky.skript.audio.manage;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,27 +9,20 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import com.github.natanbc.lavadsp.timescale.TimescalePcmAudioFilter;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.skript.audio.ExprLastAudioError;
-import info.itsthesky.DiSky.skript.audio.ExprLastPlayedAudio;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.PlayError;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 
-import java.util.Collections;
-
-@Name("Pause Guild Audio")
-@Description("Pause the current audio a guild is playing.")
+@Name("Resume Guild Audio")
+@Description("Resume the current audio a guild is playing.")
 @Examples("pause audio in event-guild")
 @Since("1.6")
-public class EffPauseAudio extends Effect {
+public class EffResumeAudio extends Effect {
 
     static {
-        Skript.registerEffect(EffPauseAudio.class,
-                "["+ Utils.getPrefixName() +"] pause [the] [audio] [track] in [the] [guild] %guild%");
+        Skript.registerEffect(EffResumeAudio.class, // [the] [bot] [(named|with name)] %string%
+                "["+ Utils.getPrefixName() +"] resume [the] [audio] [track] (in|from) [the] [guild] %guild%");
     }
 
     private Expression<Guild> exprGuild;
@@ -41,16 +34,17 @@ public class EffPauseAudio extends Effect {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void execute(Event e) {
         Guild guild = exprGuild.getSingle(e);
         if (guild == null) return;
-        AudioUtils.getGuildAudioPlayer(guild).getPlayer().setPaused(true);
+        AudioUtils.getGuildAudioPlayer(guild).getPlayer().setPaused(false);
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "pause audio track in guild " + exprGuild.toString(e, debug);
+        return "resume audio track in guild " + exprGuild.toString(e, debug);
     }
 
 }

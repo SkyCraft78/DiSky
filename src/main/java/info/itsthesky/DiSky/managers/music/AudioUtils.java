@@ -5,23 +5,19 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioItem;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import info.itsthesky.DiSky.skript.audio.ExprLastPlayedAudio;
+import com.sedmelluq.discord.lavaplayer.track.*;
+import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.DiSky.tools.object.AudioSite;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class AudioUtils {
 
@@ -29,8 +25,10 @@ public class AudioUtils {
     public static AudioPlayerManager MANAGER;
     public static YoutubeAudioSourceManager YOUTUBE_MANAGER_SOURCE;
     public static final YoutubeSearchProvider YOUTUBE_MANAGER_SEARCH = new YoutubeSearchProvider();
+    private static final SoundCloudAudioSourceManager SOUNDCLOUD_AUDIO_MANAGER = SoundCloudAudioSourceManager.createDefault();
     public static Map<Long, GuildAudioManager> MUSIC_MANAGERS;
     private static final Map<Long, EffectData> GUILDS_EFFECTS = new HashMap<>();
+    private final static DefaultAudioPlayerManager DEFAULT_MANAGER = new DefaultAudioPlayerManager();
 
     public static EffectData getEffectData(Guild guild) {
         if (!GUILDS_EFFECTS.containsKey(guild.getIdLong())) {
@@ -51,35 +49,46 @@ public class AudioUtils {
                 .registerRemoteSources(playerManager);
         AudioSourceManagers
                 .registerLocalSource(playerManager);
+        AudioSourceManagers
+                .registerRemoteSources(DEFAULT_MANAGER);
         YOUTUBE_MANAGER_SOURCE = new YoutubeAudioSourceManager();
     }
 
-    public static AudioTrack[] search(String... queries) {
-        List<AudioTrack> results = new ArrayList<>();
-        AudioItem playlist = null;
-        for (String query : queries) {
-            playlist = YOUTUBE_MANAGER_SEARCH.loadSearchResult(query, data -> new YoutubeAudioTrack(data, YOUTUBE_MANAGER_SOURCE));
-            if (playlist instanceof AudioPlaylist) {
-                AudioPlaylist playlist1 = (AudioPlaylist) playlist;
-                results.addAll(playlist1.getTracks());
-            }
-        }
-        return results.isEmpty() ? null : results.toArray(new AudioTrack[0]);
-    }
+    public static AudioTrack[] search(String url, AudioSite site)
+    {
+        final String trackUrl;
 
-    public static String[] searchURLs(String... queries) {
-        List<String> results = new ArrayList<>();
-        AudioItem playlist = null;
-        for (String query : queries) {
-            playlist = YOUTUBE_MANAGER_SEARCH.loadSearchResult(query, data -> new YoutubeAudioTrack(data, YOUTUBE_MANAGER_SOURCE));
-            if (playlist instanceof AudioPlaylist) {
-                AudioPlaylist playlist1 = (AudioPlaylist) playlist;
-                playlist1.getTracks().forEach((r) -> {
-                    results.add("https://www.youtube.com/watch?v=" + r.getIdentifier());
-                });
+        //Strip <>'s that prevent discord from embedding link resources
+        if (url.startsWith("<") && url.endsWith(">"))
+            trackUrl = url.substring(1, url.length() - 1);
+        else
+            trackUrl = url;
+
+        String siteKey = site.equals(AudioSite.SOUNDCLOUD) ? "scsearch:" : "ytsearch:";
+
+        CompletableFuture<List<AudioTrack>> cf = new CompletableFuture<>();
+        DEFAULT_MANAGER.loadItem((Utils.containURL(trackUrl) ? "" : siteKey) + trackUrl, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                cf.complete(Collections.singletonList(track));
             }
-        }
-        return results.isEmpty() ? new String[0] : results.toArray(new String[0]);
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                cf.complete(playlist.getTracks());
+            }
+
+            @Override
+            public void noMatches() {
+                cf.complete(new ArrayList<>());
+            }
+
+            @Override
+            public void loadFailed(FriendlyException exception) {
+                cf.completeExceptionally(exception);
+            }
+        });
+        return cf.join().toArray(new AudioTrack[0]);
     }
 
     public static synchronized GuildAudioManager getGuildAudioPlayer(Guild guild) {
@@ -95,36 +104,38 @@ public class AudioUtils {
         return musicManager;
     }
 
-    public static void play(Guild guild, GuildAudioManager musicManager, AudioTrack track, Member member) {
-        connectToFirstVoiceChannel(guild.getAudioManager(), member);
-        musicManager.trackScheduler.queue(track);
-        ExprLastPlayedAudio.lastTrack = track;
-    }
-
-    private static void connectToFirstVoiceChannel(AudioManager audioManager, Member member) {
-        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
-            audioManager.openAudioConnection(member.getVoiceState().getChannel());
+    public static void play(Guild guild, VoiceChannel channel, AudioTrack... tracks) {
+        GuildAudioManager musicManager = getGuildAudioPlayer(guild);
+        connectToFirstVoiceChannel(guild.getAudioManager(), channel);
+        for (AudioTrack track : tracks) {
+            musicManager.trackScheduler.queue(track);
         }
     }
 
-    public static void skipTrack(Guild guild) {
-        GuildAudioManager musicManager = getGuildAudioPlayer(guild);
-        musicManager.trackScheduler.nextTrack();
+    private static void connectToFirstVoiceChannel(AudioManager audioManager, VoiceChannel channel) {
+        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+            audioManager.openAudioConnection(channel);
+        }
     }
 
-    public static void loadAndPlay(final Guild guild, final AudioTrack track, Member member) {
+    public static AudioTrack skipTrack(Guild guild) {
         GuildAudioManager musicManager = getGuildAudioPlayer(guild);
-        MANAGER.loadItemOrdered(musicManager, track.getIdentifier(), new AudioLoadResultHandler() {
+        return musicManager.trackScheduler.nextTrack();
+    }
+
+    public static void loadAndPlay(final Guild guild, final VoiceChannel channel, String id) {
+        GuildAudioManager musicManager = getGuildAudioPlayer(guild);
+        MANAGER.loadItemOrdered(musicManager, id, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                play(guild, musicManager, track, member);
+                play(guild, channel, track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 AudioTrack firstTrack = playlist.getSelectedTrack();
                 if (firstTrack == null) firstTrack = playlist.getTracks().get(0);
-                play(guild, musicManager, firstTrack, member);
+                play(guild, channel, firstTrack);
             }
 
             @Override
