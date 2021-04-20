@@ -18,7 +18,7 @@ public class ExprAttURL extends SimplePropertyExpression<Message.Attachment, Str
 
     static {
         register(ExprAttURL.class, String.class,
-                "[discord] ur(l|i)",
+                "[discord] [attachment] ur(l|i)",
                 "attachment"
         );
     }
