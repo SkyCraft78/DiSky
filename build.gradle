@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
-def version = '1.8.1'
+def version = '1.9'
 group 'info.itsthesky'
 
 repositories {
@@ -35,8 +35,8 @@ dependencies {
 }
 
 jar {
+    archiveName 'DiSky ' + version + ".jar"
     from {
-        archiveName 'DiSky ' + version + ".jar"
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }

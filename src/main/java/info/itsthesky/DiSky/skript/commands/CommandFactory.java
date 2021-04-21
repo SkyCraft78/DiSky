@@ -17,6 +17,7 @@ import ch.njol.util.NonNullPair;
 import ch.njol.util.StringUtils;
 import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.tools.EffectSection;
+import info.itsthesky.DiSky.tools.StaticData;
 import net.dv8tion.jda.api.entities.ChannelType;
 import org.bukkit.event.Event;
 
@@ -282,12 +283,10 @@ public class CommandFactory {
                     category
             );
         } finally {
-            this.currentArguments = null;
             EffectSection.stopLog(errors);
         }
 
         this.commandMap.put(new CommandData(command, commandObject), commandObject);
-        currentArguments = null;
         return commandObject;
 
     }
