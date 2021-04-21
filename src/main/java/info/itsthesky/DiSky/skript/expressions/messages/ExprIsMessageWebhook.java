@@ -23,16 +23,19 @@ public class ExprIsMessageWebhook extends SimpleExpression<Boolean> {
 
 	static {
 		Skript.registerExpression(ExprIsMessageWebhook.class, Boolean.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] %message% (is|was) [a] webhook [message]"
+				"["+ Utils.getPrefixName() +"] %message% (is|was) [a] webhook [message]",
+				"["+ Utils.getPrefixName() +"] %message% (isn't|is not|wasn't|was not) [a] webhook [message]"
 		);
 	}
 
 	private Expression<Message> exprMessage;
+	private boolean isNegate;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
 		exprMessage = (Expression<Message>) exprs[0];
+		isNegate = matchedPattern != 0;
 		return true;
 	}
 
@@ -40,7 +43,11 @@ public class ExprIsMessageWebhook extends SimpleExpression<Boolean> {
 	protected Boolean[] get(Event e) {
 		Message message = exprMessage.getSingle(e);
 		if (message == null) return new Boolean[0];
-		return new Boolean[] {message.isWebhookMessage()};
+		if (isNegate) {
+			return new Boolean[] {!message.isWebhookMessage()};
+		} else {
+			return new Boolean[] {message.isWebhookMessage()};
+		}
 	}
 
 	@Override
