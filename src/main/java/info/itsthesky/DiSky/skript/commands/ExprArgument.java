@@ -15,9 +15,13 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
+import info.itsthesky.DiSky.skript.events.skript.EventReactSection;
+import info.itsthesky.DiSky.skript.events.skript.reaction.EventReactionAdd;
+import info.itsthesky.DiSky.tools.StaticData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,13 +45,21 @@ public class ExprArgument extends SimpleExpression<Object> {
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
-        if (!ScriptLoader.isCurrentEvent(CommandEvent.class))
+        if (!ScriptLoader.isCurrentEvent(CommandEvent.class) &&
+                !ScriptLoader.isCurrentEvent(EventReactSection.class)
+        )
             return false;
 
-        final List<Argument<?>> currentArguments = CommandFactory.getInstance().currentArguments;
+        List<Argument<?>> currentArguments = CommandFactory.getInstance().currentArguments;
+        final List<Argument<?>> lastArguments = StaticData.lastArguments;
         if (currentArguments == null) {
-            Skript.error("The expression 'argument' can only be used within a command", ErrorQuality.SEMANTIC_ERROR);
-            return false;
+            if (lastArguments.isEmpty()) {
+                Skript.error("The expression 'argument' can only be used within a command", ErrorQuality.SEMANTIC_ERROR);
+                return false;
+            } else {
+                currentArguments = lastArguments;
+                StaticData.lastArguments = new ArrayList<>();
+            }
         }
         if (currentArguments.size() == 0) {
             Skript.error("This command doesn't have any arguments", ErrorQuality.SEMANTIC_ERROR);

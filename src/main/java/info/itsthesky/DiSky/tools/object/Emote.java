@@ -3,6 +3,7 @@ package info.itsthesky.DiSky.tools.object;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.List;
@@ -16,6 +17,18 @@ public class Emote implements IMentionable {
     public Emote(String name) {
         this.name = name;
         this.mention = name;
+    }
+
+    public Emote(MessageReaction.ReactionEmote emote) {
+        if (emote.isEmote()) {
+            this.name = emote.getEmote().getName();
+            this.emote = emote.getEmote();
+            this.isEmote = true;
+            this.mention = emote.getEmote().getAsMention();
+        } else {
+            this.name = emote.getName();
+            this.mention = name;
+        }
     }
 
     public Emote(net.dv8tion.jda.api.entities.Emote emote) {

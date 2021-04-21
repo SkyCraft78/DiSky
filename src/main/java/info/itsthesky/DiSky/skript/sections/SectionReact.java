@@ -1,6 +1,7 @@
 package info.itsthesky.DiSky.skript.sections;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -12,16 +13,22 @@ import ch.njol.util.Kleenean;
 import ch.njol.util.Pair;
 import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.managers.BotManager;
+import info.itsthesky.DiSky.skript.commands.Argument;
+import info.itsthesky.DiSky.skript.commands.CommandFactory;
+import info.itsthesky.DiSky.skript.events.skript.EventReactSection;
 import info.itsthesky.DiSky.skript.events.skript.reaction.EventReactionAdd;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.EffectSection;
+import info.itsthesky.DiSky.tools.StaticData;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.Emote;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+
+import java.util.List;
 
 @Name("React to Message")
 @Description("React to a message with an emote like the 'add reaction' effect. However, this section will be fired when someone react to this emote too.")
@@ -39,6 +46,13 @@ public class SectionReact extends EffectSection {
 	private Expression<Message> exprMessage;
 	private Expression<String> exprName;
 
+	private final EventValue<Message> valueMessage = new EventValue<>(Message.class, "message");
+	private final EventValue<Member> valueMember = new EventValue<>(Member.class, "member");
+	private final EventValue<User> valueUser = new EventValue<>(User.class, "user");
+	private final EventValue<Guild> valueGuild = new EventValue<>(Guild.class, "guild");
+	private final EventValue<JDA> valueBot = new EventValue<>(JDA.class, "bot");
+	private final EventValue<Emote> valueEmote = new EventValue<>(Emote.class, "emote");
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
@@ -46,7 +60,16 @@ public class SectionReact extends EffectSection {
 		exprReact = (Expression<Emote>) exprs[1];
 		if (exprs.length != 2) exprName = (Expression<String>) exprs[2];
 		if (checkIfCondition()) return false;
-		if (hasSection()) loadSection("react effect", false, EventReactionAdd.class);
+		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
+
+		ExprEventValues.values.put("message", valueMessage);
+		ExprEventValues.values.put("member", valueMember);
+		ExprEventValues.values.put("user", valueUser);
+		ExprEventValues.values.put("guild", valueGuild);
+		ExprEventValues.values.put("bot", valueBot);
+		ExprEventValues.values.put("emote", valueEmote);
+
+		if (hasSection()) loadSection("react effect", false, EventReactSection.class);
 		return true;
 	}
 
@@ -84,7 +107,20 @@ public class SectionReact extends EffectSection {
 							&& Utils.areEmojiSimilar(ev.getReactionEmote(), emote),
 					ev -> {
 						if (VariablesMaps.map.get(event) != null) Variables.setLocalVariables(event, VariablesMaps.map.get(event));
+
+						valueMessage.setObject(ev.getChannel().retrieveMessageById(ev.getMessageIdLong()).complete());
+						valueGuild.setObject(ev.getGuild());
+						valueMember.setObject(ev.getMember());
+						valueUser.setObject(ev.getUser());
+						valueBot.setObject(ev.getJDA());
+						valueEmote.setObject(new Emote(ev.getReactionEmote()));
+
 						runSection(event);
+
+						if (((Cancellable) event).isCancelled()) {
+							ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
+						}
+
 						Variables.removeLocals(event);
 					}
 			));
