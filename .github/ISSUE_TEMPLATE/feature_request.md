@@ -9,13 +9,13 @@ assignees: SkyCraft78
 
 **Name:** `<feature name>`
 
-**Potential New Syntaxes:**
+**Potential new syntaxes:**
 * Expression: `my custom %string% expression`
 * Effect: `make disky the %much level% ever`
 
 **Other syntaxes affected (if any):** `<input>`
 
-**In-dept description of the new features:**
+**In-depth description of the new features:**
 ```
-So I wanna add banana to Discord, since they aren't there :)
+It would be very nice to have bananas added to DiSky, since they aren't there currently.
 ```

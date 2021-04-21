@@ -59,7 +59,7 @@ public class BotManager {
      */
     public static void addBot(final String name, final String token) {
         if (bots.containsKey(name)) {
-            logger.warning("The bot named '"+name+"' is already loaded on the server! Shutdown it or change the name.");
+            logger.warning("The bot named '"+name+"' is already loaded on the server! Shut it down or change the name.");
             return;
         }
 
@@ -140,7 +140,7 @@ public class BotManager {
      */
     public static void removeAndShutdown(final String name) {
         if (!bots.containsKey(name)) {
-            logger.warning("The bot named '"+name+"' is not loaded / already shutdown!");
+            logger.warning("The bot named '"+name+"' is not loaded / already shut down!");
             return;
         }
 
@@ -163,13 +163,13 @@ public class BotManager {
     }
 
     /**
-     * Get, if loaded, the JDA instance of a bot from its name
+     * Get, if loaded, the JDA instance of a bot from its name (returns null if the bot isn't loaded)
      * @param name The name (= id) of the wanted bot
      * @return The JDA instance of the specific bot
      */
     public static JDA getBot(final String name) {
         if (!bots.containsKey(name)) {
-            logger.warning("The bot named '"+name+"' is not loaded, but you're trying to use it into an effect / expression!");
+            logger.warning("The bot named '"+name+"' is not loaded, but you're trying to use it in an effect / expression!");
             return null;
         }
         return bots.get(name);

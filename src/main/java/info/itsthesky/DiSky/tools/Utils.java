@@ -388,7 +388,7 @@ public class Utils extends ListenerAdapter {
         if (config.contains("SlashCommand.Enabled")) return false;
         if (!config.getBoolean("SlashCommand.Enabled")) {
             DiSky.getInstance().getLogger().warning("Slash Commands are disabled by default, but you're trying to use them somewhere.");
-            DiSky.getInstance().getLogger().warning("See the Wiki (https://github.com/SkyCraft78/DiSky/wiki/Slash-Commands) to know how enabled and use them!");
+            DiSky.getInstance().getLogger().warning("See the wiki (https://github.com/SkyCraft78/DiSky/wiki/Slash-Commands) to know how enable and use them!");
         }
         return config.getBoolean("SlashCommand.Enabled");
     }
@@ -431,12 +431,12 @@ public class Utils extends ListenerAdapter {
         }
         File inFile = new File(DiSky.getInstance().getDataFolder(), inPath);
         if (!inFile.exists()) {
-            Bukkit.getConsoleSender().sendMessage("§cThe file "+inFile.getName()+" cannot be found, create one for you ...");
+            Bukkit.getConsoleSender().sendMessage("§cThe file "+inFile.getName()+" cannot be found, creating one for you ...");
 
             DiSky.getInstance().saveResource(inPath, false);
 
             if (!inFile.exists()) {
-                DiSky.getInstance().getLogger().severe("Unable to copy file !");
+                DiSky.getInstance().getLogger().severe("Unable to copy file!");
             } else {
                 Bukkit.getConsoleSender().sendMessage("§aThe file "+inFile.getName()+" has been created!");
             }

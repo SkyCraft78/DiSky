@@ -4,20 +4,20 @@
 # Discord: https://disky.itsthesky.info/?page=discord
 # Docs: https://disky.itsthesky.info/?page=docs
 
-# THIS IS A BETA FEATURES !!!
-# READ THE WIKI OF THAT FEATURE BEFORE ENABLING !!!
+# THIS IS A BETA FEATURE !!!
+# READ THE WIKI BEFORE ENABLING !!!
 # SLASH COMMAND WIKI: https://github.com/SkyCraft78/DiSky/wiki/Slash-Commands
 SlashCommand:
   Enabled: false
-  # SlashCommand take like an hour to be updated in Discord.
+  # SlashCommands take like an hour to be updated on Discord.
   # However, we can send multiple command at once, and all of them will be updated.
-  # If false, single command builder can't be register, needed a list of commands.
+  # If false, single command builders can't be registered, needs a list of commands.
   AllowSingle: false
 
-# This is for handle Discord & DiSky errors.
+# This is for handling Discord & DiSky errors.
 # It will enable the print stack (advanced debug)
-# for specified errors. Enable that only if a support
-# member ask you to do so :)
+# for specific errors. Only enable this if a support
+# member asks you to do so :)
 HandleErrors:
   NullPointerException: false
   InsufficientPermissionException: false
