@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 public class EventMemberBoost extends Event {
 
     static {
-        Skript.registerEvent("Member boost change", SimpleEvent.class, EventMemberBoost.class, "[discord] [member] boost (change|update)");
+        Skript.registerEvent("Member boost change", SimpleEvent.class, EventMemberBoost.class, "[discord] [member] boost [(change|update)]");
 
         EventValues.registerEventValue(EventMemberBoost.class, User.class, new Getter<User, EventMemberBoost>() {
             @Nullable
