@@ -18,8 +18,8 @@ import org.bukkit.event.Event;
 import java.util.ArrayList;
 import java.util.List;
 
-@Name("Guild Text Channels")
-@Description("Return all text channels of the specific guild")
+@Name("Guild Emotes")
+@Description("Return all emotes of the specific guild")
 @Examples("reply with \"This server have %size of emotes of event-guild% emotes!\"")
 @Since("1.3")
 public class ExprGuildEmotes extends SimpleExpression<String> {
