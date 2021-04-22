@@ -112,6 +112,7 @@ public class Utils extends ListenerAdapter {
     public static boolean containURL(String input) {
         return input.contains("http://") ||
                 input.contains("https://") ||
+                input.contains("www") ||
                 input.contains(".com") ||
                 input.contains(".org") ||
                 input.contains(".html") ||

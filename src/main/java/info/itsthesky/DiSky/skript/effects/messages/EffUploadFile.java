@@ -15,125 +15,172 @@ import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
-import java.io.IOException;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 @Name("Upload File")
-@Description("Upload a file from an URL to a channel or a private user.")
-@Examples("upload file \"https://ih1.redbubble.net/image.696592591.0364/flat,750x,075,f-pad,750x1000,f8f8f8.u2.jpg\" to event-channel")
-@Since("1.4")
+@Description("Upload a file from an URL to a channel or a private user. If SkImage is installed, you can also send an image directly.")
+@Examples("discord command upload [<text>] [<text>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg-1 is not set:\n" +
+        "\t\t\tupload \"https://media.discordapp.net/attachments/818182473502294072/834832709061967913/image.png?width=1440&height=648\" to event-channel\n" +
+        "\t\t\tstop\n" +
+        "\t\tif arg-2 is not set:\n" +
+        "\t\t\tupload arg-1 to event-channel\n" +
+        "\t\t\tstop\n" +
+        "\t\tupload arg-1 with content arg-2 to event-channel")
+@Since("1.4, 1.10 (added locale files & custom content)")
 public class EffUploadFile extends Effect {
 
     static {
+        String pImage = "[file] %string%";
+        if (DiSky.getPluginManager().isPluginEnabled("SkImage")) pImage = "[(file|image)] %string/image%";
         Skript.registerEffect(EffUploadFile.class,
-                "["+ Utils.getPrefixName() +"] upload [file] %string% to [the] [(channel|user)] %channel/textchannel/user/member% [with bot [(named|with name)] %-string%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] upload "+pImage+" [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with bot [(named|with name)] %-string%] [and store it in %-object%]");
     }
 
-    private Expression<String> exprURL;
+    private Expression<Object> exprFile;
     private Expression<Object> exprChannel;
     private Expression<Object> exprVar;
     private Expression<String> exprName;
+    private Expression<Object> exprContent;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprURL = (Expression<String>) exprs[0];
-        exprChannel = (Expression<Object>) exprs[1];
-        if (exprs.length == 2) return true;
-        exprName = (Expression<String>) exprs[2];
+        exprFile = (Expression<Object>) exprs[0];
+        exprContent = (Expression<Object>) exprs[1];
+        exprChannel = (Expression<Object>) exprs[2];
         if (exprs.length == 3) return true;
-        exprVar = (Expression<Object>) exprs[3];
+        exprName = (Expression<String>) exprs[3];
+        if (exprs.length == 4) return true;
+        exprVar = (Expression<Object>) exprs[4];
         return true;
     }
 
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            Object channel = exprChannel.getSingle(e);
-            String url = exprURL.getSingle(e);
-            if (channel == null || url == null) return;
+            Object target = exprChannel.getSingle(e);
+            Object f = exprFile.getSingle(e);
+            @Nullable Object content = exprContent == null ? null : exprContent.getSingle(e);
+            if (target == null || f == null) return;
+            Message resultMessage;
+            MessageChannel channel = null;
 
-            Message storedMessage = null;
-            String ext = url.substring(url.lastIndexOf("."));
-
-            TextChannel channel1 = null;
-            if (channel1 instanceof TextChannel) channel1 = (TextChannel) channel;
-            if (channel instanceof GuildChannel && ((GuildChannel) channel).getType().equals(ChannelType.TEXT)) channel1 = (TextChannel) channel;
-
-            if (channel instanceof User || channel instanceof Member) {
-                User user;
-                if (channel instanceof Member) {
-                    user = ((Member) channel).getUser();
-                } else {
-                    user = (User) channel;
-                }
-                URL co = null;
-                try {
-                    co = new URL(url);
-                    URL finalCo = co;
-                    storedMessage = user.openPrivateChannel()
-                            .flatMap(channel2 -> {
-                                try {
-                                    return channel2.sendFile(finalCo.openStream(), "file."+ ext);
-                                } catch (IOException ioException) {
-                                    ioException.printStackTrace();
-                                }
-                                return null;
-                            })
-                            .complete();
-                } catch (IOException malformedURLException) {
-                    malformedURLException.printStackTrace();
-                }
-                ExprLastMessage.lastMessage = storedMessage;
-                if (exprVar == null) return;
-                if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
-                Variable var = (Variable) exprVar;
-                Utils.setSkriptVariable(var, storedMessage, e);
-            } else return;
-
-            if (channel1 == null) return;
-            JDA bot = null;
-            if (exprName != null) {
-                bot = BotManager.getBot(exprName.getSingle(e));
-            } else {
-                bot = channel1.getJDA();
+            if (target instanceof GuildChannel && ((GuildChannel) target).getType().equals(ChannelType.TEXT)) {
+                channel = (MessageChannel) target;
+            } else if (target instanceof Member || target instanceof User) {
+                User user = (User) target;
+                channel = user.openPrivateChannel().complete();
             }
-            if (bot == null) return;
 
-            TextChannel channel2 = bot.getTextChannelById(channel1.getId());
-            if (channel2 == null) {
-                DiSky.getInstance().getLogger().severe("Cannot get the right text channel with id '"+channel1.getId()+"'!");
+            if (channel == null) return;
+
+            if (f instanceof BufferedImage) {
+                BufferedImage image = (BufferedImage) f;
+                byte[] array = getByteArray(image, "png");
+
+                if (content == null) {
+                    resultMessage = channel.sendFile(array, "image.png").complete();
+                } else {
+
+                    if (content instanceof MessageBuilder) {
+                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(array, "image.png").complete();
+                    } else if (content instanceof EmbedBuilder) {
+                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(array, "image.png").complete();
+                    } else {
+                        resultMessage = channel.sendMessage(content.toString()).addFile(array, "image.png").complete();
+                    }
+                }
                 return;
             }
 
-            URL co = null;
-            try {
-                co = new URL(url);
-                URL finalCo = co;
-                try {
-                    channel2.sendFile(finalCo.openStream(), "file.png").queue();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+            String url = f.toString();
+            if (Utils.containURL(url)) {
+
+                InputStream stream = getFileFromURL(url);
+                String ext = getExtensionFromUrl(url);
+                if (stream == null) return;
+
+
+                if (content == null) {
+                    resultMessage = channel.sendFile(stream, "file." + ext).complete();
+                } else {
+
+                    if (content instanceof MessageBuilder) {
+                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(stream, "file." + ext).complete();
+                    } else if (content instanceof EmbedBuilder) {
+                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(stream, "file." + ext).complete();
+                    } else {
+                        resultMessage = channel.sendMessage(content.toString()).addFile(stream, "file." + ext).complete();
+                    }
                 }
-            } catch (IOException malformedURLException) {
-                malformedURLException.printStackTrace();
+
+            } else {
+
+                File file = new File(url);
+                if (!file.exists()) DiSkyErrorHandler.logException(new FileNotFoundException("Can't found the file to send in a channel! (Path: "+file.getPath()+")"));
+
+                if (content == null) {
+                    resultMessage = channel.sendFile(file).complete();
+                } else {
+
+                    if (content instanceof MessageBuilder) {
+                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(file).complete();
+                    } else if (content instanceof EmbedBuilder) {
+                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(file).complete();
+                    } else {
+                        resultMessage = channel.sendMessage(content.toString()).addFile(file).complete();
+                    }
+                }
             }
 
-            ExprLastMessage.lastMessage = storedMessage;
-            if (exprVar == null) return;
-            if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
-            Variable var = (Variable) exprVar;
-            Utils.setSkriptVariable(var, storedMessage, e);
+            if (!(exprVar == null) && !(exprVar instanceof Variable)) return;
+            Utils.setSkriptVariable((Variable<?>) exprVar, resultMessage, e);
         });
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "upload file from url " + exprURL.toString(e, debug) + " in channel or to user " + exprChannel.toString(e, debug);
+        return "upload " + exprFile.toString(e, debug) + " in channel or to user " + exprChannel.toString(e, debug);
     }
 
+    public static InputStream getFileFromURL(String url) {
+        try {
+            URLConnection connection = new URL(url).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/4.77");
+            return connection.getInputStream();
+        } catch (MalformedURLException ex) {
+            DiSkyErrorHandler.logException(new MalformedURLException("DiSky tried to load an URL, but this one was malformed."));
+        } catch (IOException | IllegalArgumentException ignored) { }
+        return null;
+    }
+
+    public static String getExtensionFromUrl(String s) {
+        return s.substring(s.lastIndexOf("."));
+    }
+
+    public static byte[] getByteArray(BufferedImage bi, String format) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(bi, format, stream);
+        } catch (IOException e) {
+            Skript.error("Can't convert an Image (from skImage addon) to send it in Discord!");
+        }
+        return stream.toByteArray();
+
+    }
 }
