@@ -6,6 +6,7 @@ import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceLeave;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceMove;
 import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildBan;
 import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildUnban;
+import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildUpdateName;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberBoost;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberLeave;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageDelete;
@@ -27,6 +28,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -112,6 +114,11 @@ public class JDAListener extends ListenerAdapter {
     @Override
     public void onRoleCreate(RoleCreateEvent e) {
         Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventRoleCreate(e)));
+    }
+
+    @Override
+    public void onGuildUpdateName(GuildUpdateNameEvent e) {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventGuildUpdateName(e)));
     }
 
     @Override
