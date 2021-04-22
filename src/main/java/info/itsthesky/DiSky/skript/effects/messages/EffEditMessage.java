@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects;
+package info.itsthesky.DiSky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

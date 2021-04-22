@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects;
+package info.itsthesky.DiSky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -11,20 +11,14 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import org.bukkit.event.Event;
-
-import java.util.Objects;
 
 @Name("Send discord Message")
 @Description("Send a message in a specific channel, with a specific bot. Use that syntax only for non-textchannel event.")

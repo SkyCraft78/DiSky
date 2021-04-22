@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects;
+package info.itsthesky.DiSky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,21 +8,10 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import org.bukkit.event.Event;
 
 @Name("Pin / Unpin Message")

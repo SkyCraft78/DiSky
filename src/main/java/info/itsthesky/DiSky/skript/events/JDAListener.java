@@ -4,9 +4,9 @@ import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceJoin;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceLeave;
 import info.itsthesky.DiSky.skript.events.skript.audio.EventVoiceMove;
-import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildBan;
-import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildUnban;
-import info.itsthesky.DiSky.skript.events.skript.guild.EventGuildUpdateName;
+import info.itsthesky.DiSky.skript.events.skript.guild.*;
+import info.itsthesky.DiSky.skript.events.skript.guild.afk.EventAFKChannelUpdate;
+import info.itsthesky.DiSky.skript.events.skript.guild.icon.EventIconUpdate;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberBoost;
 import info.itsthesky.DiSky.skript.events.skript.members.EventMemberLeave;
 import info.itsthesky.DiSky.skript.events.skript.messages.EventMessageDelete;
@@ -23,11 +23,15 @@ import info.itsthesky.DiSky.skript.events.skript.slashcommand.EventSlashCommand;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateAfkChannelEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateIconEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -119,6 +123,26 @@ public class JDAListener extends ListenerAdapter {
     @Override
     public void onGuildUpdateName(GuildUpdateNameEvent e) {
         Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventGuildUpdateName(e)));
+    }
+
+    @Override
+    public void onGuildInviteCreate(GuildInviteCreateEvent e) {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventInviteCreate(e)));
+    }
+
+    @Override
+    public void onGuildInviteDelete(GuildInviteDeleteEvent e) {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventInviteDelete(e)));
+    }
+
+    @Override
+    public void onGuildUpdateIcon(GuildUpdateIconEvent e) {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventIconUpdate(e)));
+    }
+
+    @Override
+    public void onGuildUpdateAfkChannel(GuildUpdateAfkChannelEvent e) {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventAFKChannelUpdate(e)));
     }
 
     @Override

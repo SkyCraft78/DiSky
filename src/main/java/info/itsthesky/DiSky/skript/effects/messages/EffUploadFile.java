@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects;
+package info.itsthesky.DiSky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -15,7 +15,6 @@ import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
