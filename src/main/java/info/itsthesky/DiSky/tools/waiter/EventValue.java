@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.sections;
+package info.itsthesky.DiSky.tools.waiter;
 
 /**
  * Class which handle a custom event value, using an object and a class info reference.

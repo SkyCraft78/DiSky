@@ -7,7 +7,7 @@ import info.itsthesky.DiSky.managers.cache.Messages;
 import info.itsthesky.DiSky.skript.commands.CommandListener;
 import info.itsthesky.DiSky.skript.events.JDAListener;
 import info.itsthesky.DiSky.skript.events.skript.EventBotConnect;
-import info.itsthesky.DiSky.skript.sections.ReactListener;
+import info.itsthesky.DiSky.tools.waiter.WaiterListener;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
@@ -72,7 +71,7 @@ public class BotManager {
                     .addEventListeners(new Utils())
                     .addEventListeners(new CommandListener())
                     .addEventListeners(new InviteTracker())
-                    .addEventListeners(new ReactListener())
+                    .addEventListeners(new WaiterListener())
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS)
                     .enableIntents(GatewayIntent.DIRECT_MESSAGES)

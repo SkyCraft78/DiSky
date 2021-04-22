@@ -1,7 +1,6 @@
 package info.itsthesky.DiSky.skript.sections;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -10,25 +9,22 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import ch.njol.util.Pair;
-import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.commands.Argument;
 import info.itsthesky.DiSky.skript.commands.CommandFactory;
 import info.itsthesky.DiSky.skript.events.skript.EventReactSection;
-import info.itsthesky.DiSky.skript.events.skript.reaction.EventReactionAdd;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.EffectSection;
 import info.itsthesky.DiSky.tools.StaticData;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.Emote;
+import info.itsthesky.DiSky.tools.waiter.EventValue;
+import info.itsthesky.DiSky.tools.waiter.ExprEventValues;
+import info.itsthesky.DiSky.tools.waiter.WaiterListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-
-import java.util.List;
 
 @Name("React to Message")
 @Description("React to a message with an emote like the 'add reaction' effect. However, this section will be fired when someone react to this emote too.")
@@ -100,30 +96,32 @@ public class SectionReact extends EffectSection {
 
 			final Long msgID = message.getIdLong();
 			final TextChannel channel = message.getTextChannel();
-			ReactListener.events.add(new ReactListener.ReactWaitingEvent(
-					ev -> msgID.equals(ev.getMessageIdLong())
-							&& ev.getChannel().equals(channel)
-							&& !botJDA.getSelfUser().getId().equals(ev.getUser().getId())
-							&& Utils.areEmojiSimilar(ev.getReactionEmote(), emote),
-					ev -> {
-						if (VariablesMaps.map.get(event) != null) Variables.setLocalVariables(event, VariablesMaps.map.get(event));
+			WaiterListener.events.add(
+					new WaiterListener.WaitingEvent<>(
+							GuildMessageReactionAddEvent.class,
 
-						valueMessage.setObject(ev.getChannel().retrieveMessageById(ev.getMessageIdLong()).complete());
-						valueGuild.setObject(ev.getGuild());
-						valueMember.setObject(ev.getMember());
-						valueUser.setObject(ev.getUser());
-						valueBot.setObject(ev.getJDA());
-						valueEmote.setObject(new Emote(ev.getReactionEmote()));
+							ev -> msgID.equals(ev.getMessageIdLong())
+									&& ev.getChannel().equals(channel)
+									&& !botJDA.getSelfUser().getId().equals(ev.getUser().getId())
+									&& Utils.areEmojiSimilar(ev.getReactionEmote(), emote),
 
-						runSection(event);
+							ev -> {
+								if (VariablesMaps.map.get(event) != null) Variables.setLocalVariables(event, VariablesMaps.map.get(event));
 
-						if (((Cancellable) event).isCancelled()) {
-							ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
-						}
+								valueMessage.setObject(ev.getChannel().retrieveMessageById(ev.getMessageIdLong()).complete());
+								valueGuild.setObject(ev.getGuild());
+								valueMember.setObject(ev.getMember());
+								valueUser.setObject(ev.getUser());
+								valueBot.setObject(ev.getJDA());
+								valueEmote.setObject(new Emote(ev.getReactionEmote()));
 
-						Variables.removeLocals(event);
-					}
-			));
+								runSection(event);
+
+								if (((Cancellable) event).isCancelled()) ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
+
+								Variables.removeLocals(event);
+							}
+					));
 		});
 	}
 
