@@ -11,6 +11,7 @@ import info.itsthesky.DiSky.tools.waiter.WaiterListener;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -19,9 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -34,6 +33,7 @@ public class BotManager {
     private static final Logger logger = DiSky.getInstance().getLogger();
     private static final HashMap<String, JDA> bots = new HashMap<>();
     public static final HashMap<JDA, String> prefixes = new HashMap<>();
+    public static final List<ListenerAdapter> customListener = new ArrayList<>();
 
     public static HashMap<String, JDA> getBots() { return bots; }
 
@@ -72,6 +72,7 @@ public class BotManager {
                     .addEventListeners(new CommandListener())
                     .addEventListeners(new InviteTracker())
                     .addEventListeners(new WaiterListener())
+                    .addEventListeners(customListener.toArray(new ListenerAdapter[0]))
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS)
                     .enableIntents(GatewayIntent.DIRECT_MESSAGES)
