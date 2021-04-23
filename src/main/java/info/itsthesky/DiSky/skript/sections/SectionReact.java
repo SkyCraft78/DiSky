@@ -32,22 +32,28 @@ import org.bukkit.event.Event;
 @Since("1.8")
 public class SectionReact extends EffectSection {
 
+	private static final EventValue<Message> valueMessage = new EventValue<>(Message.class, "message");
+	private static final EventValue<Member> valueMember = new EventValue<>(Member.class, "member");
+	private static final EventValue<User> valueUser = new EventValue<>(User.class, "user");
+	private static final EventValue<Guild> valueGuild = new EventValue<>(Guild.class, "guild");
+	private static final EventValue<JDA> valueBot = new EventValue<>(JDA.class, "bot");
+	private static final EventValue<Emote> valueEmote = new EventValue<>(Emote.class, "emote");
+
 	static {
 		Skript.registerCondition(SectionReact.class,
 				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using [the] [bot] [(named|with name)] %-string%] [to run]"
 		);
+		ExprEventValues.values.put("message", valueMessage);
+		ExprEventValues.values.put("member", valueMember);
+		ExprEventValues.values.put("user", valueUser);
+		ExprEventValues.values.put("guild", valueGuild);
+		ExprEventValues.values.put("bot", valueBot);
+		ExprEventValues.values.put("emote", valueEmote);
 	}
 
 	private Expression<Emote> exprReact;
 	private Expression<Message> exprMessage;
 	private Expression<String> exprName;
-
-	private final EventValue<Message> valueMessage = new EventValue<>(Message.class, "message");
-	private final EventValue<Member> valueMember = new EventValue<>(Member.class, "member");
-	private final EventValue<User> valueUser = new EventValue<>(User.class, "user");
-	private final EventValue<Guild> valueGuild = new EventValue<>(Guild.class, "guild");
-	private final EventValue<JDA> valueBot = new EventValue<>(JDA.class, "bot");
-	private final EventValue<Emote> valueEmote = new EventValue<>(Emote.class, "emote");
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -57,13 +63,6 @@ public class SectionReact extends EffectSection {
 		if (exprs.length != 2) exprName = (Expression<String>) exprs[2];
 		if (checkIfCondition()) return false;
 		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
-
-		ExprEventValues.values.put("message", valueMessage);
-		ExprEventValues.values.put("member", valueMember);
-		ExprEventValues.values.put("user", valueUser);
-		ExprEventValues.values.put("guild", valueGuild);
-		ExprEventValues.values.put("bot", valueBot);
-		ExprEventValues.values.put("emote", valueEmote);
 
 		if (hasSection()) loadSection("react effect", false, EventReactSection.class);
 		return true;
