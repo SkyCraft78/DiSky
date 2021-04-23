@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.DiSky.tools.UpdatedValue;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -23,8 +24,11 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.9")
 public class EventVoiceMove extends Event {
 
+    final static UpdatedValue<VoiceChannel> updatedValue;
+
     static {
         Skript.registerEvent("Voice Channel Move", SimpleEvent.class, EventVoiceMove.class, "[discord] [member] [voice] channel move");
+        updatedValue = new UpdatedValue<>(VoiceChannel.class, EventVoiceMove.class, "[voice] channel", true);
 
         EventValues.registerEventValue(EventVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EventVoiceMove>() {
             @Nullable
@@ -82,6 +86,8 @@ public class EventVoiceMove extends Event {
             final GuildVoiceMoveEvent e) {
         super(Utils.areEventAsync());
         this.e = e;
+        updatedValue.setNewObject(e.getNewValue());
+        updatedValue.setOldObject(e.getOldValue());
     }
 
     public GuildVoiceMoveEvent getEvent() {
