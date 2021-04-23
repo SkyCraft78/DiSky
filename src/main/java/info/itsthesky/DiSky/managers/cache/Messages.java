@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.MissingAccessException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
@@ -57,7 +58,14 @@ public class Messages extends ListenerAdapter {
     public void onReady(ReadyEvent e) {
         for (Guild guild : e.getJDA().getGuilds()) {
             for (TextChannel channel : guild.getTextChannels()) {
-                for (Message message : channel.getHistory().getRetrievedHistory()) {
+                List<Message> history = null;
+                try {
+                     history = channel.getHistory().retrievePast(100).complete();
+                } catch (MissingAccessException ex) {
+                    DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message delete event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+                }
+                if (history == null) return;
+                for (Message message : history) {
                     cachedMessages.add(new CachedMessage(message));
                 }
             }
