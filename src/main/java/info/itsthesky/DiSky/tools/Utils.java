@@ -367,7 +367,11 @@ public class Utils extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent e) {
         timeHashMap.remove(e.getJDA());
-        timeHashMap.put(e.getJDA(), Date.now());
+        try {
+            timeHashMap.put(e.getJDA(), Date.now());
+        } catch (NoSuchMethodError ex) {
+            DiSky.getInstance().getLogger().severe("DiSky has bad support for 2.2 and older version of Skript. Some features, such as uptime and color conversion won't work!");
+        }
     }
     public static HashMap<JDA, Date> timeHashMap = new HashMap<>();
     public static Timespan getUpTime(JDA jda) {
