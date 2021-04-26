@@ -88,7 +88,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (!shouldFiredEnd) return;
         if (isRepeated)
-            nextTrack();
+            player.startTrack(track.makeClone(), false);
        VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackEnd(
                track,

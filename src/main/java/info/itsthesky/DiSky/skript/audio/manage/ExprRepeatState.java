@@ -54,7 +54,7 @@ public class ExprRepeatState extends SimplePropertyExpression<Guild, Boolean> {
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
-            return CollectionUtils.array(String.class);
+            return CollectionUtils.array(Boolean.class);
         }
         return CollectionUtils.array();
     }
