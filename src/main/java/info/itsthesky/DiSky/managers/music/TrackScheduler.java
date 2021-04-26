@@ -28,6 +28,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private final Guild guild;
     private final JDA bot;
     private boolean shouldFiredEnd = true;
+    private boolean isRepeated;
 
     /**
      * @param player The audio player this scheduler uses
@@ -37,6 +38,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.queue = new LinkedBlockingQueue<>();
         this.guild = guild;
         this.bot = bot;
+        this.isRepeated = false;
     }
 
     /**
@@ -48,6 +50,14 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!player.startTrack(track, true)) {
             queue.offer(track);
         }
+    }
+
+    public void setRepeated(boolean repeated) {
+        isRepeated = repeated;
+    }
+
+    public boolean isRepeated() {
+        return isRepeated;
     }
 
     public void shuffleQueue() {
@@ -77,6 +87,8 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (!shouldFiredEnd) return;
+        if (isRepeated)
+            nextTrack();
        VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackEnd(
                track,
