@@ -42,6 +42,7 @@ public class ExprFromID extends SimpleExpression<Object> {
 	private Expression<String> exprID;
 	private Expression<Object> exprChannel;
 	private int pattern;
+	private Class<?> aClass;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -49,6 +50,27 @@ public class ExprFromID extends SimpleExpression<Object> {
 		pattern = matchedPattern;
 		exprID = (Expression<String>) exprs[0];
 		if (!(exprs.length == 1)) exprChannel = (Expression<Object>) exprs[1];
+		// Parsing classes to avoid parser error
+		switch (matchedPattern) {
+			case 0:
+				this.aClass = TextChannel.class;
+			case 1:
+				this.aClass = VoiceChannel.class;
+			case 2:
+				this.aClass = GuildChannel.class;
+			case 3:
+				this.aClass = User.class;
+			case 4:
+				this.aClass = Member.class;
+			case 5:
+				this.aClass = Guild.class;
+			case 6:
+				this.aClass = Role.class;
+			case 7:
+				this.aClass = Message.class;
+			case 8:
+				this.aClass = Category.class;
+		}
 		return true;
 	}
 
@@ -95,7 +117,7 @@ public class ExprFromID extends SimpleExpression<Object> {
 
 	@Override
 	public Class<?> getReturnType() {
-		return Object.class;
+		return aClass;
 	}
 
 	@Override
