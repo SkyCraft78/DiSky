@@ -24,7 +24,7 @@ public class EffAppend extends Effect {
 
     static {
         Skript.registerEffect(EffAppend.class,
-                "["+ Utils.getPrefixName() +"] append %string/embed% to [message] builder %messagebuilder%");
+                "["+ Utils.getPrefixName() +"] append %string/embed% to [message] [builder] %messagebuilder%");
     }
 
     private Expression<Object> exprEntity;

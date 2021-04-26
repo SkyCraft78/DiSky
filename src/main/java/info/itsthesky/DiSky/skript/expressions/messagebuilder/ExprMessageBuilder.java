@@ -23,7 +23,7 @@ public class ExprMessageBuilder extends SimpleExpression<MessageBuilder> {
 
 	static {
 		Skript.registerExpression(ExprMessageBuilder.class, MessageBuilder.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] new [discord] message builder"
+				"["+ Utils.getPrefixName() +"] [a] new [discord] message builder"
 		);
 	}
 

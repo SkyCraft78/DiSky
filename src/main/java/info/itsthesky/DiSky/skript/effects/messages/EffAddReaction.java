@@ -25,19 +25,19 @@ public class EffAddReaction extends Effect {
 
     static {
         Skript.registerEffect(EffAddReaction.class,
-                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [message] %message% with [bot] %string%");
+                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [(message|reactions of)] %message% with [bot] %string/bot%");
     }
 
     private Expression<Emote> exprEmote;
     private Expression<Message> exprMessage;
-    private Expression<String> exprName;
+    private Expression<Object> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         this.exprEmote = (Expression<Emote>) exprs[0];
         this.exprMessage = (Expression<Message>) exprs[1];
-        this.exprName = (Expression<String>) exprs[2];
+        this.exprBot = (Expression<Object>) exprs[2];
         return true;
     }
 
@@ -45,12 +45,10 @@ public class EffAddReaction extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Emote emote = exprEmote.getSingle(e);
-            String name = exprName.getSingle(e);
+            Object bot = exprBot.getSingle(e);
             Message message = exprMessage.getSingle(e);
-            if (emote == null || name == null || message == null) return;
-            JDA bot = BotManager.getBot(name);
-            if (bot == null) return;
-            if (!message.getJDA().equals(bot)) return;
+            if (emote == null || bot == null || message == null) return;
+            if (!Utils.areJDASimilar(message.getJDA(), bot)) return;
 
             if (emote.isEmote()) {
                 message.addReaction(emote.getEmote()).queue();
@@ -62,7 +60,7 @@ public class EffAddReaction extends Effect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "add reaction " + exprEmote.toString(e, debug) + " to message " + exprMessage.toString(e, debug) + " with bot " + exprName.toString(e, debug);
+        return "add reaction " + exprEmote.toString(e, debug) + " to message " + exprMessage.toString(e, debug) + " with bot " + exprBot.toString(e, debug);
     }
 
 }
