@@ -7,9 +7,13 @@ import info.itsthesky.DiSky.managers.WebhookManager;
 import info.itsthesky.DiSky.managers.music.AudioUtils;
 import info.itsthesky.DiSky.tools.Metrics;
 import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.DiSky.tools.versions.V2_3;
+import info.itsthesky.DiSky.tools.versions.V2_4;
+import info.itsthesky.DiSky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -20,6 +24,7 @@ public class DiSky extends JavaPlugin {
     private static DiSky instance;
     private Logger logger;
     private static PluginManager pluginManager;
+    private static VersionAdapter SKRIPT_ADAPTER;
 
     @Override
     public void onEnable() {
@@ -28,8 +33,6 @@ public class DiSky extends JavaPlugin {
         instance = this;
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
-
-        //DependManager.registerDepend();
 
         /* Skript loading */
         getServer().getConsoleSender().sendMessage(Utils.colored("&bDiSky &9is loading ..."));
@@ -47,6 +50,11 @@ public class DiSky extends JavaPlugin {
             pluginManager.disablePlugin(this);
         }
         Utils.saveResourceAs("config.yml");
+
+        /* Skript color adapter */
+        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
+        SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
+        if (usesSkript24) logger.info("You're using an old version of Skript. Enable Color and Date adapter!");
 
         /* Metrics */
         int pluginId = 10911;
@@ -71,4 +79,15 @@ public class DiSky extends JavaPlugin {
     public static DiSky getInstance() { return instance; }
     public static PluginManager getPluginManager() { return pluginManager; }
 
+    public static VersionAdapter getSkriptAdapter() {
+        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
+        if (SKRIPT_ADAPTER == null)
+            SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
+        return SKRIPT_ADAPTER;
+    }
+
+    @NotNull
+    public Logger getConsoleLogger() {
+        return logger;
+    }
 }

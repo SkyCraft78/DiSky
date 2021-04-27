@@ -24,12 +24,14 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Utils extends ListenerAdapter {
@@ -59,6 +61,10 @@ public class Utils extends ListenerAdapter {
             VARIABLE_NAME = null;
         }
 
+    }
+
+    public static Color toJavaColor(org.bukkit.Color bukkitColor) {
+        return new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
     }
 
     @Nullable

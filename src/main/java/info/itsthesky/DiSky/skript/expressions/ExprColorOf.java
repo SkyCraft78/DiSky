@@ -6,8 +6,10 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
+import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -66,15 +68,30 @@ public class ExprColorOf extends SimplePropertyExpression<Object, Object> {
 
         Color finalColor = null;
 
-        try {
-            if (delta[0] instanceof org.bukkit.Color) {
-                org.bukkit.Color tempBukkit = (org.bukkit.Color) delta[0];
-                finalColor = new Color(tempBukkit.getRed(), tempBukkit.getGreen(), tempBukkit.getBlue());
-            } else if (delta[0] instanceof ch.njol.skript.util.Color) {
+        /*
+         else if (delta[0] instanceof ch.njol.skript.util.Color) {
+
                 ch.njol.skript.util.Color tempSkript = (ch.njol.skript.util.Color) delta[0];
                 finalColor = new Color(tempSkript.asBukkitColor().getRed(), tempSkript.asBukkitColor().getGreen(), tempSkript.asBukkitColor().getBlue());
+
+            }
+         */
+
+        try {
+            if (delta[0] instanceof org.bukkit.Color) {
+
+                finalColor = Utils.toJavaColor((org.bukkit.Color) delta[0]);
+
             } else if (delta[0] instanceof Color) {
+
                 finalColor = (Color) delta[0];
+
+            } else {
+
+                Object c = (DiSky.getSkriptAdapter().colorFromName(delta[0].toString()));
+                if (c instanceof SkriptColor) finalColor = Utils.toJavaColor(((SkriptColor) c).asBukkitColor());
+                if (c instanceof ch.njol.skript.util.Color) finalColor = Utils.toJavaColor(((ch.njol.skript.util.Color) delta[0]).asBukkitColor());
+
             }
         } catch (IncompatibleClassChangeError ex) {
             DiSky.getInstance().getLogger().severe("DiSky tried to convert a color from Skript, but it seems you're using an old version of it. Please update to 2.2+!");
