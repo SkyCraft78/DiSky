@@ -1,8 +1,8 @@
 package info.itsthesky.DiSky.tools.object;
 
 import info.itsthesky.DiSky.DiSky;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SlashCommand {
         this.description = description;
     }
     
-    public CommandUpdateAction.CommandData build() {
+    public CommandData build() {
         if (name == null || description == null) {
             DiSky
                     .getInstance()
@@ -43,7 +43,7 @@ public class SlashCommand {
                     .severe("Name: '"+name+"' Description: '"+description+"'");
             return null;
         }
-        CommandUpdateAction.CommandData cmd = new CommandUpdateAction.CommandData(
+        CommandData cmd = new CommandData(
                 name,
                 description
         );

@@ -14,6 +14,7 @@ import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.SlashCommand;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bukkit.event.Event;
 
@@ -49,7 +50,7 @@ public class EffCreateCommand extends Effect {
         if (name == null) return;
         JDA bot = BotManager.getBot(name);
         if (bot == null) return;
-        List<CommandUpdateAction.CommandData> cmd = new ArrayList<>();
+        List<CommandData> cmd = new ArrayList<>();
         for (SlashCommand c : builder) {
             cmd.add(c.build());
             if (c.build() == null) return;

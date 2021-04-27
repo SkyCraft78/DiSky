@@ -9,10 +9,11 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.SlashCommand;
-import net.dv8tion.jda.api.entities.Command;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bukkit.event.Event;
 
@@ -31,7 +32,7 @@ public class EffAddOption extends Effect {
     }
 
     private boolean isRequire;
-    private Expression<Command.OptionType> exprType;
+    private Expression<OptionType> exprType;
     private Expression<String> exprName;
     private Expression<String> exprDesc;
     private Expression<SlashCommand> exprBuilder;
@@ -39,7 +40,7 @@ public class EffAddOption extends Effect {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprType = (Expression<Command.OptionType>) exprs[0];
+        exprType = (Expression<OptionType>) exprs[0];
         exprName = (Expression<String>) exprs[1];
         exprDesc = (Expression<String>) exprs[2];
         exprBuilder = (Expression<SlashCommand>) exprs[3];
@@ -49,13 +50,13 @@ public class EffAddOption extends Effect {
 
     @Override
     protected void execute(Event e) {
-        Command.OptionType type = exprType.getSingle(e);
+        OptionType type = exprType.getSingle(e);
         String name = exprName.getSingle(e);
         String desc = exprDesc.getSingle(e);
         SlashCommand builder = exprBuilder.getSingle(e);
         if (name == null || desc == null || type == null || builder == null) return;
         builder.addOption(
-                new CommandUpdateAction.OptionData(type, name, desc)
+                new OptionData(type, name, desc)
                         .setRequired(isRequire)
         );
     }
