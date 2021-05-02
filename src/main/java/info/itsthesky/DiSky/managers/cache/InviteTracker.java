@@ -42,24 +42,19 @@ public class InviteTracker extends ListenerAdapter {
     public void onGuildMemberJoin(final GuildMemberJoinEvent event)
     {
         final Guild guild = event.getGuild();
-        final Invite[] invite = new Invite[1];
+        final Invite[] inv = new Invite[] {null};
 
-        guild.retrieveInvites().queue(retrievedInvites ->
+        guild.retrieveInvites().complete().forEach(invite ->
         {
-            for (final Invite retrievedInvite : retrievedInvites)
-            {
-                final String code = retrievedInvite.getCode();
-                final CachedInvite cachedInvite = inviteCache.get(code);
-                if (cachedInvite == null)
-                    continue;
-                if (retrievedInvite.getUses() == cachedInvite.getUses())
-                    continue;
-                cachedInvite.incrementUses();
-                invite[0] = retrievedInvite;
-                break;
-            }
+            if (inv[0] == null) return;
+            final String code = invite.getCode();
+            final CachedInvite cachedInvite = inviteCache.get(code);
+            if (cachedInvite == null) return;
+            if (invite.getUses() == cachedInvite.getUses()) return;
+            cachedInvite.incrementUses();
+            inv[0] = invite;
         });
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventMemberJoin(event, invite[0])));
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventMemberJoin(event, inv[0])));
     }
 
     @Override
