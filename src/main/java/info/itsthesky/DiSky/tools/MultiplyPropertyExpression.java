@@ -10,6 +10,10 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
+/**
+ * Way to make SimplePropertyExpression return multiple objects
+ * Copyright (C) 2021 @Olyno
+ */
 public abstract class MultiplyPropertyExpression<F, T> extends SimpleExpression<T> {
 
     private Expression<? extends F> expr;
