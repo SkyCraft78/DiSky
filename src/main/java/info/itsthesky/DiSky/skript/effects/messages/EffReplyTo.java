@@ -28,21 +28,23 @@ public class EffReplyTo extends Effect {
 
     static {
         Skript.registerEffect(EffReplyTo.class,
-                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [(with|using) [bot] [(with name|named)] %-string%] [and store (it|the message) in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) [bot] [(with name|named)] %-string%] [and store (it|the message) in %-object%]");
     }
 
     private Expression<Message> exprTarget;
     private Expression<Object> exprMessage;
     private Expression<String> exprName;
     private Expression<Object> exprVar;
+    private Expression<Boolean> exprMention;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprTarget = (Expression<Message>) exprs[0];
         exprMessage = (Expression<Object>) exprs[1];
-        if (exprs.length > 2) exprName = (Expression<String>) exprs[2];
-        if (exprs.length > 3) exprVar = (Expression<Object>) exprs[3];
+        if (exprs.length > 2) exprMention = (Expression<Boolean>) exprs[2];
+        if (exprs.length > 3) exprName = (Expression<String>) exprs[3];
+        if (exprs.length > 4) exprVar = (Expression<Object>) exprs[4];
         return true;
     }
 
@@ -52,6 +54,7 @@ public class EffReplyTo extends Effect {
             Message target = exprTarget.getSingle(e);
             Object msg = exprMessage.getSingle(e);
             Message storedMessage = null;
+            boolean mention = exprMention != null && (exprMention.getSingle(e) != null && exprMention.getSingle(e));
             if (target == null || msg == null) return;
             if (exprName != null) {
                 JDA msgJDA = target.getJDA();
@@ -59,9 +62,9 @@ public class EffReplyTo extends Effect {
                 if (!msgJDA.equals(botJDA)) return;
             }
 
-            if (msg instanceof Message) storedMessage = target.reply((Message) msg).complete();
-            if (msg instanceof EmbedBuilder) storedMessage = target.reply(((EmbedBuilder) msg).build()).complete();
-            if (msg instanceof MessageBuilder) storedMessage = target.reply(((MessageBuilder) msg).build()).complete();
+            if (msg instanceof Message) storedMessage = target.reply((Message) msg).mentionRepliedUser(mention).complete();
+            if (msg instanceof EmbedBuilder) storedMessage = target.reply(((EmbedBuilder) msg).build()).mentionRepliedUser(mention).complete();
+            if (msg instanceof MessageBuilder) storedMessage = target.reply(((MessageBuilder) msg).build()).mentionRepliedUser(mention).complete();
             if (storedMessage == null) storedMessage = target.reply(msg.toString()).complete();
 
             ExprLastMessage.lastMessage = storedMessage;
