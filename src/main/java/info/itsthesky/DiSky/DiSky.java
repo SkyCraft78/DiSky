@@ -11,11 +11,16 @@ import info.itsthesky.DiSky.tools.versions.V2_3;
 import info.itsthesky.DiSky.tools.versions.V2_4;
 import info.itsthesky.DiSky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class DiSky extends JavaPlugin {
@@ -25,6 +30,7 @@ public class DiSky extends JavaPlugin {
     private Logger logger;
     private static PluginManager pluginManager;
     private static VersionAdapter SKRIPT_ADAPTER;
+    public static GatewayIntent[] intents = new GatewayIntent[0];
 
     @Override
     public void onEnable() {
@@ -50,6 +56,14 @@ public class DiSky extends JavaPlugin {
             pluginManager.disablePlugin(this);
         }
         Utils.saveResourceAs("config.yml");
+        File file = new File(getDataFolder(), "config.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        List<GatewayIntent> gatewayIntents = new ArrayList<>();
+        for (GatewayIntent intent : GatewayIntent.values()) {
+            if (Utils.getOrSetDefault("config.yml", "Intents." + intent.name(), true))
+                gatewayIntents.add(intent);
+        }
+        intents = gatewayIntents.toArray(new GatewayIntent[0]);
 
         /* Skript color adapter */
         boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
