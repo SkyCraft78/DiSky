@@ -35,12 +35,12 @@ import java.util.Locale;
 @Since("1.10")
 public class EventGuildUpdateVerif extends Event {
 
-    private static final UpdatedValue<String> updatedLevel;
+    private static final UpdatedValue<Object> updatedLevel;
 
     static {
         Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateVerif.class, "[discord] guild verification [level] (change|update)");
 
-        updatedLevel = new UpdatedValue<>(String.class, EventGuildUpdateVerif.class, "[discord] guild [verification] level", true).register();
+        updatedLevel = new UpdatedValue<>(EventGuildUpdateVerif.class, "string", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateVerificationLevelEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventGuildUpdateVerif(e)))));
 
         EventValues.registerEventValue(EventGuildUpdateVerif.class, Guild.class, new Getter<Guild, EventGuildUpdateVerif>() {

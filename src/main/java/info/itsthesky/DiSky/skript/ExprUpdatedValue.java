@@ -11,8 +11,10 @@ import info.itsthesky.DiSky.tools.UpdatedValue;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -22,39 +24,36 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ExprUpdatedValue extends SimpleExpression<Object> {
     static {
         Skript.registerExpression(ExprUpdatedValue.class, Object.class, ExpressionType.SIMPLE,
-                "[the] new <.+>",
-                "[the] old <.+>"
+                "[the] new %*classinfo%",
+                "[the] old %*classinfo%"
         );
     }
 
-    public static HashMap<Class<? extends Event>, UpdatedValue<?>> maps = new HashMap<>();
+    public static List<UpdatedValue<?>> values = new ArrayList<>();
     private UpdatedValue<?> value;
     private boolean isNew;
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
-        String value = parser.expr
+        String cValue = parser.expr
                 .replaceAll("new", "")
                 .replaceAll("old", "")
                 .replaceAll("the", "");
-        String type = parser.expr.replaceAll(value, "");
+        String type = parser.expr.replaceAll(cValue, "");
 
-        AtomicBoolean shouldContinue = new AtomicBoolean(true);
-        maps.forEach((e, v) -> {
-           if (!v.getName().equals(value)) shouldContinue.set(false);
-        });
-        if (!shouldContinue.get()) return false;
-
-        AtomicReference<UpdatedValue<?>> values = new AtomicReference<>(null);
-        maps.forEach((e, v) -> Arrays.asList(ScriptLoader.getCurrentEvents()).forEach(ev -> {
-            if (e.equals(ev)) values.set(v);
-        }));
-        if (values.get() == null) {
-            Skript.error("The "+ type +"" +value + " can't be used in a "+ScriptLoader.getCurrentEventName()+" Skript event.");
-            return false;
+        UpdatedValue<?> value = null;
+        for (UpdatedValue<?> v : values) {
+            if (v.getEventClass().equals(ScriptLoader.getCurrentEvents()[0])) {
+                if (value.getClassInfo().equalsIgnoreCase(type)) {
+                    value = v;
+                }
+            }
         }
+
+        if (value == null) return false;
+
         this.isNew = matchedPattern != 0;
-        this.value = values.get();
+        this.value = value;
         return true;
     }
 
@@ -75,7 +74,7 @@ public class ExprUpdatedValue extends SimpleExpression<Object> {
 
     @Override
     public String toString(final @Nullable Event e, final boolean debug) {
-        return "new or old " + value.getName();
+        return isNew ? "new " : "old " + value.getClassInfo();
     }
 
     @Override

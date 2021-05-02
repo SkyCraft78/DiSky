@@ -30,12 +30,12 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.10")
 public class EventGuildUpdateName extends Event {
 
-    private static final UpdatedValue<String> updatedName;
+    private static final UpdatedValue<Object> updatedName;
 
     static {
         Skript.registerEvent("Guild Name Update", SimpleEvent.class, EventGuildUpdateName.class, "[discord] guild name (change|update)");
 
-        updatedName = new UpdatedValue<>(String.class, EventGuildUpdateName.class, "[discord] guild [nick]name", true).register();
+        updatedName = new UpdatedValue<>(EventGuildUpdateName.class, "string", true).register();
 
         EventValues.registerEventValue(EventGuildUpdateName.class, Guild.class, new Getter<Guild, EventGuildUpdateName>() {
             @Nullable

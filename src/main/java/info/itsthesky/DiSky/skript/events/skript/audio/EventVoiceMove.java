@@ -28,7 +28,7 @@ public class EventVoiceMove extends Event {
 
     static {
         Skript.registerEvent("Voice Channel Move", SimpleEvent.class, EventVoiceMove.class, "[discord] [member] [voice] channel move");
-        updatedValue = new UpdatedValue<>(VoiceChannel.class, EventVoiceMove.class, "[voice] channel", true);
+        updatedValue = new UpdatedValue<>(EventVoiceMove.class, "voicechannel", true);
 
         EventValues.registerEventValue(EventVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EventVoiceMove>() {
             @Nullable

@@ -33,12 +33,12 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.10")
 public class EventGuildRemoveBoost extends Event {
 
-    private static final UpdatedValue<Integer> updatedAmount;
+    private static final UpdatedValue<Object> updatedAmount;
 
     static {
         Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildRemoveBoost.class, "[discord] [guild] remove [member] boost");
 
-        updatedAmount = new UpdatedValue<>(Integer.class, EventGuildRemoveBoost.class, "[discord] boost amount", true).register();
+        updatedAmount = new UpdatedValue<>(EventGuildRemoveBoost.class, "number", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateBoostCountEvent.class, e -> Utils.sync(() -> {
             if (e.getNewValue() > e.getOldValue()) return;
             DiSky.getPluginManager().callEvent(new EventGuildRemoveBoost(e));

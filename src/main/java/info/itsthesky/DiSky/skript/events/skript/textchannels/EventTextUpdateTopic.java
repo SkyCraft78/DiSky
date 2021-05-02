@@ -35,12 +35,12 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.10")
 public class EventTextUpdateTopic extends Event {
 
-    private static final UpdatedValue<String> updatedOwner;
+    private static final UpdatedValue<Object> updatedOwner;
 
     static {
         Skript.registerEvent("Text Channel Topic Update", SimpleEvent.class, EventTextUpdateTopic.class, "[discord] [text] channel topic (change|update)");
 
-        updatedOwner = new UpdatedValue<>(String.class, EventTextUpdateTopic.class, "[discord] [text] channel topic", true).register();
+        updatedOwner = new UpdatedValue<>(EventTextUpdateTopic.class, "string", true).register();
         new DiSkyEvent<>(TextChannelUpdateTopicEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventTextUpdateTopic(e))));
 
         EventValues.registerEventValue(EventTextUpdateTopic.class, Guild.class, new Getter<Guild, EventTextUpdateTopic>() {

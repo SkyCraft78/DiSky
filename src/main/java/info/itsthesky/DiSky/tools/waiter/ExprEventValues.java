@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 
 /**
- * @author Sky
+ * @author ItsTheSky
  * */
 public class ExprEventValues extends SimpleExpression<Object> {
     static {
