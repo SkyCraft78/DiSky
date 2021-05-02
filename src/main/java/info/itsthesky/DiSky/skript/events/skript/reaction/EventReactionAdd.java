@@ -11,6 +11,7 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.Emote;
 import info.itsthesky.DiSky.tools.object.messages.Channel;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.bukkit.event.Event;
@@ -58,6 +59,14 @@ public class EventReactionAdd extends Event {
             @Override
             public Channel get(final @NotNull EventReactionAdd event) {
                 return new Channel(event.getEvent().getChannel());
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventReactionAdd.class, JDA.class, new Getter<JDA, EventReactionAdd>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventReactionAdd event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 

@@ -11,6 +11,7 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.Emote;
 import info.itsthesky.DiSky.tools.object.messages.Channel;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import org.bukkit.event.Event;
@@ -42,6 +43,14 @@ public class EventReactionRemove extends Event {
             @Override
             public User get(final @NotNull EventReactionRemove event) {
                 return event.getEvent().getUser();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventReactionRemove.class, JDA.class, new Getter<JDA, EventReactionRemove>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventReactionRemove event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 
