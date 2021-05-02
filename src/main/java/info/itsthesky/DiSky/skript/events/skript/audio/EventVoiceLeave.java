@@ -30,7 +30,7 @@ public class EventVoiceLeave extends Event {
             @Nullable
             @Override
             public VoiceChannel get(final @NotNull EventVoiceLeave event) {
-                return event.getEvent().getChannelJoined();
+                return event.getEvent().getChannelLeft();
             }
         }, 0);
 
@@ -38,7 +38,7 @@ public class EventVoiceLeave extends Event {
             @Nullable
             @Override
             public GuildChannel get(final @NotNull EventVoiceLeave event) {
-                return event.getEvent().getChannelJoined();
+                return event.getEvent().getChannelLeft();
             }
         }, 0);
 
