@@ -36,12 +36,12 @@ import java.util.Locale;
 @Since("1.10")
 public class EventGuildNewBoost extends Event {
 
-    private static final UpdatedValue<Object> updatedAmount;
+    private static final UpdatedValue<Integer> updatedAmount;
 
     static {
         Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildNewBoost.class, "[discord] [guild] new [member] boost");
 
-        updatedAmount = new UpdatedValue<>(EventGuildNewBoost.class, "number", true).register();
+        updatedAmount = new UpdatedValue<>(Integer.class, EventGuildNewBoost.class, "[discord] boost amount", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateBoostCountEvent.class, e -> Utils.sync(() -> {
             if (e.getNewValue() < e.getOldValue()) return;
             DiSky.getPluginManager().callEvent(new EventGuildNewBoost(e));

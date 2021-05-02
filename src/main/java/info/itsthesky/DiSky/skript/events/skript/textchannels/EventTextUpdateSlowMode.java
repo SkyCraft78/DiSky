@@ -34,12 +34,12 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.10")
 public class EventTextUpdateSlowMode extends Event {
 
-    private static final UpdatedValue<Object> updatedOwner;
+    private static final UpdatedValue<Integer> updatedOwner;
 
     static {
         Skript.registerEvent("Text Channel Slow Mode Update", SimpleEvent.class, EventTextUpdateSlowMode.class, "[discord] [text] channel slow[-][ ]mode (change|update)");
 
-        updatedOwner = new UpdatedValue<>(EventTextUpdateSlowMode.class, "number", true).register();
+        updatedOwner = new UpdatedValue<>(Integer.class, EventTextUpdateSlowMode.class, "[discord] [text] channel slow[-][ ]mode", true).register();
         new DiSkyEvent<>(TextChannelUpdateSlowmodeEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventTextUpdateSlowMode(e))));
 
         EventValues.registerEventValue(EventTextUpdateSlowMode.class, Guild.class, new Getter<Guild, EventTextUpdateSlowMode>() {

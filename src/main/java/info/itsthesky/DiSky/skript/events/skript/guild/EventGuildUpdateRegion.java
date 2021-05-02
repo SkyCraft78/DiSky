@@ -33,12 +33,12 @@ import org.jetbrains.annotations.Nullable;
 @Since("1.10")
 public class EventGuildUpdateRegion extends Event {
 
-    private static final UpdatedValue<Object> updatedOwner;
+    private static final UpdatedValue<String> updatedOwner;
 
     static {
         Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateRegion.class, "[discord] guild region (change|update)");
 
-        updatedOwner = new UpdatedValue<>(EventGuildUpdateRegion.class, "string", true).register();
+        updatedOwner = new UpdatedValue<>(String.class, EventGuildUpdateRegion.class, "[discord] guild region", true).register();
         new DiSkyEvent<>(GuildUpdateRegionEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventGuildUpdateRegion(e))));
 
         EventValues.registerEventValue(EventGuildUpdateRegion.class, Guild.class, new Getter<Guild, EventGuildUpdateRegion>() {

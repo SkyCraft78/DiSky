@@ -1,15 +1,15 @@
 package info.itsthesky.DiSky.tools;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.registrations.Classes;
 import info.itsthesky.DiSky.skript.ExprUpdatedValue;
 import org.bukkit.event.Event;
 
+/**
+ * @author ItsTheSky
+ */
 public class UpdatedValue<T> {
 
     private final Class<T> clazz;
-    private final String classInfo;
+    private final String name;
     private T newObject;
     private T oldObject;
     private T[] newObjectList;
@@ -17,16 +17,15 @@ public class UpdatedValue<T> {
     private final boolean isSingle;
     private Class<? extends Event> eventClass;
 
-    @SuppressWarnings("unchecked")
-    public UpdatedValue(Class<? extends Event> eventClass, String classInfo, boolean isSingle) {
-        this.clazz = (Class<T>) Classes.getClass(classInfo);
+    public UpdatedValue(Class<T> valueClass, Class<? extends Event> eventClass, String valueName, boolean isSingle) {
+        this.clazz = valueClass;
         this.isSingle = isSingle;
-        this.classInfo = classInfo;
+        this.name = valueName;
         this.eventClass = eventClass;
     }
 
     public UpdatedValue<T> register() {
-        ExprUpdatedValue.values.add(this);
+        ExprUpdatedValue.maps.put(eventClass, this);
         return this;
     }
 
@@ -34,8 +33,8 @@ public class UpdatedValue<T> {
         return clazz;
     }
 
-    public String getClassInfo() {
-        return classInfo;
+    public String getName() {
+        return name;
     }
 
     public boolean isSingle() {

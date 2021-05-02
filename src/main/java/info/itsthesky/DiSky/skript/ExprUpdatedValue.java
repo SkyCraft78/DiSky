@@ -11,10 +11,8 @@ import info.itsthesky.DiSky.tools.UpdatedValue;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,36 +22,39 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ExprUpdatedValue extends SimpleExpression<Object> {
     static {
         Skript.registerExpression(ExprUpdatedValue.class, Object.class, ExpressionType.SIMPLE,
-                "[the] new %*classinfo%",
-                "[the] old %*classinfo%"
+                "[the] new <.+>",
+                "[the] old <.+>"
         );
     }
 
-    public static List<UpdatedValue<?>> values = new ArrayList<>();
+    public static HashMap<Class<? extends Event>, UpdatedValue<?>> maps = new HashMap<>();
     private UpdatedValue<?> value;
     private boolean isNew;
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
-        String cValue = parser.expr
+        String value = parser.expr
                 .replaceAll("new", "")
                 .replaceAll("old", "")
                 .replaceAll("the", "");
-        String type = parser.expr.replaceAll(cValue, "");
+        String type = parser.expr.replaceAll(value, "");
 
-        UpdatedValue<?> value = null;
-        for (UpdatedValue<?> v : values) {
-            if (v.getEventClass().equals(ScriptLoader.getCurrentEvents()[0])) {
-                if (value.getClassInfo().equalsIgnoreCase(type)) {
-                    value = v;
-                }
-            }
+        AtomicBoolean shouldContinue = new AtomicBoolean(true);
+        maps.forEach((e, v) -> {
+            if (!v.getName().equals(value)) shouldContinue.set(false);
+        });
+        if (!shouldContinue.get()) return false;
+
+        AtomicReference<UpdatedValue<?>> values = new AtomicReference<>(null);
+        maps.forEach((e, v) -> Arrays.asList(ScriptLoader.getCurrentEvents()).forEach(ev -> {
+            if (e.equals(ev)) values.set(v);
+        }));
+        if (values.get() == null) {
+            Skript.error("The "+ type +"" +value + " can't be used in a "+ScriptLoader.getCurrentEventName()+" Skript event.");
+            return false;
         }
-
-        if (value == null) return false;
-
         this.isNew = matchedPattern != 0;
-        this.value = value;
+        this.value = values.get();
         return true;
     }
 
@@ -74,12 +75,11 @@ public class ExprUpdatedValue extends SimpleExpression<Object> {
 
     @Override
     public String toString(final @Nullable Event e, final boolean debug) {
-        return isNew ? "new " : "old " + value.getClassInfo();
+        return "new or old " + value.getName();
     }
 
     @Override
     public boolean isSingle() {
         return value.isSingle();
     }
-
 }
