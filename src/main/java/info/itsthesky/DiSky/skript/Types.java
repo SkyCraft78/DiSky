@@ -24,6 +24,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Types {
@@ -40,6 +41,15 @@ public class Types {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
 							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getCategoryById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								for (Guild guild : jda.getGuilds()) {
+									return guild.getCategoryById(input);
+								}
+							}
 						}
 						return null;
 					}
@@ -320,6 +330,15 @@ public class Types {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
 							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getTextChannelById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								for (Guild guild : jda.getGuilds()) {
+									return guild.getTextChannelById(input);
+								}
+							}
 						}
 						return null;
 					}
@@ -356,6 +375,12 @@ public class Types {
 					public User parse(final String s, final ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								JDA jda = entry.getValue();
+								jda.getUserById(input);
+							}
 						}
 						return null;
 					}
@@ -393,6 +418,15 @@ public class Types {
 					public Role parse(final String s, final ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getRoleById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								for (Guild guild : jda.getGuilds()) {
+									return guild.getRoleById(input);
+								}
+							}
 						}
 						return null;
 					}
@@ -431,6 +465,15 @@ public class Types {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
 							return (Utils.parseLong(s, true, true) == null ? null : lastEvent.getGuild().getMemberById(Utils.parseLong(s, true, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								for (Guild guild : jda.getGuilds()) {
+									return guild.getMemberById(input);
+								}
+							}
 						}
 						return null;
 					}
@@ -465,6 +508,16 @@ public class Types {
 					@Nullable
 					@Override
 					public Message parse(String s, ParseContext context) {
+						Long input = Utils.parseLong(s, false, true);
+						for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+							String name = entry.getKey();
+							JDA jda = entry.getValue();
+							for (Guild guild : jda.getGuilds()) {
+								for (TextChannel channel : guild.getTextChannels()) {
+									return channel.retrieveMessageById(input).complete();
+								}
+							}
+						}
 						return null;
 					}
 				})
@@ -502,6 +555,15 @@ public class Types {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
 							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getGuildChannelById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								for (Guild guild : jda.getGuilds()) {
+									return guild.getGuildChannelById(input);
+								}
+							}
 						}
 						return null;
 					}
@@ -606,6 +668,13 @@ public class Types {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
 							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getGuildById(Utils.parseLong(s, false, true)));
+						} else {
+							Long input = Utils.parseLong(s, false, true);
+							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
+								String name = entry.getKey();
+								JDA jda = entry.getValue();
+								return jda.getGuildById(input);
+							}
 						}
 						return null;
 					}
