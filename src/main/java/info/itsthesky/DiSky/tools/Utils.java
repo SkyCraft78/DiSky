@@ -357,10 +357,21 @@ public class Utils extends ListenerAdapter {
         }
     }
 
+    @Nullable
     public static Member searchMember(JDA bot, String id) {
         for (Guild guild : bot.getGuilds()) {
             for (Member member : guild.getMembers()) {
                 if (member.getId().equalsIgnoreCase(id)) return member;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Message searchMessage(JDA bot, String id) {
+        for (Guild guild : bot.getGuilds()) {
+            for (TextChannel channel : guild.getTextChannels()) {
+                return channel.retrieveMessageById(id).complete();
             }
         }
         return null;
