@@ -19,13 +19,13 @@ import java.util.Collections;
 
 @Name("Guild Pitch")
 @Description("Get or change the audio pith of a guild.")
-@Examples("set pitch of event-guild to 1.3")
+@Examples("set audio pitch of event-guild to 1.3")
 @Since("1.7")
 public class ExprGuildPitch extends SimplePropertyExpression<Guild, Number> {
 
     static {
         register(ExprGuildPitch.class, Number.class,
-                "[discord] [audio] [guild] pitch",
+                "[discord] audio [guild] pitch",
                 "guild"
         );
     }
