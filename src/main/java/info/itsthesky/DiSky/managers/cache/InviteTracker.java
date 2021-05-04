@@ -21,7 +21,6 @@ public class InviteTracker extends ListenerAdapter {
 
     private final Map<String, CachedInvite> inviteCache = new ConcurrentHashMap<>();
 
-
     @Override
     public void onGuildInviteCreate(final GuildInviteCreateEvent event)
     {
@@ -80,16 +79,12 @@ public class InviteTracker extends ListenerAdapter {
         inviteCache.entrySet().removeIf(entry -> entry.getValue().getGuildId() == guildId);
     }
 
-    private void attemptInviteCaching(final Guild guild)
-    {
-        final Member selfMember = guild.getSelfMember();
-
-        if (!selfMember.hasPermission(Permission.MANAGE_SERVER))
-            return;
+    private void attemptInviteCaching(final Guild guild) {
 
         guild.retrieveInvites().queue(retrievedInvites ->
                 retrievedInvites.forEach(retrievedInvite ->
                         inviteCache.put(retrievedInvite.getCode(), new CachedInvite(retrievedInvite))));
+
     }
 
 }
