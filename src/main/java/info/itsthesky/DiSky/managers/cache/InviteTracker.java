@@ -6,6 +6,7 @@ import info.itsthesky.DiSky.skript.events.skript.members.EventMemberJoin;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -42,7 +43,6 @@ public class InviteTracker extends ListenerAdapter {
     {
         final Guild guild = event.getGuild();
         final Invite[] inv = new Invite[] {null};
-
         guild.retrieveInvites().complete().forEach(invite ->
         {
             if (inv[0] == null) return;
@@ -57,10 +57,8 @@ public class InviteTracker extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildReady(final GuildReadyEvent event)
-    {
-        final Guild guild = event.getGuild();
-        attemptInviteCaching(guild);
+    public void onReady(final ReadyEvent event) {
+        event.getJDA().getGuilds().forEach(this::attemptInviteCaching);
     }
 
     @Override

@@ -72,7 +72,7 @@ public class BotManager {
                     .addEventListeners(new CommandListener())
                     .addEventListeners(new InviteTracker())
                     .addEventListeners(new WaiterListener())
-                    .addEventListeners(customListener.toArray(new ListenerAdapter[0]))
+                    .addEventListeners(customListener.toArray(new Object[0]))
                     .enableIntents(Arrays.asList(DiSky.intents))
                     .enableCache(CacheFlag.ACTIVITY)
                     .enableCache(CacheFlag.VOICE_STATE)
