@@ -15,9 +15,9 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.event.Event;
 
-@Name("User Custom Status")
-@Description("Get the custom status of a specific user")
-@Examples("reply with \"I love your %custom status of event-user% !\"")
+@Name("User Tag (#)")
+@Description("Get the four number after the # of an user (doesn't include the \"#\"")
+@Examples("reply with \"Tag: ##%tag of event-user% !\"")
 @Since("1.3")
 public class ExprUserDiscriminator extends SimpleExpression<String> {
 
@@ -61,7 +61,7 @@ public class ExprUserDiscriminator extends SimpleExpression<String> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "discriminator of user  " + exprMember.toString(e, debug);
+		return "tag of user  " + exprMember.toString(e, debug);
 	}
 
 }
