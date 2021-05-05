@@ -44,16 +44,18 @@ public class EffAddReaction extends Effect {
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            Emote emote = exprEmote.getSingle(e);
+            Emote[] emotes = exprEmote.getAll(e);
             Object bot = exprBot.getSingle(e);
             Message message = exprMessage.getSingle(e);
-            if (emote == null || bot == null || message == null) return;
+            if (emotes == null || bot == null || message == null) return;
             if (!Utils.areJDASimilar(message.getJDA(), bot)) return;
 
-            if (emote.isEmote()) {
-                message.addReaction(emote.getEmote()).queue();
-            } else {
-                message.addReaction(emote.getName()).queue();
+            for (Emote emote : emotes) {
+                if (emote.isEmote()) {
+                    message.addReaction(emote.getEmote()).queue();
+                } else {
+                    message.addReaction(emote.getName()).queue();
+                }
             }
         });
     }
