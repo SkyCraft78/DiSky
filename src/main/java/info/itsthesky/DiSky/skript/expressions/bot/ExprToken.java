@@ -23,29 +23,23 @@ public class ExprToken extends SimpleExpression<String> {
 
 	static {
 		Skript.registerExpression(ExprToken.class, String.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] token of [the] [bot] [(named|with name)] %string/bot%");
+				"["+ Utils.getPrefixName() +"] [the] token of [the] %bot%");
 	}
 
-	private Expression<Object> exprName;
+	private Expression<JDA> exprBot;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprName = (Expression<Object>) exprs[0];
+		exprBot = (Expression<JDA>) exprs[0];
 		return true;
 	}
 
 	@Override
 	protected String[] get(Event e) {
-		Object name = exprName.getSingle(e);
-		if (name == null) return new String[0];
-		if (name instanceof JDA) {
-			return new String[] {((JDA) name).getToken()};
-		} else {
-			JDA bot = BotManager.getBot(name.toString());
-			if (bot == null) return new String[0];
-			return new String[] {bot.getToken()};
-		}
+		JDA bot = exprBot.getSingle(e);
+		if (bot == null) return new String[0];
+		return new String[] {bot.getToken()};
 	}
 
 	@Override
@@ -60,7 +54,7 @@ public class ExprToken extends SimpleExpression<String> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "token of bot named" + exprName.toString(e, debug);
+		return "token of" + exprBot.toString(e, debug);
 	}
 
 }

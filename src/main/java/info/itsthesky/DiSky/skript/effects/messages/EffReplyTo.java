@@ -28,12 +28,12 @@ public class EffReplyTo extends Effect {
 
     static {
         Skript.registerEffect(EffReplyTo.class,
-                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) [bot] [(with name|named)] %-string%] [and store (it|the message) in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) %bot%] [and store (it|the message) in %-object%]");
     }
 
     private Expression<Message> exprTarget;
     private Expression<Object> exprMessage;
-    private Expression<String> exprName;
+    private Expression<JDA> exprBot;
     private Expression<Object> exprVar;
     private Expression<Boolean> exprMention;
 
@@ -43,7 +43,7 @@ public class EffReplyTo extends Effect {
         exprTarget = (Expression<Message>) exprs[0];
         exprMessage = (Expression<Object>) exprs[1];
         if (exprs.length > 2) exprMention = (Expression<Boolean>) exprs[2];
-        if (exprs.length > 3) exprName = (Expression<String>) exprs[3];
+        if (exprs.length > 3) exprBot = (Expression<JDA>) exprs[3];
         if (exprs.length > 4) exprVar = (Expression<Object>) exprs[4];
         return true;
     }
@@ -56,11 +56,7 @@ public class EffReplyTo extends Effect {
             Message storedMessage = null;
             boolean mention = exprMention != null && (exprMention.getSingle(e) != null && exprMention.getSingle(e));
             if (target == null || msg == null) return;
-            if (exprName != null) {
-                JDA msgJDA = target.getJDA();
-                JDA botJDA = BotManager.getBot(exprName.getSingle(e));
-                if (!msgJDA.equals(botJDA)) return;
-            }
+            if (exprBot != null && !Utils.areJDASimilar(target.getJDA(), exprBot.getSingle(e))) return;
 
             if (msg instanceof Message) storedMessage = target.reply((Message) msg).mentionRepliedUser(mention).complete();
             if (msg instanceof EmbedBuilder) storedMessage = target.reply(((EmbedBuilder) msg).build()).mentionRepliedUser(mention).complete();

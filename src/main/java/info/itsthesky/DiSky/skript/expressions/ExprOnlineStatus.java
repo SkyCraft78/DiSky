@@ -28,7 +28,7 @@ public class ExprOnlineStatus extends SimplePropertyExpression<Object, OnlineSta
     static {
         register(ExprOnlineStatus.class, OnlineStatus.class,
                 "[discord] online status",
-                "member/string/bot"
+                "member/bot"
         );
     }
 
@@ -37,10 +37,6 @@ public class ExprOnlineStatus extends SimplePropertyExpression<Object, OnlineSta
     public OnlineStatus convert(Object entity) {
         if (entity instanceof Member) {
             return ((Member) entity).getOnlineStatus();
-        } else if (entity instanceof String) {
-            JDA bot = BotManager.getBot(entity.toString());
-            if (bot == null) return null;
-            return bot.getPresence().getStatus();
         } else if (entity instanceof JDA) {
             return ((JDA) entity).getPresence().getStatus();
         }
@@ -61,7 +57,7 @@ public class ExprOnlineStatus extends SimplePropertyExpression<Object, OnlineSta
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
-            return CollectionUtils.array(Object.class);
+            return CollectionUtils.array(JDA.class, Member.class);
         }
         return CollectionUtils.array();
     }
@@ -72,11 +68,7 @@ public class ExprOnlineStatus extends SimplePropertyExpression<Object, OnlineSta
         OnlineStatus status = (OnlineStatus) delta[0];
         if (mode == Changer.ChangeMode.SET) {
             for (Object entity : getExpr().getArray(e)) {
-                if (entity instanceof String) {
-                    JDA bot = BotManager.getBot(entity.toString());
-                    if (bot == null) return;
-                    bot.getPresence().setStatus(status);
-                } else if (entity instanceof JDA) {
+                if (entity instanceof JDA) {
                     ((JDA) entity).getPresence().setStatus(status);
                 }
             }

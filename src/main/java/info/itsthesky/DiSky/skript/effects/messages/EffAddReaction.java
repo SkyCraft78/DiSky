@@ -25,19 +25,19 @@ public class EffAddReaction extends Effect {
 
     static {
         Skript.registerEffect(EffAddReaction.class,
-                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [(message|reactions of)] %message% with [bot] %string/bot%");
+                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [(message|reactions of)] %message% with %bot%]");
     }
 
     private Expression<Emote> exprEmote;
     private Expression<Message> exprMessage;
-    private Expression<Object> exprBot;
+    private Expression<JDA> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         this.exprEmote = (Expression<Emote>) exprs[0];
         this.exprMessage = (Expression<Message>) exprs[1];
-        this.exprBot = (Expression<Object>) exprs[2];
+        this.exprBot = (Expression<JDA>) exprs[2];
         return true;
     }
 
@@ -45,7 +45,7 @@ public class EffAddReaction extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Emote[] emotes = exprEmote.getAll(e);
-            Object bot = exprBot.getSingle(e);
+            JDA bot = exprBot.getSingle(e);
             Message message = exprMessage.getSingle(e);
             if (emotes == null || bot == null || message == null) return;
             if (!Utils.areJDASimilar(message.getJDA(), bot)) return;
@@ -62,7 +62,7 @@ public class EffAddReaction extends Effect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "add reaction " + exprEmote.toString(e, debug) + " to message " + exprMessage.toString(e, debug) + " with bot " + exprBot.toString(e, debug);
+        return "add reaction " + exprEmote.toString(e, debug) + " to message " + exprMessage.toString(e, debug) + " with " + exprBot.toString(e, debug);
     }
 
 }

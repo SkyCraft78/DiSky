@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -27,15 +28,17 @@ public class EffSendTyping extends Effect {
 
     static {
         Skript.registerEffect(EffSendTyping.class,
-                "["+ Utils.getPrefixName() +"] (make|send) [bot] typing in [the] [channel] %channel/textchannel%");
+                "["+ Utils.getPrefixName() +"] (make|send) [bot] [%-bot%] typing in [the] [channel] %channel/textchannel%");
     }
 
     private Expression<Object> exprEntity;
+    private Expression<JDA> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprEntity = (Expression<Object>) exprs[0];
+        exprBot = (Expression<JDA>) exprs[0];
+        exprEntity = (Expression<Object>) exprs[1];
         return true;
     }
 
@@ -44,6 +47,7 @@ public class EffSendTyping extends Effect {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Object entity = exprEntity.getSingle(e);
             if (entity == null) return;
+            if (exprBot != null) if (!Utils.areJDASimilar(((GuildChannel) entity).getJDA(), exprBot.getSingle(e))) return;
             if (entity instanceof TextChannel) ((TextChannel) entity).sendTyping().queue();
             if (entity instanceof GuildChannel && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) ((TextChannel) entity).sendTyping().queue();
         });

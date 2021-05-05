@@ -48,13 +48,13 @@ public class EffUploadFile extends Effect {
         String pImage = "[file] %string%";
         if (DiSky.getPluginManager().isPluginEnabled("SkImage")) pImage = "[(file|image)] %string/image%";
         Skript.registerEffect(EffUploadFile.class,
-                "["+ Utils.getPrefixName() +"] upload "+pImage+" [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with bot [(named|with name)] %-string%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] upload "+pImage+" [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprFile;
     private Expression<Object> exprChannel;
     private Expression<Object> exprVar;
-    private Expression<String> exprName;
+    private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
 
     @SuppressWarnings("unchecked")
@@ -64,7 +64,7 @@ public class EffUploadFile extends Effect {
         exprContent = (Expression<Object>) exprs[1];
         exprChannel = (Expression<Object>) exprs[2];
         if (exprs.length == 3) return true;
-        exprName = (Expression<String>) exprs[3];
+        exprBot = (Expression<JDA>) exprs[3];
         if (exprs.length == 4) return true;
         exprVar = (Expression<Object>) exprs[4];
         return true;
@@ -79,6 +79,7 @@ public class EffUploadFile extends Effect {
             if (target == null || f == null) return;
             Message resultMessage;
             MessageChannel channel = null;
+            if (exprBot != null && !Utils.areJDASimilar(((GuildChannel) target).getJDA(), exprBot.getSingle(e))) return;
 
             if (target instanceof GuildChannel && ((GuildChannel) target).getType().equals(ChannelType.TEXT)) {
                 channel = (MessageChannel) target;

@@ -12,6 +12,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.Emote;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
@@ -29,7 +30,7 @@ public class EffRemoveReaction extends Effect {
 
     static {
         Skript.registerEffect(EffRemoveReaction.class,
-                "["+ Utils.getPrefixName() +"] (remove|delete) %emotes% added by %user/member% from %message%");
+                "["+ Utils.getPrefixName() +"] (remove|delete) %emotes% added by %user/member/bot% from %message%");
     }
 
     private Expression<Emote> exprEmote;
@@ -55,8 +56,10 @@ public class EffRemoveReaction extends Effect {
             User user;
             if (entity instanceof User) {
                 user = (User) entity;
-            } else {
+            } else if (entity instanceof Member) {
                 user = ((Member) entity).getUser();
+            } else {
+                user = Utils.searchMember((JDA) entity, ((JDA) entity).getSelfUser().getId()).getUser();
             }
 
             for (MessageReaction messageReaction : message.getReactions()) {

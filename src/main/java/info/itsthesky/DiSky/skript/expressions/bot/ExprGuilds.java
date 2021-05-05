@@ -24,29 +24,23 @@ public class ExprGuilds extends SimpleExpression<Guild> {
 
 	static {
 		Skript.registerExpression(ExprGuilds.class, Guild.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] guilds [instance] of [the] [bot] [(named|with name)] %string/bot%");
+				"["+ Utils.getPrefixName() +"] [the] guilds [instance] of [the] %bot%");
 	}
 
-	private Expression<Object> exprName;
+	private Expression<JDA> exprBot;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprName = (Expression<Object>) exprs[0];
+		exprBot = (Expression<JDA>) exprs[0];
 		return true;
 	}
 
 	@Override
 	protected Guild[] get(Event e) {
-		Object entity = exprName.getSingle(e);
-		if (entity == null) return new Guild[0];
-		if (entity instanceof JDA) {
-			return ((JDA) entity).getGuilds().toArray(new Guild[0]);
-		} else {
-			JDA bot = BotManager.getBot(entity.toString());
-			if (bot == null) return new Guild[0];
-			return bot.getGuilds().toArray(new Guild[0]);
-		}
+		JDA bot = exprBot.getSingle(e);
+		if (bot == null) return new Guild[0];
+		return (bot).getGuilds().toArray(new Guild[0]);
 	}
 
 	@Override
@@ -61,7 +55,7 @@ public class ExprGuilds extends SimpleExpression<Guild> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "guilds of bot named" + exprName.toString(e, debug);
+		return "guilds of bot named" + exprBot.toString(e, debug);
 	}
 
 }

@@ -24,29 +24,23 @@ public class ExprUptime extends SimpleExpression<Timespan> {
 
 	static {
 		Skript.registerExpression(ExprUptime.class, Timespan.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] up[ ]time of [the] [bot] [(named|with name)] %string/bot%");
+				"["+ Utils.getPrefixName() +"] [the] up[ ]time of [the] %bot%");
 	}
 
-	private Expression<Object> exprName;
+	private Expression<JDA> exprBot;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprName = (Expression<Object>) exprs[0];
+		exprBot = (Expression<JDA>) exprs[0];
 		return true;
 	}
 
 	@Override
 	protected Timespan[] get(Event e) {
-		Object name = exprName.getSingle(e);
-		if (name == null) return new Timespan[0];
-		if (name instanceof JDA) {
-			return new Timespan[] {Utils.getUpTime((JDA) name)};
-		} else {
-			JDA bot = BotManager.getBot(name.toString());
-			if (bot == null) return new Timespan[0];
-			return new Timespan[] {Utils.getUpTime(bot)};
-		}
+		JDA bot = exprBot.getSingle(e);
+		if (bot == null) return new Timespan[0];
+		return new Timespan[] {Utils.getUpTime(bot)};
 	}
 
 	@Override
@@ -61,7 +55,7 @@ public class ExprUptime extends SimpleExpression<Timespan> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "uptime of bot named" + exprName.toString(e, debug);
+		return "uptime of " + exprBot.toString(e, debug);
 	}
 
 }

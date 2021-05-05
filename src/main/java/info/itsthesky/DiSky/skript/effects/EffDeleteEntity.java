@@ -12,6 +12,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.messages.Channel;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
@@ -28,15 +29,17 @@ public class EffDeleteEntity extends Effect {
 
     static {
         Skript.registerEffect(EffDeleteEntity.class,
-                "["+ Utils.getPrefixName() +"] delete discord entity %messages/channels/voicechannel/textchannels/roles%");
+                "["+ Utils.getPrefixName() +"] delete [discord entity] %messages/channels/voicechannel/textchannels/roles% [with %-bot%]");
     }
 
     private Expression<Object> exprEntity;
+    private Expression<JDA> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprEntity = (Expression<Object>) exprs[0];
+        exprBot = (Expression<JDA>) exprs[1];
         return true;
     }
 
@@ -44,20 +47,25 @@ public class EffDeleteEntity extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Object[] entity = exprEntity.getArray(e);
-            if (entity.length == 0) return;
+            if (entity != null) return;
             for (Object en : entity) {
                 if (en instanceof Role) {
                     Role role = (Role) en;
+                    if (exprBot != null && !Utils.areJDASimilar(role.getJDA(), exprBot.getSingle(e))) return;
                     role.delete().queue(null, DiSkyErrorHandler::logException);
                 } else if (en instanceof Webhook) {
                     Webhook webhook = (Webhook) en;
+                    if (exprBot != null && !Utils.areJDASimilar(webhook.getJDA(), exprBot.getSingle(e))) return;
                     webhook.delete().queue(null, DiSkyErrorHandler::logException);
                 } else if (en instanceof TextChannel) {
+                    if (exprBot != null && !Utils.areJDASimilar(((TextChannel) en).getJDA(), exprBot.getSingle(e))) return;
                     ((TextChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
                 } else if (en instanceof GuildChannel && ((GuildChannel) en).getType().equals(ChannelType.TEXT)) {
+                    if (exprBot != null && !Utils.areJDASimilar(((TextChannel) en).getJDA(), exprBot.getSingle(e))) return;
                     ((TextChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
                 } else if (en instanceof Message) {
                     Message message = (Message) en;
+                    if (exprBot != null && !Utils.areJDASimilar(message.getJDA(), exprBot.getSingle(e))) return;
                     message.delete().queue(null, DiSkyErrorHandler::logException);
                 }
             }

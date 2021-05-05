@@ -34,7 +34,7 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
     static {
         register(ExprNameOf.class, String.class,
                 "discord name",
-                "member/role/rolebuilder/commandbuilder/voicechannel/voicechannelbuilder/webhookmessagebuilder/category/categorybuilder/channel/textchannel/textchannelbuilder/guild/user/emote"
+                "member/role/rolebuilder/commandbuilder/voicechannel/voicechannelbuilder/webhookmessagebuilder/category/categorybuilder/channel/textchannel/textchannelbuilder/bo/guild/user/emote"
         );
     }
 

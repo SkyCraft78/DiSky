@@ -24,29 +24,23 @@ public class ExprPing extends SimpleExpression<Number> {
 
 	static {
 		Skript.registerExpression(ExprPing.class, Number.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] [(gateway|rest)] ping of [the] [bot] [(named|with name)] %string/bot%");
+				"["+ Utils.getPrefixName() +"] [the] [(gateway|rest)] ping of [the] %bot%");
 	}
 
-	private Expression<Object> exprName;
+	private Expression<JDA> exprBot;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprName = (Expression<Object>) exprs[0];
+		exprBot = (Expression<JDA>) exprs[0];
 		return true;
 	}
 
 	@Override
 	protected Number[] get(Event e) {
-		Object name = exprName.getSingle(e);
-		if (name == null) return new Number[0];
-		if (name instanceof JDA) {
-			return new Number[] {((JDA) name).getGatewayPing()};
-		} else {
-			JDA bot = BotManager.getBot(name.toString());
-			if (bot == null) return new Number[0];
-			return new Number[] {bot.getGatewayPing()};
-		}
+		JDA bot = exprBot.getSingle(e);
+		if (bot == null) return new Number[0];
+		return new Number[] {bot.getGatewayPing()};
 	}
 
 	@Override
@@ -61,7 +55,7 @@ public class ExprPing extends SimpleExpression<Number> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "ping of bot named" + exprName.toString(e, debug);
+		return "ping of bot named" + exprBot.toString(e, debug);
 	}
 
 }

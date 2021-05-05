@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.tools.Utils;
+import net.dv8tion.jda.api.JDA;
 import org.bukkit.event.Event;
 
 @Name("Shutdown Discord Bot")
@@ -22,28 +23,28 @@ public class EffShutdownBot extends Effect {
 
     static {
         Skript.registerEffect(EffShutdownBot.class,
-                "["+ Utils.getPrefixName() +"] (stop|shutdown|close instance of) [the] bot (named|with name) %string%");
+                "["+ Utils.getPrefixName() +"] (stop|shutdown|close instance of) %bot%");
     }
 
-    private Expression<String> exprName;
+    private Expression<JDA> exprName;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprName = (Expression<String>) exprs[0];
+        exprName = (Expression<JDA>) exprs[0];
         return true;
     }
 
     @Override
     protected void execute(Event e) {
-        String name = exprName.getSingle(e);
+        JDA name = exprName.getSingle(e);
         if (name == null) return;
-        BotManager.removeAndShutdown(name);
+        BotManager.removeAndShutdown(BotManager.getNameByJDA(name));
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "shutdown the bot named " + exprName.toString(e, debug);
+        return "shutdown " + exprName.toString(e, debug);
     }
 
 }

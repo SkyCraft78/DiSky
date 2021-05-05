@@ -24,43 +24,35 @@ public class CondIsLoaded extends Condition {
 
 	static {
 		Skript.registerCondition(CondIsLoaded.class,
-				"["+ Utils.getPrefixName() +"] [bot] [(with name|named)] %string/bot% (is|was) (loaded|online) [on the server]",
-		"["+ Utils.getPrefixName() +"] [bot] [(with name|named)] %string/bot% (isn't|is not|wasn't|was not) (loaded|online) [on the server]");
+				"["+ Utils.getPrefixName() +"] %bot% (is|was) (loaded|online) [on the server]",
+		"["+ Utils.getPrefixName() +"] %bot% (isn't|is not|wasn't|was not) (loaded|online) [on the server]");
 	}
 
-	private Expression<Object> exprName;
+	private Expression<JDA> exprBot;
 	private int pattern;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprName = (Expression<Object>) exprs[0];
+		exprBot = (Expression<JDA>) exprs[0];
 		pattern = matchedPattern;
 		return true;
 	}
 
 	@Override
 	public boolean check(Event e) {
-		Object entity = exprName.getSingle(e);
-		if (entity == null) return false;
-		if (entity instanceof JDA) {
-			if (pattern == 0) {
-				return BotManager.getBots().containsKey(BotManager.getNameByJDA((JDA) entity));
-			} else {
-				return !BotManager.getBots().containsKey(BotManager.getNameByJDA((JDA) entity));
-			}
+		JDA bot = exprBot.getSingle(e);
+		if (bot == null) return false;
+		if (pattern == 0) {
+			return BotManager.getBots().containsKey(BotManager.getNameByJDA(bot));
 		} else {
-			if (pattern == 0) {
-				return BotManager.getBots().containsKey(entity.toString());
-			} else {
-				return !BotManager.getBots().containsKey(entity.toString());
-			}
+			return !BotManager.getBots().containsKey(BotManager.getNameByJDA(bot));
 		}
 	}
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "bot named " + exprName.toString(e, debug) + " is loaded";
+		return exprBot.toString(e, debug) + " is loaded";
 	}
 
 }

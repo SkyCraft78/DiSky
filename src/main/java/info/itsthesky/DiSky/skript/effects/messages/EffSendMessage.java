@@ -15,6 +15,7 @@ import info.itsthesky.DiSky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
@@ -33,13 +34,13 @@ public class EffSendMessage extends Effect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
-                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with [the] [bot] [(named|with name)] %-string%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with [the] %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
     private Expression<Object> exprChannel;
     private Expression<Object> exprVar;
-    private Expression<String> exprName;
+    private Expression<JDA> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -47,7 +48,7 @@ public class EffSendMessage extends Effect {
         exprMessage = (Expression<Object>) exprs[0];
         exprChannel = (Expression<Object>) exprs[1];
         if (exprs.length == 2) return true;
-        exprName = (Expression<String>) exprs[2];
+        exprBot = (Expression<JDA>) exprs[2];
         if (exprs.length == 3) return true;
         exprVar = (Expression<Object>) exprs[3];
         return true;
@@ -94,7 +95,7 @@ public class EffSendMessage extends Effect {
                 }
 
                 if (channel1 == null) return;
-                if (!Utils.areJDASimilar(channel1.getJDA(), exprName == null ? null : exprName.getSingle(e))) return;
+                if (!Utils.areJDASimilar(channel1.getJDA(), exprBot == null ? null : exprBot.getSingle(e))) return;
 
                 if (content instanceof EmbedBuilder) {
                     storedMessage = channel1.sendMessage(((EmbedBuilder) content).build()).complete();
