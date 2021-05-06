@@ -21,7 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 @Name("Avatar of user / member / webhook / bot")
-@Description("Get user, webhook, bot, member avatar url, and set only webhook ones.")
+@Description("Get user, webhook, bot, member avatar url, and set only webhook and guild ones.")
 @Examples("set avatar of last webhook to \"https://image.jeuxvideo.com/medias-md/158685/1586849646-1530-card.jpg\"")
 @Since("1.2")
 public class ExprAvatarOf extends SimplePropertyExpression<Object, String> {
@@ -37,9 +37,9 @@ public class ExprAvatarOf extends SimplePropertyExpression<Object, String> {
     @Override
     public String convert(Object entity) {
         if (entity instanceof Member) {
-            return ((Member) entity).getUser().getAvatarUrl();
+            return ((User) entity).getAvatarUrl() == null ? ((User) entity).getDefaultAvatarUrl() : ((User) entity).getAvatarUrl();
         } else if (entity instanceof User) {
-            return ((User) entity).getAvatarUrl();
+            return ((User) entity).getAvatarUrl() == null ? ((User) entity).getDefaultAvatarUrl() : ((User) entity).getAvatarUrl();
         } else if (entity instanceof Webhook) {
             return ((Webhook) entity).getDefaultUser().getAvatarUrl();
         }  else if (entity instanceof JDA) {
