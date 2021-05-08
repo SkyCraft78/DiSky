@@ -18,14 +18,14 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 
 @Name("Guild Frequency")
-@Description("Get or change the audio frequency of a guild. MUST be bigger than 1 (default is 1 anyway)")
-@Examples("set frequency of event-guild to 1.3")
+@Description("Get or change the audio frequency of a guild. MUST be bigger than 0 (default is 0.01)")
+@Examples("set frequency of event-guild to 0.1")
 @Since("1.11")
 public class ExprGuildFrequency extends SimplePropertyExpression<Guild, Number> {
 
     static {
         register(ExprGuildFrequency.class, Number.class,
-                "[discord] [audio] [guild] frequency",
+                "[discord] audio [guild] frequency",
                 "guild"
         );
     }
