@@ -9,12 +9,14 @@ public class EffectData {
     private double speed;
     private double depth;
     private double pitch;
+    private double frequency;
 
     public EffectData(Guild guild) {
         this.guildID = guild.getIdLong();
         this.depth = 0.1;
         this.speed = 1.0;
         this.pitch = 1.0;
+        this.frequency = 1.0;
     }
 
     public Guild getGuild() {
@@ -68,5 +70,18 @@ public class EffectData {
     }
     public void setDepth(double depth) {
         this.depth = depth;
+    }
+
+    public double getFrequency() {
+        return frequency;
+    }
+    public void addFrequency(double frequency) {
+        this.frequency = this.frequency + frequency;
+    }
+    public void removeFrequency(double frequency) {
+        this.frequency = this.frequency - frequency;
+    }
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
     }
 }
