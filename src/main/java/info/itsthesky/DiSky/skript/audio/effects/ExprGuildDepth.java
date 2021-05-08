@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Name("Guild Depth")
-@Description("Get or change the audio depth of a guild. MUST be between 0.1 AND 0.9 (default is 0.1)")
+@Description("Get or change the audio depth of a guild. MUST be between 0.1 AND 0.9 (default is 0.001)")
 @Examples("set depth of event-guild to 1.3")
 @Since("1.7")
 public class ExprGuildDepth extends SimplePropertyExpression<Guild, Number> {

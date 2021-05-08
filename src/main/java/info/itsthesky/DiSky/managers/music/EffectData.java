@@ -16,7 +16,7 @@ public class EffectData {
         this.depth = 0.1;
         this.speed = 1.0;
         this.pitch = 1.0;
-        this.frequency = 1.0;
+        this.frequency = 0.001;
     }
 
     public Guild getGuild() {
