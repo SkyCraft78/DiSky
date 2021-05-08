@@ -17,11 +17,13 @@ import info.itsthesky.DiSky.skript.scope.role.ScopeRole;
 import info.itsthesky.DiSky.skript.scope.textchannels.ScopeTextChannel;
 import info.itsthesky.DiSky.skript.scope.voicechannels.ScopeVoiceChannel;
 import info.itsthesky.DiSky.skript.scope.webhookmessage.ScopeWebhookMessage;
+import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.object.*;
 import info.itsthesky.DiSky.tools.object.Emote;
 import info.itsthesky.DiSky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.internal.entities.GuildImpl;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -64,6 +66,7 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
             if (entity instanceof User) finalName = ((User) entity).getName();
             if (entity instanceof VoiceChannel) finalName = ((VoiceChannel) entity).getName();
             if (entity instanceof GuildChannel) finalName = ((GuildChannel) entity).getName();
+            if (entity instanceof Guild) finalName = ((Guild) entity).getName();
             if (entity instanceof VoiceChannelBuilder) finalName = ((VoiceChannelBuilder) entity).getName();
             if (entity instanceof JDA) finalName = ((JDA) entity).getSelfUser().getName();
             if (entity instanceof WebhookMessageBuilder) finalName = ((WebhookMessageBuilder) entity).build().getContent();
@@ -98,15 +101,15 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
             for (Object entity : getExpr().getArray(e)) {
                 if (entity instanceof TextChannel) {
                     TextChannel channel = (TextChannel) entity;
-                    channel.getManager().setName(delta[0].toString()).queue();
+                    channel.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof GuildChannel) {
                     GuildChannel channel = (GuildChannel) entity;
-                    channel.getManager().setName(delta[0].toString()).queue();
+                    channel.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof Member) {
                     Member member = (Member) entity;
-                    member.modifyNickname(delta[0].toString()).queue();
+                    member.modifyNickname(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof WebhookMessageBuilder) {
                     WebhookMessageBuilder webhook = (WebhookMessageBuilder) entity;
@@ -120,7 +123,11 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
                     return;
                 } else if (entity instanceof Role) {
                     Role role = (Role) entity;
-                    role.getManager().setName(delta[0].toString()).queue();
+                    role.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
+                    return;
+                } else if (entity instanceof Guild) {
+                    Guild guild = (Guild) entity;
+                    guild.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof RoleBuilder) {
                     RoleBuilder role = (RoleBuilder) entity;
@@ -130,7 +137,7 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
                 } else if (entity instanceof MessageReaction.ReactionEmote) {
                     MessageReaction.ReactionEmote emote = (MessageReaction.ReactionEmote) entity;
                     if (!emote.isEmote()) return;
-                    emote.getEmote().getManager().setName(delta[0].toString()).queue();
+                    emote.getEmote().getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof TextChannelBuilder) {
                     TextChannelBuilder channel = (TextChannelBuilder) entity;
@@ -155,11 +162,11 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
                     return;
                 } else if (entity instanceof Category) {
                     Category category = (Category) entity;
-                    category.getManager().setName(delta[0].toString()).queue();
+                    category.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 } else if (entity instanceof VoiceChannel) {
                     VoiceChannel voice = (VoiceChannel) entity;
-                    voice.getManager().setName(delta[0].toString()).queue();
+                    voice.getManager().setName(delta[0].toString()).queue(null, DiSkyErrorHandler::logException);
                     return;
                 }
                 DiSky.getInstance().getLogger().severe("Cannot change the discord name of entity '"+entity.getClass().getName()+"', since that's not a Discord entity!");

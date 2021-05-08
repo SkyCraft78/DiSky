@@ -381,6 +381,10 @@ public class Utils extends ListenerAdapter {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
 
+    public static User castMember(Member entity) {
+        return entity.getUser();
+    }
+
     @Override
     public void onReady(ReadyEvent e) {
         timeHashMap.remove(e.getJDA());

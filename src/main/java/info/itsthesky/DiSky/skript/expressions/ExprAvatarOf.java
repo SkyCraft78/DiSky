@@ -11,6 +11,7 @@ import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import info.itsthesky.DiSky.DiSky;
 import info.itsthesky.DiSky.managers.BotManager;
 import info.itsthesky.DiSky.skript.scope.webhookmessage.ScopeWebhookMessage;
+import info.itsthesky.DiSky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -37,7 +38,7 @@ public class ExprAvatarOf extends SimplePropertyExpression<Object, String> {
     @Override
     public String convert(Object entity) {
         if (entity instanceof Member) {
-            return ((User) entity).getAvatarUrl() == null ? ((User) entity).getDefaultAvatarUrl() : ((User) entity).getAvatarUrl();
+            return Utils.castMember((Member) entity).getAvatarUrl() == null ? Utils.castMember((Member) entity).getDefaultAvatarUrl() : Utils.castMember((Member) entity).getAvatarUrl();
         } else if (entity instanceof User) {
             return ((User) entity).getAvatarUrl() == null ? ((User) entity).getDefaultAvatarUrl() : ((User) entity).getAvatarUrl();
         } else if (entity instanceof Webhook) {
