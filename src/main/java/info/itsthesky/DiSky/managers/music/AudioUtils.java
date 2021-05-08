@@ -5,19 +5,25 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
+import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
 import info.itsthesky.DiSky.tools.Utils;
 import info.itsthesky.DiSky.tools.object.AudioSite;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+import javax.annotation.Nullable;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AudioUtils {
 
@@ -29,6 +35,7 @@ public class AudioUtils {
     public static Map<Long, GuildAudioManager> MUSIC_MANAGERS;
     private static final Map<Long, EffectData> GUILDS_EFFECTS = new HashMap<>();
     private final static DefaultAudioPlayerManager DEFAULT_MANAGER = new DefaultAudioPlayerManager();
+    private final static LocalAudioSourceManager LOCAL_MANAGER = new LocalAudioSourceManager();
 
     public static EffectData getEffectData(Guild guild) {
         if (!GUILDS_EFFECTS.containsKey(guild.getIdLong())) {
@@ -89,6 +96,12 @@ public class AudioUtils {
             }
         });
         return cf.join().toArray(new AudioTrack[0]);
+    }
+
+    @Nullable
+    public static AudioTrack loadFromFile(final File path) {
+        AudioItem item = LOCAL_MANAGER.loadItem(DEFAULT_MANAGER, new AudioReference(path.getPath(), ""));
+        return item instanceof AudioTrack ? (AudioTrack) item : null;
     }
 
     public static synchronized GuildAudioManager getGuildAudioPlayer(Guild guild) {
