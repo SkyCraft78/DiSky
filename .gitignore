@@ -1,3 +1,8 @@
-# Project exclude paths
-/.gradle/
-/build/
+.idea/
+.gradle/
+*.iml
+*.iws
+target/
+.gitignore
+.gitattributes
+.DS_Store
