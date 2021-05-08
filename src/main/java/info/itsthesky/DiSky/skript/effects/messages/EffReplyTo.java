@@ -28,7 +28,7 @@ public class EffReplyTo extends Effect {
 
     static {
         Skript.registerEffect(EffReplyTo.class,
-                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) %bot%] [and store (it|the message) in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) %-bot%] [and store (it|the message) in %-object%]");
     }
 
     private Expression<Message> exprTarget;

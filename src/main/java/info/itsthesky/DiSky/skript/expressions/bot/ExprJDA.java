@@ -56,7 +56,7 @@ public class ExprJDA extends SimpleExpression<JDA> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "bot named" + exprName.toString(e, debug);
+		return "bot named " + exprName.toString(e, debug);
 	}
 
 }

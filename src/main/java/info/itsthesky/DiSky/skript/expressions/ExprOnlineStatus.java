@@ -57,7 +57,7 @@ public class ExprOnlineStatus extends SimplePropertyExpression<Object, OnlineSta
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
-            return CollectionUtils.array(JDA.class, Member.class);
+            return CollectionUtils.array(OnlineStatus.class);
         }
         return CollectionUtils.array();
     }
