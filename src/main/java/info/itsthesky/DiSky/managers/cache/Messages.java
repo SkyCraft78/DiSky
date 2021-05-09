@@ -1,6 +1,6 @@
-package info.itsthesky.DiSky.managers.cache;
+package info.itsthesky.disky.managers.cache;
 
-import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

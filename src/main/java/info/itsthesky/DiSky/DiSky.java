@@ -1,15 +1,14 @@
-package info.itsthesky.DiSky;
+package info.itsthesky.disky;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.managers.WebhookManager;
-import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.tools.Metrics;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.versions.V2_3;
-import info.itsthesky.DiSky.tools.versions.V2_4;
-import info.itsthesky.DiSky.tools.versions.VersionAdapter;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.managers.music.AudioUtils;
+import info.itsthesky.disky.tools.Metrics;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.versions.V2_3;
+import info.itsthesky.disky.tools.versions.V2_4;
+import info.itsthesky.disky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,6 +24,7 @@ import java.util.logging.Logger;
 
 public class DiSky extends JavaPlugin {
 
+    public static final String CONFIG = "config.yml";
     /* Initialisation */
     private static DiSky instance;
     private Logger logger;
@@ -55,12 +55,12 @@ public class DiSky extends JavaPlugin {
             Skript.error("Skript isn't installed or doesn't accept registrations.");
             pluginManager.disablePlugin(this);
         }
-        Utils.saveResourceAs("config.yml");
-        File file = new File(getDataFolder(), "config.yml");
+        Utils.saveResourceAs(CONFIG);
+        File file = new File(getDataFolder(), CONFIG);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         List<GatewayIntent> gatewayIntents = new ArrayList<>();
         for (GatewayIntent intent : GatewayIntent.values()) {
-            if (Utils.getOrSetDefault("config.yml", "Intents." + intent.name(), true))
+            if (Utils.getOrSetDefault(CONFIG, "Intents." + intent.name(), true))
                 gatewayIntents.add(intent);
         }
         intents = gatewayIntents.toArray(new GatewayIntent[0]);

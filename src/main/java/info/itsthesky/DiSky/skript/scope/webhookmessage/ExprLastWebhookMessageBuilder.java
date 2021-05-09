@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.webhookmessage;
+package info.itsthesky.disky.skript.scope.webhookmessage;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

@@ -1,9 +1,8 @@
-package info.itsthesky.DiSky.managers;
+package info.itsthesky.disky.managers;
 
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.WebhookClientBuilder;
-import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.disky.DiSky;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

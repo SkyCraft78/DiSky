@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
@@ -16,7 +16,7 @@ import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
+import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;

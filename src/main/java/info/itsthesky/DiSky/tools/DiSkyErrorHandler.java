@@ -1,8 +1,8 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.skript.events.skript.EventDiSkyException;
-import info.itsthesky.DiSky.skript.expressions.ExprLastDiSkyError;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.skript.EventDiSkyException;
+import info.itsthesky.disky.skript.expressions.ExprLastDiSkyError;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.bukkit.event.Event;

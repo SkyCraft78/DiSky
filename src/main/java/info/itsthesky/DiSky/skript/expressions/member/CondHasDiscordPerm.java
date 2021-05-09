@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.member;
+package info.itsthesky.disky.skript.expressions.member;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;

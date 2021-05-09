@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
@@ -15,9 +15,8 @@ import ch.njol.skript.util.StringMode;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.NonNullPair;
 import ch.njol.util.StringUtils;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.tools.EffectSection;
-import info.itsthesky.DiSky.tools.StaticData;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.tools.EffectSection;
 import net.dv8tion.jda.api.entities.ChannelType;
 import org.bukkit.event.Event;
 
@@ -100,9 +99,9 @@ public class CommandFactory {
     public ArrayList<ChannelType> parsePlaces(String[] places) {
         ArrayList<ChannelType> types = new ArrayList<>();
         for (String place : places) {
-            if (info.itsthesky.DiSky.tools.Utils.equalsAnyIgnoreCase(place, "server", "guild")) {
+            if (info.itsthesky.disky.tools.Utils.equalsAnyIgnoreCase(place, "server", "guild")) {
                 types.add(ChannelType.TEXT);
-            } else if (info.itsthesky.DiSky.tools.Utils.equalsAnyIgnoreCase(place, "dm", "pm", "direct message", "private message")) {
+            } else if (info.itsthesky.disky.tools.Utils.equalsAnyIgnoreCase(place, "dm", "pm", "direct message", "private message")) {
                 types.add(ChannelType.PRIVATE);
             } else {
                 Skript.error("'executable in' should be either 'guild', 'dm', or both, but found '" + place + "'");

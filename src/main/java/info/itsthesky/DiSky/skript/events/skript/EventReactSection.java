@@ -1,8 +1,8 @@
-package info.itsthesky.DiSky.skript.events.skript;
+package info.itsthesky.disky.skript.events.skript;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

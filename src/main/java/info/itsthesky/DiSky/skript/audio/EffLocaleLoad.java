@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio;
+package info.itsthesky.disky.skript.audio;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,10 +8,9 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.*;
 import ch.njol.util.Kleenean;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.AudioSite;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.managers.music.AudioUtils;
+import info.itsthesky.disky.tools.Utils;
 import org.bukkit.event.Event;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio.effects;
+package info.itsthesky.disky.skript.audio.effects;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -8,17 +8,13 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import com.github.natanbc.lavadsp.timescale.TimescalePcmAudioFilter;
-import com.github.natanbc.lavadsp.tremolo.TremoloPcmAudioFilter;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import info.itsthesky.DiSky.managers.music.AudioUtils;
+import info.itsthesky.disky.managers.music.AudioUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Name("Guild Speed")
 @Description("Get or change the speed of a guild. (Of course, the audio speed)")

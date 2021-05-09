@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.bot;
+package info.itsthesky.disky.skript.expressions.bot;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,17 +7,11 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.tools.object.RoleBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
+import info.itsthesky.disky.managers.BotManager;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 
 @Name("Default Bot Prefix")
 @Description("Get, set or clear the default prefix of a bot. This prefix will be added to every prefixes in commands.")

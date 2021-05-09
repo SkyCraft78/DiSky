@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.managers.cache;
+package info.itsthesky.disky.managers.cache;
 
 import net.dv8tion.jda.api.entities.Invite;
 

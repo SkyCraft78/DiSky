@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.invites;
+package info.itsthesky.disky.skript.expressions.invites;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;

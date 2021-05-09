@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.managers.music;
+package info.itsthesky.disky.managers.music;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.category;
+package info.itsthesky.disky.skript.scope.category;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,7 +9,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.object.CategoryBuilder;
+import info.itsthesky.disky.tools.object.CategoryBuilder;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

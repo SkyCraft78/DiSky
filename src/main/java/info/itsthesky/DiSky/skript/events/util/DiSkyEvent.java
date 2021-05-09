@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.util;
+package info.itsthesky.disky.skript.events.util;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

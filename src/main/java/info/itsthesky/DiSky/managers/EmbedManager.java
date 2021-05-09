@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.managers;
+package info.itsthesky.disky.managers;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 

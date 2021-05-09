@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.waiter;
+package info.itsthesky.disky.tools.waiter;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.scope.commands;
+package info.itsthesky.disky.skript.expressions.scope.commands;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,12 +9,10 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.SlashCommand;
-import net.dv8tion.jda.api.interactions.commands.Command;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.SlashCommand;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.requests.restaction.CommandUpdateAction;
 import org.bukkit.event.Event;
 
 @Name("Add Slash Command Option")

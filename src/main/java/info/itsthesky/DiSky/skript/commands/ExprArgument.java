@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
@@ -15,9 +15,8 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
-import info.itsthesky.DiSky.skript.events.skript.EventReactSection;
-import info.itsthesky.DiSky.skript.events.skript.reaction.EventReactionAdd;
-import info.itsthesky.DiSky.tools.StaticData;
+import info.itsthesky.disky.skript.events.skript.EventReactSection;
+import info.itsthesky.disky.tools.StaticData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 

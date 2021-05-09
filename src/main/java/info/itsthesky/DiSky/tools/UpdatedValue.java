@@ -1,6 +1,6 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
-import info.itsthesky.DiSky.skript.ExprUpdatedValue;
+import info.itsthesky.disky.skript.ExprUpdatedValue;
 import org.bukkit.event.Event;
 
 /**

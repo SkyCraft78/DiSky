@@ -1,12 +1,12 @@
-package info.itsthesky.DiSky.skript.expressions.embed.scope;
+package info.itsthesky.disky.skript.expressions.embed.scope;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.*;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.managers.EmbedManager;
-import info.itsthesky.DiSky.tools.EffectSection;
+import info.itsthesky.disky.managers.EmbedManager;
+import info.itsthesky.disky.tools.EffectSection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bukkit.event.Event;
 

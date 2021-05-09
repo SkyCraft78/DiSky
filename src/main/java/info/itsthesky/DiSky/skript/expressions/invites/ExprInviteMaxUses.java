@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.invites;
+package info.itsthesky.disky.skript.expressions.invites;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -6,7 +6,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.tools.object.InviteBuilder;
+import info.itsthesky.disky.tools.object.InviteBuilder;
 import net.dv8tion.jda.api.entities.Invite;
 import org.bukkit.event.Event;
 

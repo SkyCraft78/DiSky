@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions;
+package info.itsthesky.disky.skript.expressions;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -8,10 +8,9 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.scope.webhookmessage.ScopeWebhookMessage;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.scope.webhookmessage.ScopeWebhookMessage;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;

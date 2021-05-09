@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects.webhooks;
+package info.itsthesky.disky.skript.effects.webhooks;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,8 +9,8 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.managers.WebhookManager;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.managers.WebhookManager;
+import info.itsthesky.disky.tools.Utils;
 import org.bukkit.event.Event;
 
 @Name("Register Webhooks")

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.commands;
+package info.itsthesky.disky.skript.expressions.commands;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
@@ -10,7 +10,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.skript.commands.CommandEvent;
+import info.itsthesky.disky.skript.commands.CommandEvent;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
