@@ -1,6 +1,5 @@
-package info.itsthesky.DiSky.skript.sections;
+package info.itsthesky.disky.skript.sections;
 
-import ch.njol.util.Pair;
 import org.bukkit.event.Event;
 
 import java.util.HashMap;

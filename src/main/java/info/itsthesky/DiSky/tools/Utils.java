@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Variable;
@@ -8,10 +8,10 @@ import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.Variables;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.tools.object.Emote;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;

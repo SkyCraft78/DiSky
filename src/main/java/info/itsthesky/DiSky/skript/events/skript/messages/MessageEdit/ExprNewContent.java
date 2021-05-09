@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit;
+package info.itsthesky.disky.skript.events.skript.messages.MessageEdit;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

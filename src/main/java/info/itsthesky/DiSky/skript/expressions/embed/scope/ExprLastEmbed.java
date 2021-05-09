@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.embed.scope;
+package info.itsthesky.disky.skript.expressions.embed.scope;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.*;

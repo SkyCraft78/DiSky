@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

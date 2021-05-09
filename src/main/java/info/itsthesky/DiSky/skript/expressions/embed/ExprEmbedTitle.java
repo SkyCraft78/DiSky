@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.embed;
+package info.itsthesky.disky.skript.expressions.embed;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -8,7 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.bukkit.event.Event;

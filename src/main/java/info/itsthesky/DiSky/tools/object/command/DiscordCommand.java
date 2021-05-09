@@ -1,11 +1,9 @@
-package info.itsthesky.DiSky.tools.object.command;
+package info.itsthesky.disky.tools.object.command;
 
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class DiscordCommand {
 

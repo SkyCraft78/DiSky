@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.messagebuilder;
+package info.itsthesky.disky.skript.expressions.messagebuilder;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,10 +8,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import org.bukkit.event.Event;

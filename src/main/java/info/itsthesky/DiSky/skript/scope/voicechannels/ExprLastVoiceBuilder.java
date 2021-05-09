@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.voicechannels;
+package info.itsthesky.disky.skript.scope.voicechannels;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,8 +9,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.skript.scope.textchannels.ScopeTextChannel;
-import info.itsthesky.DiSky.tools.object.VoiceChannelBuilder;
+import info.itsthesky.disky.tools.object.VoiceChannelBuilder;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.waiter;
+package info.itsthesky.disky.tools.waiter;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
@@ -7,7 +7,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.skript.events.skript.EventReactSection;
+import info.itsthesky.disky.skript.events.skript.EventReactSection;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.scope.text;
+package info.itsthesky.disky.skript.expressions.scope.text;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,11 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.skript.scope.textchannels.ScopeTextChannel;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.TextChannelBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;

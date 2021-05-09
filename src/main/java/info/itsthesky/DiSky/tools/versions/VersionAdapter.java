@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.versions;
+package info.itsthesky.disky.tools.versions;
 
 public interface VersionAdapter {
 

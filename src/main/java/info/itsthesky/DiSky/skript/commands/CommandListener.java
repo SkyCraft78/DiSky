@@ -1,10 +1,10 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.localization.Language;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.skript.events.skript.EventDiSkyCommand;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.skript.events.skript.EventDiSkyCommand;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

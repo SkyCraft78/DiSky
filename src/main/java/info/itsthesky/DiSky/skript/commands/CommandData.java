@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 public class CommandData {
     private String name;

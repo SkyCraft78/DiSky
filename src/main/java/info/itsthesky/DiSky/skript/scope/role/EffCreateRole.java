@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.role;
+package info.itsthesky.disky.skript.scope.role;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -10,12 +10,10 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.RoleBuilder;
-import info.itsthesky.DiSky.tools.object.TextChannelBuilder;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
 
 @Name("Create role builder in Guild")

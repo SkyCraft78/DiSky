@@ -1,10 +1,9 @@
-package info.itsthesky.DiSky.tools.object;
+package info.itsthesky.disky.tools.object;
 
-import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 public class TextChannelBuilder {
 

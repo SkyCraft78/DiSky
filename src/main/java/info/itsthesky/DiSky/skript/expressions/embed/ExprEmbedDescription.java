@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.embed;
+package info.itsthesky.disky.skript.expressions.embed;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,8 +7,8 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.object.SlashCommand;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.object.SlashCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bukkit.event.Event;
 

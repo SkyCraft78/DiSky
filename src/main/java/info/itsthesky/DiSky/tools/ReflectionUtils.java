@@ -1,6 +1,4 @@
-package info.itsthesky.DiSky.tools;
-
-import org.bukkit.Bukkit;
+package info.itsthesky.disky.tools;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

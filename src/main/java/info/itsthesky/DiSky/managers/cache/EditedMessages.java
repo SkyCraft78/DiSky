@@ -1,10 +1,10 @@
-package info.itsthesky.DiSky.managers.cache;
+package info.itsthesky.disky.managers.cache;
 
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit.EventMessageEdit;
-import info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit.ExprNewContent;
-import info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit.ExprOldContent;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.EventMessageEdit;
+import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.ExprNewContent;
+import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.ExprOldContent;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

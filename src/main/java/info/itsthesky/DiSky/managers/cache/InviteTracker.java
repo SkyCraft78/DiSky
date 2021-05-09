@@ -1,15 +1,13 @@
-package info.itsthesky.DiSky.managers.cache;
+package info.itsthesky.disky.managers.cache;
 
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.skript.events.skript.EventBotJoin;
-import info.itsthesky.DiSky.skript.events.skript.members.EventMemberJoin;
-import info.itsthesky.DiSky.tools.Utils;
-import net.dv8tion.jda.api.Permission;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.skript.EventBotJoin;
+import info.itsthesky.disky.skript.events.skript.members.EventMemberJoin;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

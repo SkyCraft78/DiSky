@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.embed;
+package info.itsthesky.disky.skript.expressions.embed;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;

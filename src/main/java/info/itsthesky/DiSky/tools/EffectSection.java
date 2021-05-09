@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;

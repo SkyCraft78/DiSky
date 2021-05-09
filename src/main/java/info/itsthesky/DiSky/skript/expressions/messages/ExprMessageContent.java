@@ -1,22 +1,14 @@
-package info.itsthesky.DiSky.skript.expressions.messages;
+package info.itsthesky.disky.skript.expressions.messages;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.util.SimpleExpression;
-import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import club.minnced.discord.webhook.send.WebhookMessage;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import info.itsthesky.DiSky.skript.scope.webhookmessage.ScopeWebhookMessage;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.skript.scope.webhookmessage.ScopeWebhookMessage;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;

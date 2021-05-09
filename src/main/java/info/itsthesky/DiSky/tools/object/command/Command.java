@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.object.command;
+package info.itsthesky.disky.tools.object.command;
 
 public class Command {
 

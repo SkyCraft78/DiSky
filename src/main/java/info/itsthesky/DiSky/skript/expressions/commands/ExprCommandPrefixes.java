@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.commands;
+package info.itsthesky.disky.skript.expressions.commands;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -6,9 +6,9 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.skript.commands.CommandEvent;
-import info.itsthesky.DiSky.skript.commands.CommandObject;
-import info.itsthesky.DiSky.tools.MultiplyPropertyExpression;
+import info.itsthesky.disky.skript.commands.CommandEvent;
+import info.itsthesky.disky.skript.commands.CommandObject;
+import info.itsthesky.disky.tools.MultiplyPropertyExpression;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

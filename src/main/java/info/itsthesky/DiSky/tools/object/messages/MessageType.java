@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.object.messages;
+package info.itsthesky.disky.tools.object.messages;
 
 public enum MessageType {
     EMBED,

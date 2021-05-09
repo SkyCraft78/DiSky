@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.scope.voice;
+package info.itsthesky.disky.skript.expressions.scope.voice;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,8 +7,8 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.object.VoiceChannelBuilder;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.object.VoiceChannelBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;

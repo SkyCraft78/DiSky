@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.commands;
+package info.itsthesky.disky.skript.scope.commands;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,9 +8,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.EffectSection;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.SlashCommand;
+import info.itsthesky.disky.tools.EffectSection;
+import info.itsthesky.disky.tools.object.SlashCommand;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

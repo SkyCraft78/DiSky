@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.guild.icon;
+package info.itsthesky.disky.skript.events.skript.guild.icon;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

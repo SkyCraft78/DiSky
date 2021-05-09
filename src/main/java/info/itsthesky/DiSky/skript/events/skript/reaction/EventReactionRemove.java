@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.reaction;
+package info.itsthesky.disky.skript.events.skript.reaction;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,9 +8,9 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.Emote;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -86,10 +86,10 @@ public class EventReactionRemove extends Event {
             }
         }, 0);
 
-        EventValues.registerEventValue(EventReactionRemove.class, info.itsthesky.DiSky.tools.object.Emote.class, new Getter<info.itsthesky.DiSky.tools.object.Emote, EventReactionRemove>() {
+        EventValues.registerEventValue(EventReactionRemove.class, info.itsthesky.disky.tools.object.Emote.class, new Getter<info.itsthesky.disky.tools.object.Emote, EventReactionRemove>() {
             @Nullable
             @Override
-            public info.itsthesky.DiSky.tools.object.Emote get(final @NotNull EventReactionRemove event) {
+            public info.itsthesky.disky.tools.object.Emote get(final @NotNull EventReactionRemove event) {
                 return event.getEvent().getReactionEmote().isEmote() ? new Emote(event.getEvent().getReactionEmote().getEmote()) : new Emote(event.getEvent().getReactionEmote().getName());
             }
         }, 0);

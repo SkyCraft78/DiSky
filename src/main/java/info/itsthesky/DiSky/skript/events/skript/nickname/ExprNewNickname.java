@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.nickname;
+package info.itsthesky.disky.skript.events.skript.nickname;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
