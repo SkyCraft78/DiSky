@@ -1,7 +1,7 @@
 name: DiSky
 version: 1.12
 api-version: 1.13
-main: info.itsthesky.DiSky.DiSky
+main: info.itsthesky.disky.DiSky
 author: ItsTheSky
 description: Skript addon which allows you to interact with Discord through Skript.
 website: https://disky.itsthesky.info/
