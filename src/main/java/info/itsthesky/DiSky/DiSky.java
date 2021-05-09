@@ -1,15 +1,14 @@
-package info.itsthesky.DiSky;
+package info.itsthesky.disky;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.managers.WebhookManager;
-import info.itsthesky.DiSky.managers.music.AudioUtils;
-import info.itsthesky.DiSky.tools.Metrics;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.versions.V2_3;
-import info.itsthesky.DiSky.tools.versions.V2_4;
-import info.itsthesky.DiSky.tools.versions.VersionAdapter;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.managers.music.AudioUtils;
+import info.itsthesky.disky.tools.Metrics;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.versions.V2_3;
+import info.itsthesky.disky.tools.versions.V2_4;
+import info.itsthesky.disky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.configuration.file.YamlConfiguration;

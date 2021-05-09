@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.boosts;
+package info.itsthesky.disky.skript.expressions.boosts;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -10,15 +10,10 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Name("Guild Boosters")
 @Description("Return all boosters of the guilds")

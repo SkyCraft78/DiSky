@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects.webhooks;
+package info.itsthesky.disky.skript.effects.webhooks;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -10,14 +10,11 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import club.minnced.discord.webhook.WebhookClient;
-import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
-import club.minnced.discord.webhook.send.WebhookMessage;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import info.itsthesky.DiSky.managers.WebhookManager;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.managers.WebhookManager;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.bukkit.event.Event;
 
 @Name("Make Webhook Talk")

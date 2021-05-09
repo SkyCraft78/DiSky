@@ -1,19 +1,17 @@
-package info.itsthesky.DiSky.managers.music;
+package info.itsthesky.disky.managers.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.skript.events.skript.audio.EventTrackEnd;
-import info.itsthesky.DiSky.skript.events.skript.audio.EventTrackStart;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.skript.audio.EventTrackEnd;
+import info.itsthesky.disky.skript.events.skript.audio.EventTrackStart;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;

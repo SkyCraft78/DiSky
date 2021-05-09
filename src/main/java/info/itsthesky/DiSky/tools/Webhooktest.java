@@ -1,17 +1,10 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.WebhookClientBuilder;
 import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
-import club.minnced.discord.webhook.send.WebhookMessage;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Webhook;
-import net.dv8tion.jda.internal.entities.WebhookImpl;
-
-import java.awt.*;
 
 public class Webhooktest {
 

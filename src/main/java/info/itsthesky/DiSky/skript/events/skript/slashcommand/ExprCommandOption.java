@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.slashcommand;
+package info.itsthesky.disky.skript.events.skript.slashcommand;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,9 +9,9 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.StaticData;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.StaticData;
+import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;

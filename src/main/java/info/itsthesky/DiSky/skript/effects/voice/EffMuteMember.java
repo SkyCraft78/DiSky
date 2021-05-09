@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects.voice;
+package info.itsthesky.disky.skript.effects.voice;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,11 +9,10 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.DiSkyErrorHandler;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
 @Name("Mute / Unmute Member")

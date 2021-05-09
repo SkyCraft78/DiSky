@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.audio;
+package info.itsthesky.disky.skript.events.skript.audio;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,7 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;

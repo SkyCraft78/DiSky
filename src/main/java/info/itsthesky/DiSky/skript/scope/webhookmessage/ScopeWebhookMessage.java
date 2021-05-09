@@ -1,16 +1,14 @@
-package info.itsthesky.DiSky.skript.scope.webhookmessage;
+package info.itsthesky.disky.skript.scope.webhookmessage;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
-import info.itsthesky.DiSky.tools.EffectSection;
-import info.itsthesky.DiSky.tools.object.CategoryBuilder;
+import info.itsthesky.disky.tools.EffectSection;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

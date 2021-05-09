@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.scope.role;
+package info.itsthesky.disky.skript.expressions.scope.role;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,8 +7,8 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.skript.scope.role.ScopeRole;
-import info.itsthesky.DiSky.tools.object.RoleBuilder;
+import info.itsthesky.disky.skript.scope.role.ScopeRole;
+import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
 

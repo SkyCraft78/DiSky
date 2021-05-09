@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.object.messages;
+package info.itsthesky.disky.tools.object.messages;
 
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;

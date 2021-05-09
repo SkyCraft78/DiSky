@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.commands;
+package info.itsthesky.disky.skript.commands;
 
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Trigger;
@@ -7,7 +7,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.log.ParseLogHandler;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.util.Utils;
-import info.itsthesky.DiSky.managers.BotManager;
+import info.itsthesky.disky.managers.BotManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 
@@ -81,7 +81,7 @@ public class CommandObject {
                 return false;
             }
 
-            List<Permission> permissions = info.itsthesky.DiSky.tools.Utils.convertPerms(perms.toArray(new String[0]));
+            List<Permission> permissions = info.itsthesky.disky.tools.Utils.convertPerms(perms.toArray(new String[0]));
             if (!event.getMember().hasPermission(permissions)) {
                 if (permMessage != null) {
                     event.getMessageChannel().sendMessage(permMessage).queue();
@@ -90,7 +90,7 @@ public class CommandObject {
             }
 
             // again, bukkit apis are mostly sync so run it on the main thread
-            info.itsthesky.DiSky.tools.Utils.sync(() -> trigger.execute(event));
+            info.itsthesky.disky.tools.Utils.sync(() -> trigger.execute(event));
 
         } finally {
             log.stop();

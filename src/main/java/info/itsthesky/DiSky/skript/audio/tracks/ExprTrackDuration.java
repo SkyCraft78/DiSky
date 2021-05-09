@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.audio.tracks;
+package info.itsthesky.disky.skript.audio.tracks;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;

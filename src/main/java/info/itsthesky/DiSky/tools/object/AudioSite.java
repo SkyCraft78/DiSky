@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.tools.object;
+package info.itsthesky.disky.tools.object;
 
 public enum AudioSite {
     YOUTUBE,

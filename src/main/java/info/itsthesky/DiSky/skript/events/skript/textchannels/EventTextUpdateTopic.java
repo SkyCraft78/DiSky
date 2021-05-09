@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.textchannels;
+package info.itsthesky.disky.skript.events.skript.textchannels;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,17 +8,15 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.skript.events.util.DiSkyEvent;
-import info.itsthesky.DiSky.tools.UpdatedValue;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.util.DiSkyEvent;
+import info.itsthesky.disky.tools.UpdatedValue;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateNameEvent;
 import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateTopicEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;

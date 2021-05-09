@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.effects;
+package info.itsthesky.disky.skript.effects;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,14 +9,9 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.managers.BotManager;
-import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
-import info.itsthesky.DiSky.tools.Utils;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Emote;
+import info.itsthesky.disky.tools.DiSkyErrorHandler;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
 @Name("Make Bot Leave Guild")

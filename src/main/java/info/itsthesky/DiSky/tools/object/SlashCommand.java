@@ -1,6 +1,6 @@
-package info.itsthesky.DiSky.tools.object;
+package info.itsthesky.disky.tools.object;
 
-import info.itsthesky.DiSky.DiSky;
+import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 

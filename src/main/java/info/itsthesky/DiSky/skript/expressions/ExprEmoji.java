@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions;
+package info.itsthesky.disky.skript.expressions;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.*;
@@ -7,8 +7,8 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.Emote;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 

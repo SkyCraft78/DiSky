@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.events.skript.messages.MessageEdit;
+package info.itsthesky.disky.skript.events.skript.messages.MessageEdit;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -8,9 +8,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.DiSky.managers.cache.EditedMessages;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.messages.Channel;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;

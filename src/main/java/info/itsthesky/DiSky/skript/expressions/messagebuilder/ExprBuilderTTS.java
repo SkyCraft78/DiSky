@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.messagebuilder;
+package info.itsthesky.disky.skript.expressions.messagebuilder;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -8,9 +8,6 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.ClientType;
-import net.dv8tion.jda.api.entities.Member;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;

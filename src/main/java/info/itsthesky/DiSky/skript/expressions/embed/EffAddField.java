@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.embed;
+package info.itsthesky.disky.skript.expressions.embed;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,8 +9,8 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.Utils;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.bukkit.event.Event;
 

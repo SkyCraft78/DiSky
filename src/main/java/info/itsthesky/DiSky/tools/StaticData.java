@@ -1,6 +1,6 @@
-package info.itsthesky.DiSky.tools;
+package info.itsthesky.disky.tools;
 
-import info.itsthesky.DiSky.skript.commands.Argument;
+import info.itsthesky.disky.skript.commands.Argument;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions;
+package info.itsthesky.disky.skript.expressions;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -8,9 +8,9 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.RoleBuilder;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;

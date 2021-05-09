@@ -1,21 +1,16 @@
-package info.itsthesky.DiSky.skript.expressions.commands;
+package info.itsthesky.disky.skript.expressions.commands;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.skript.commands.CommandFactory;
-import info.itsthesky.DiSky.skript.commands.CommandObject;
-import info.itsthesky.DiSky.tools.MultiplyPropertyExpression;
-import net.dv8tion.jda.api.entities.Guild;
+import info.itsthesky.disky.skript.commands.CommandFactory;
+import info.itsthesky.disky.skript.commands.CommandObject;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 

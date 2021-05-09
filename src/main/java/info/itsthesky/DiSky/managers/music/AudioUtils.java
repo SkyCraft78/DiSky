@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.managers.music;
+package info.itsthesky.disky.managers.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -11,10 +11,8 @@ import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.*;
-import info.itsthesky.DiSky.DiSky;
-import info.itsthesky.DiSky.tools.DiSkyErrorHandler;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.AudioSite;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.AudioSite;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -23,7 +21,6 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class AudioUtils {
 

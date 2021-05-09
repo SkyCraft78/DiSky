@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.messages;
+package info.itsthesky.disky.skript.expressions.messages;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -6,7 +6,7 @@ import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.tools.MultiplyPropertyExpression;
+import info.itsthesky.disky.tools.MultiplyPropertyExpression;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 

@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.scope.category;
+package info.itsthesky.disky.skript.expressions.scope.category;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -7,9 +7,9 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.DiSky.skript.scope.category.ScopeCategory;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.CategoryBuilder;
+import info.itsthesky.disky.skript.scope.category.ScopeCategory;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.CategoryBuilder;
 import net.dv8tion.jda.api.entities.Category;
 import org.bukkit.event.Event;
 

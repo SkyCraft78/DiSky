@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.invites;
+package info.itsthesky.disky.skript.scope.invites;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -10,8 +10,8 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.InviteBuilder;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.InviteBuilder;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;

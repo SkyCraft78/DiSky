@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.scope.voicechannels;
+package info.itsthesky.disky.skript.scope.voicechannels;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -10,10 +10,8 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.DiSky.tools.Utils;
-import info.itsthesky.DiSky.tools.object.CategoryBuilder;
-import info.itsthesky.DiSky.tools.object.VoiceChannelBuilder;
-import net.dv8tion.jda.api.entities.Category;
+import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.VoiceChannelBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.bukkit.event.Event;
