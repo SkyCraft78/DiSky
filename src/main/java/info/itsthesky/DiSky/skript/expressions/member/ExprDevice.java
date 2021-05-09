@@ -30,10 +30,7 @@ public class ExprDevice extends SimplePropertyExpression<Member, String> {
     @Nullable
     @Override
     public String convert(Member entity) {
-        if (!entity.getOnlineStatus(ClientType.DESKTOP).equals(OnlineStatus.OFFLINE)) return "Desktop";
-        if (!entity.getOnlineStatus(ClientType.MOBILE).equals(OnlineStatus.OFFLINE)) return "Mobile";
-        if (!entity.getOnlineStatus(ClientType.WEB).equals(OnlineStatus.OFFLINE)) return "Web";
-        return null;
+        return entity.getActiveClients().toArray(new ClientType[0])[0].getKey();
     }
 
     @Override
