@@ -75,6 +75,8 @@ public class BotManager {
                     .enableIntents(Arrays.asList(DiSky.intents))
                     .enableCache(CacheFlag.ACTIVITY)
                     .enableCache(CacheFlag.VOICE_STATE)
+                    .enableCache(CacheFlag.CLIENT_STATUS)
+                    .enableCache(CacheFlag.ONLINE_STATUS)
                     .setChunkingFilter(ChunkingFilter.NONE)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .build();
