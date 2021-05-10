@@ -38,7 +38,7 @@ public class EffDeleteEntity extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprEntity = (Expression<Object>) exprs[0];
-        exprBot = (Expression<JDA>) exprs[1];
+        if (exprs.length != 1) exprBot = (Expression<JDA>) exprs[1];
         return true;
     }
 
@@ -46,7 +46,7 @@ public class EffDeleteEntity extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Object[] entity = exprEntity.getArray(e);
-            if (entity != null) return;
+            if (entity.length == 0) return;
             for (Object en : entity) {
                 if (en instanceof Role) {
                     Role role = (Role) en;
