@@ -30,6 +30,7 @@ public class ExprDevice extends SimplePropertyExpression<Member, String> {
     @Nullable
     @Override
     public String convert(Member entity) {
+        System.out.println(entity.getActiveClients());
         return entity.getActiveClients().toArray(new ClientType[0])[0].getKey();
     }
 

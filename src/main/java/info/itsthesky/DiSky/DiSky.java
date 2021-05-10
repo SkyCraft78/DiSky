@@ -45,7 +45,7 @@ public class DiSky extends JavaPlugin {
             getServer().getConsoleSender().sendMessage(Utils.colored("&aSkript found! &6Starting registration ..."));
             SkriptAddon addon = Skript.registerAddon(this);
             try {
-                addon.loadClasses("info.itsthesky.DiSky.skript");
+                addon.loadClasses("info.itsthesky.disky.skript");
             } catch (IOException e) {
                 Skript.error("Wait, this is anormal. Please report this error on GitHub.");
                 e.printStackTrace();
