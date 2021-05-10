@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Map;
@@ -62,10 +63,9 @@ public class InviteTracker extends ListenerAdapter {
     @Override
     public void onGuildJoin(final GuildJoinEvent event)
     {
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotJoin(event)));
         final Guild guild = event.getGuild();
         attemptInviteCaching(guild);
-
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotJoin(event)));
     }
 
     @Override
@@ -76,11 +76,11 @@ public class InviteTracker extends ListenerAdapter {
     }
 
     private void attemptInviteCaching(final Guild guild) {
-
-        guild.retrieveInvites().queue(retrievedInvites ->
-                retrievedInvites.forEach(retrievedInvite ->
-                        inviteCache.put(retrievedInvite.getCode(), new CachedInvite(retrievedInvite))));
-
+        try {
+            for (Invite invite : guild.retrieveInvites().complete()) inviteCache.put(invite.getCode(), new CachedInvite(invite));
+        } catch (InsufficientPermissionException e) {
+            DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join, need permission: " + e.getPermission().getName());
+        }
     }
 
 }
