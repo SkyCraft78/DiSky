@@ -25,7 +25,7 @@ public class ExprFIDMember extends SimpleExpression<Member> {
 
 	static {
 		Skript.registerExpression(ExprFIDMember.class, Member.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] Member with [the] id %string% [in [the] [guild] %guild%]"
+				"["+ Utils.getPrefixName() +"] Member with [the] id %string% [in [the] [guild] %-guild%]"
 		);
 	}
 
