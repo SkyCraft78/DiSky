@@ -76,6 +76,7 @@ public class BotManager {
                     .enableCache(CacheFlag.ACTIVITY)
                     .enableCache(CacheFlag.VOICE_STATE)
                     .enableCache(CacheFlag.CLIENT_STATUS)
+                    .enableCache(CacheFlag.ACTIVITY)
                     .enableCache(CacheFlag.ONLINE_STATUS)
                     .setChunkingFilter(ChunkingFilter.NONE)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)

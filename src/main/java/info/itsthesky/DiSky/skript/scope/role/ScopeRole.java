@@ -17,7 +17,6 @@ import javax.annotation.Nullable;
 @Name("Role Builder")
 @Description("This builder allow you to make role easily")
 @Since("1.4")
-@Examples("")
 public class ScopeRole extends EffectSection {
 
     public static RoleBuilder lastBuilder;
