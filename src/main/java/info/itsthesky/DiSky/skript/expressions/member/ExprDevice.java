@@ -20,12 +20,12 @@ import javax.annotation.Nullable;
 @Since("1.6")
 public class ExprDevice extends SimplePropertyExpression<Member, String> {
 
-    static {
-        register(ExprDevice.class, String.class,
-                "[discord] [member] device [status]",
-                "member"
-        );
-    }
+    //static {
+    //    register(ExprDevice.class, String.class,
+    //            "[discord] [member] device [status]",
+    //            "member"
+    //    );
+    //}
 
     @Nullable
     @Override
