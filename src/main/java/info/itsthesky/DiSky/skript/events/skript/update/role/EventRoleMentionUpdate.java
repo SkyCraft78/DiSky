@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.events.skript.role;
+package info.itsthesky.disky.skript.events.skript.update.role;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.util.SimpleEvent;
@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateMentionableEvent;
-import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -26,13 +25,13 @@ public class EventRoleMentionUpdate extends Event {
     private static final UpdatedValue<Boolean> updatedValue;
 
     static {
-        Skript.registerEvent("Role Mentionable Update", SimpleEvent.class, EventRoleMentionUpdate.class, "[discord] [guild] role mentionable (change|update)")
-                .description("Run when someone change the mention state of a role.", "Updated value possible:", "new [discord] role mention state", "old [discord] role mention state")
+        Skript.registerEvent("Role Mentionable Update", SimpleEvent.class, EventRoleMentionUpdate.class, "[guild] role mentionable (change|update)")
+                .description("Run when someone change the mention state of a role.", "Updated value possible:", "new role mention state", "old role mention state")
                 .examples("on role mentionable update:")
                 .since("1.12");
 
         BotManager.customListener.add(new DiSkyEvent<>(RoleUpdateMentionableEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventRoleMentionUpdate(e)))));
-        updatedValue = new UpdatedValue<>(Boolean.class, EventRoleMentionUpdate.class, "[discord] role mention state", true).register();
+        updatedValue = new UpdatedValue<>(Boolean.class, EventRoleMentionUpdate.class, "role mention state", true).register();
 
         EventValues.registerEventValue(EventRoleMentionUpdate.class, Guild.class, new Getter<Guild, EventRoleMentionUpdate>() {
             @Nullable

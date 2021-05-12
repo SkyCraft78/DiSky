@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.events.skript.role;
+package info.itsthesky.disky.skript.events.skript.update.role;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.util.SimpleEvent;
@@ -33,7 +33,7 @@ public class EventRoleColorUpdate extends Event {
                 .since("1.12");
 
         BotManager.customListener.add(new DiSkyEvent<>(RoleUpdateColorEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventRoleColorUpdate(e)))));
-        updatedValue = new UpdatedValue<>(Color.class, EventRoleColorUpdate.class, "[discord] role color", true).register();
+        updatedValue = new UpdatedValue<>(Color.class, EventRoleColorUpdate.class, "role color", true).register();
 
         EventValues.registerEventValue(EventRoleColorUpdate.class, Guild.class, new Getter<Guild, EventRoleColorUpdate>() {
             @Nullable

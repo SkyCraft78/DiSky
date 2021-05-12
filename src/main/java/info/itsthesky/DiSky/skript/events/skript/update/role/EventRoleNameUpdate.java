@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.events.skript.role;
+package info.itsthesky.disky.skript.events.skript.update.role;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.util.SimpleEvent;
@@ -14,14 +14,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.role.update.RoleUpdateColorEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 public class EventRoleNameUpdate extends Event {
 
@@ -34,7 +31,7 @@ public class EventRoleNameUpdate extends Event {
                 .since("1.12");
 
         BotManager.customListener.add(new DiSkyEvent<>(RoleUpdateNameEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventRoleNameUpdate(e)))));
-        updatedValue = new UpdatedValue<>(String.class, EventRoleNameUpdate.class, "[discord] role name", true).register();
+        updatedValue = new UpdatedValue<>(String.class, EventRoleNameUpdate.class, "role name", true).register();
 
         EventValues.registerEventValue(EventRoleNameUpdate.class, Guild.class, new Getter<Guild, EventRoleNameUpdate>() {
             @Nullable

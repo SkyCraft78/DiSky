@@ -23,10 +23,8 @@ import java.awt.*;
 public class ExprColorFromHex extends SimpleExpression<Color> {
 
 	static {
-		if (!DiSky.getPluginManager().isPluginEnabled("SkImage")) {
-			Skript.registerExpression(ExprColorFromHex.class, Color.class, ExpressionType.SIMPLE,
+		Skript.registerExpression(ExprColorFromHex.class, Color.class, ExpressionType.SIMPLE,
 					"["+ Utils.getPrefixName() +"] [the] color from hex[adecimal] [code] %string%");
-		}
 	}
 
 	private Expression<String> exprHex;

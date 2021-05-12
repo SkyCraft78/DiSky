@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.events.skript.role;
+package info.itsthesky.disky.skript.events.skript.update.role;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.util.SimpleEvent;
@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdatePermissionsEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -28,12 +27,12 @@ public class EventRolePermissionsUpdate extends Event {
 
     static {
         Skript.registerEvent("Role Permissions Update", SimpleEvent.class, EventRolePermissionsUpdate.class, "[discord] [guild] role perm(s|issions) (change|update)")
-                .description("Run when someone change the permissions of a role.")
+                .description("Run when someone change the permissions of a role.", "Possible updated values:", "new role perms", "old role perms")
                 .examples("on role perms update:")
                 .since("1.12");
 
         BotManager.customListener.add(new DiSkyEvent<>(RoleUpdatePermissionsEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventRolePermissionsUpdate(e)))));
-        updatedValue = new UpdatedValue<>(Permission.class, EventRolePermissionsUpdate.class, "[discord] role perm(s|issions)", true).register();
+        updatedValue = new UpdatedValue<>(Permission.class, EventRolePermissionsUpdate.class, "role perms", false).register();
 
         EventValues.registerEventValue(EventRolePermissionsUpdate.class, Guild.class, new Getter<Guild, EventRolePermissionsUpdate>() {
             @Nullable
