@@ -6,6 +6,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.skript.log.ErrorQuality;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.UpdatedValue;
 import org.bukkit.event.Event;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 /**
  * @author ItsTheSky
@@ -34,27 +36,24 @@ public class ExprUpdatedValue extends SimpleExpression<Object> {
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
         String value = parser.expr
-                .replaceAll("new", "")
-                .replaceAll("old", "")
-                .replaceAll("the", "");
-        String type = parser.expr.replaceAll(value, "");
+                .replaceAll("new ", "")
+                .replaceAll("old ", "")
+                .replaceAll("the ", "");
 
-        AtomicBoolean shouldContinue = new AtomicBoolean(true);
-        maps.forEach((e, v) -> {
-            if (!v.getName().equals(value)) shouldContinue.set(false);
-        });
-        if (!shouldContinue.get()) return false;
-
-        AtomicReference<UpdatedValue<?>> values = new AtomicReference<>(null);
-        maps.forEach((e, v) -> Arrays.asList(ScriptLoader.getCurrentEvents()).forEach(ev -> {
-            if (e.equals(ev)) values.set(v);
-        }));
-        if (values.get() == null) {
-            Skript.error("The "+ type +"" +value + " can't be used in a "+ScriptLoader.getCurrentEventName()+" Skript event.");
+        boolean shouldContinue = false;
+        if (maps.get(ScriptLoader.getCurrentEvents()[0]) != null) {
+            if (value.matches(maps.get(ScriptLoader.getCurrentEvents()[0]).getName())) {
+                shouldContinue = true;
+            }
+        }
+        if (!shouldContinue) {
+            // TODO Idk if it's better to warn the user or pass that expression
+            //Skript.error("Cannot use an updated value in a " + ScriptLoader.getCurrentEventName() + " event", ErrorQuality.SEMANTIC_ERROR);
             return false;
         }
+
+        this.value = maps.get(ScriptLoader.getCurrentEvents()[0]);
         this.isNew = matchedPattern != 0;
-        this.value = values.get();
         return true;
     }
 
