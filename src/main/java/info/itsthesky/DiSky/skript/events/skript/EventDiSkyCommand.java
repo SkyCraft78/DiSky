@@ -26,7 +26,10 @@ public class EventDiSkyCommand extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("DiSky Command", SimpleEvent.class, EventDiSkyCommand.class, "[discord] disky command");
+        Skript.registerEvent("DiSky Command", SimpleEvent.class, EventDiSkyCommand.class, "[discord] disky command")
+        .description("Fired when any discord command from DiSky is done.")
+        .examples("on disky command:")
+        .since("1.8");
 
         EventValues.registerEventValue(EventDiSkyCommand.class, JDA.class, new Getter<JDA, EventDiSkyCommand>() {
             @Nullable

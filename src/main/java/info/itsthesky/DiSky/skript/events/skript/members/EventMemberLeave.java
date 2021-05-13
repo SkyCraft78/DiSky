@@ -26,7 +26,11 @@ public class EventMemberLeave extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("Member Leave", SimpleEvent.class, EventMemberLeave.class, "[discord] (user|member) leave (guild|server)");
+        Skript.registerEvent("Member Leave", SimpleEvent.class, EventMemberLeave.class, "[discord] (user|member) leave (guild|server)")
+        .description("Fired when a user leave any guild where the bot is in.")
+        .examples("on member leave guild:",
+                "\tsend message \"**We are sorry to let you go, `%name of event-user%` !**\" to channel with id \"750449611302371469\"")
+        .since("1.0");
 
         EventValues.registerEventValue(EventMemberLeave.class, User.class, new Getter<User, EventMemberLeave>() {
             @Nullable

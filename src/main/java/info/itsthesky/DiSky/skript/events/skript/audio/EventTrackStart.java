@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventTrackStart extends Event {
 
     static {
-        Skript.registerEvent("Track Start", SimpleEvent.class, EventTrackStart.class, "[discord] (audio|track) start");
+        Skript.registerEvent("Track Start", SimpleEvent.class, EventTrackStart.class, "[discord] (audio|track) start")
+            .description("Fired when a track jus started in a guild.")
+            .examples("on track start:")
+            .since("1.6, 1.8 (more event-value)");
 
         EventValues.registerEventValue(EventTrackStart.class, AudioTrack.class, new Getter<AudioTrack, EventTrackStart>() {
             @Nullable

@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventRoleAdd extends Event {
 
     static {
-        Skript.registerEvent("Member Role Add", SimpleEvent.class, EventRoleAdd.class, "[discord] [member] role add");
+        Skript.registerEvent("Member Role Add", SimpleEvent.class, EventRoleAdd.class, "[discord] [member] role add")
+        .description("Run when any role is added to a member.")
+        .examples("on member role add:")
+        .since("1.9");
 
         EventValues.registerEventValue(EventRoleAdd.class, User.class, new Getter<User, EventRoleAdd>() {
             @Nullable

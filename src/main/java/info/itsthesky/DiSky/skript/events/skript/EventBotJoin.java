@@ -26,7 +26,11 @@ public class EventBotJoin extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("Bot Join", SimpleEvent.class, EventBotJoin.class, "[discord] bot join (guild|server)");
+        Skript.registerEvent("Bot Join", SimpleEvent.class, EventBotJoin.class, "[discord] bot join (guild|server)")
+        .description("Fired when a bot join any guild where the bot is in.")
+        .examples("on bot join guild:",
+                "\tsend message \"I'm the better bot ever, made with DiSky by Sky!\" to text channel with id \"750449611302371469\"")
+        .since("1.0");
 
         EventValues.registerEventValue(EventBotJoin.class, JDA.class, new Getter<JDA, EventBotJoin>() {
             @Nullable

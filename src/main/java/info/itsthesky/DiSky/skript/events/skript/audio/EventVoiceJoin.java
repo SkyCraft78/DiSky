@@ -24,7 +24,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventVoiceJoin extends Event {
 
     static {
-        Skript.registerEvent("Voice Channel Join", SimpleEvent.class, EventVoiceJoin.class, "[discord] [member] voice channel join");
+        Skript.registerEvent("Voice Channel Join", SimpleEvent.class, EventVoiceJoin.class, "[discord] [member] voice channel join")
+            .description("Fired when any member join a voice channel.")
+            .examples("on voice channel join:")
+            .since("1.9");
 
         EventValues.registerEventValue(EventVoiceJoin.class, VoiceChannel.class, new Getter<VoiceChannel, EventVoiceJoin>() {
             @Nullable

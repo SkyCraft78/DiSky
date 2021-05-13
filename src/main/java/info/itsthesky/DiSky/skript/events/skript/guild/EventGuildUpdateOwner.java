@@ -33,7 +33,13 @@ public class EventGuildUpdateOwner extends Event {
     private static final UpdatedValue<Member> updatedOwner;
 
     static {
-        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateOwner.class, "[discord] guild owner (change|update)");
+        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateOwner.class, "[discord] guild owner (change|update)")
+        .description("Run when the owner of the guild is updated.",
+                "Possible updated values:",
+                "new guild owner",
+                "old guild owner")
+        .examples("on guild owner change:")
+        .since("1.10");
 
         updatedOwner = new UpdatedValue<>(Member.class, EventGuildUpdateOwner.class, "[discord] guild owner", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateOwnerEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventGuildUpdateOwner(e)))));

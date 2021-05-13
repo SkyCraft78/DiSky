@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventInviteDelete extends Event {
 
     static {
-        Skript.registerEvent("Invite Delete", SimpleEvent.class, EventInviteDelete.class, "[discord] [guild] invite delet(e|ion)");
+        Skript.registerEvent("Invite Delete", SimpleEvent.class, EventInviteDelete.class, "[discord] [guild] invite delet(e|ion)")
+        .description("Run when someone delete an invite in a guild.")
+        .examples("on invite delete:")
+        .since("1.9");
 
         EventValues.registerEventValue(EventInviteDelete.class, GuildChannel.class, new Getter<GuildChannel, EventInviteDelete>() {
             @Nullable

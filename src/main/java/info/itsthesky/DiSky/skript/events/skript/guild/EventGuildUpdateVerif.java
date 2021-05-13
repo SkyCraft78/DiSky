@@ -37,7 +37,13 @@ public class EventGuildUpdateVerif extends Event {
     private static final UpdatedValue<String> updatedLevel;
 
     static {
-        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateVerif.class, "[discord] guild verification [level] (change|update)");
+        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateVerif.class, "[discord] guild verification [level] (change|update)")
+        .description("Run when the verification level of the guild is updated.",
+                "Possible updated values:",
+                "new guild [verification] level",
+                "old guild [verification] level")
+        .examples("on guild verification level change:")
+        .since("1.10");
 
         updatedLevel = new UpdatedValue<>(String.class, EventGuildUpdateVerif.class, "[discord] guild [verification] level", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateVerificationLevelEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventGuildUpdateVerif(e)))));

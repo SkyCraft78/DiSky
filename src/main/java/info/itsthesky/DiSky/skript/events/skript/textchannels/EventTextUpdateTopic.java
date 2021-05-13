@@ -36,7 +36,13 @@ public class EventTextUpdateTopic extends Event {
     private static final UpdatedValue<String> updatedOwner;
 
     static {
-        Skript.registerEvent("Text Channel Topic Update", SimpleEvent.class, EventTextUpdateTopic.class, "[discord] [text] channel topic (change|update)");
+        Skript.registerEvent("Text Channel Topic Update", SimpleEvent.class, EventTextUpdateTopic.class, "[discord] [text] channel topic (change|update)")
+        .description("Run when the topic of a text channel is updated.",
+                "Possible updated values:",
+                "new [discord] [text] channel topic",
+                "old [discord] [text] channel topic")
+        .examples("on channel topic change:")
+        .since("1.10");
 
         updatedOwner = new UpdatedValue<>(String.class, EventTextUpdateTopic.class, "[discord] [text] channel topic", true).register();
         new DiSkyEvent<>(TextChannelUpdateTopicEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventTextUpdateTopic(e))));

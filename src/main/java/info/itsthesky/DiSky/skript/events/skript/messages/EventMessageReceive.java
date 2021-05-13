@@ -27,7 +27,11 @@ public class EventMessageReceive extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("Message Receive", SimpleEvent.class, EventMessageReceive.class, "[discord] message receive");
+        Skript.registerEvent("Message Receive", SimpleEvent.class, EventMessageReceive.class, "[discord] message receive")
+        .description("Run when any message is sent and the bot is able to see it.")
+        .examples("on message receive:",
+                "\tsend message (discord id of event-user) to event-channel with event-bot")
+        .since("1.0");
 
         EventValues.registerEventValue(EventMessageReceive.class, TextChannel.class, new Getter<TextChannel, EventMessageReceive>() {
             @Nullable
