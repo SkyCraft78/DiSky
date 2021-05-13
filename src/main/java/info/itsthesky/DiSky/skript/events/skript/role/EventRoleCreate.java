@@ -11,7 +11,9 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.role.RoleCreateEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -44,6 +46,22 @@ public class EventRoleCreate extends Event {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventRoleCreate.class, User.class, new Getter<User, EventRoleCreate>() {
+            @Nullable
+            @Override
+            public User get(final @NotNull EventRoleCreate event) {
+                return event.author;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventRoleCreate.class, Member.class, new Getter<Member, EventRoleCreate>() {
+            @Nullable
+            @Override
+            public Member get(final @NotNull EventRoleCreate event) {
+                return event.authorM;
+            }
+        }, 0);
+
         EventValues.registerEventValue(EventRoleCreate.class, Role.class, new Getter<Role, EventRoleCreate>() {
             @Nullable
             @Override
@@ -57,11 +75,15 @@ public class EventRoleCreate extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final RoleCreateEvent e;
+    private final User author;
+    private final Member authorM;
 
     public EventRoleCreate(
             final RoleCreateEvent e
             ) {
         super(Utils.areEventAsync());
+        author = e.getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        authorM = e.getGuild().getMember(author);
         this.e = e;
     }
 

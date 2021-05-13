@@ -11,7 +11,9 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -52,16 +54,36 @@ public class EventRoleDelete extends Event {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventRoleDelete.class, User.class, new Getter<User, EventRoleDelete>() {
+            @Nullable
+            @Override
+            public User get(final @NotNull EventRoleDelete event) {
+                return event.author;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventRoleDelete.class, Member.class, new Getter<Member, EventRoleDelete>() {
+            @Nullable
+            @Override
+            public Member get(final @NotNull EventRoleDelete event) {
+                return event.authorM;
+            }
+        }, 0);
+
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final RoleDeleteEvent e;
+    private final User author;
+    private final Member authorM;
 
     public EventRoleDelete(
             final RoleDeleteEvent e
             ) {
         super(Utils.areEventAsync());
+        author = e.getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        authorM = e.getGuild().getMember(author);
         this.e = e;
     }
 

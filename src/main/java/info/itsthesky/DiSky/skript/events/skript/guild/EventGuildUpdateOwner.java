@@ -13,6 +13,7 @@ import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -54,11 +55,29 @@ public class EventGuildUpdateOwner extends Event {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventGuildUpdateOwner.class, User.class, new Getter<User, EventGuildUpdateOwner>() {
+            @Nullable
+            @Override
+            public User get(final @NotNull EventGuildUpdateOwner event) {
+                return event.author;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventGuildUpdateOwner.class, Member.class, new Getter<Member, EventGuildUpdateOwner>() {
+            @Nullable
+            @Override
+            public Member get(final @NotNull EventGuildUpdateOwner event) {
+                return event.authorM;
+            }
+        }, 0);
+
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final GuildUpdateOwnerEvent e;
+    private final User author;
+    private final Member authorM;
 
     public EventGuildUpdateOwner(
             final GuildUpdateOwnerEvent e
@@ -67,6 +86,8 @@ public class EventGuildUpdateOwner extends Event {
         this.e = e;
         updatedOwner.setNewObject(e.getNewOwner());
         updatedOwner.setOldObject(e.getOldOwner());
+        author = e.getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        authorM = e.getGuild().getMember(author);
     }
 
     @NotNull

@@ -8,10 +8,13 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.skript.events.skript.role.EventRoleDelete;
 import info.itsthesky.disky.tools.UpdatedValue;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -52,13 +55,29 @@ public class EventGuildUpdateName extends Event {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventGuildUpdateName.class, User.class, new Getter<User, EventGuildUpdateName>() {
+            @Nullable
+            @Override
+            public User get(final @NotNull EventGuildUpdateName event) {
+                return event.author;
+            }
+        }, 0);
 
+        EventValues.registerEventValue(EventGuildUpdateName.class, Member.class, new Getter<Member, EventGuildUpdateName>() {
+            @Nullable
+            @Override
+            public Member get(final @NotNull EventGuildUpdateName event) {
+                return event.authorM;
+            }
+        }, 0);
 
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final GuildUpdateNameEvent e;
+    private final User author;
+    private final Member authorM;
 
     public EventGuildUpdateName(
             final GuildUpdateNameEvent e
@@ -67,6 +86,8 @@ public class EventGuildUpdateName extends Event {
         this.e = e;
         updatedName.setNewObject(e.getNewName());
         updatedName.setOldObject(e.getOldName());
+        author = e.getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        authorM = e.getGuild().getMember(author);
     }
 
     @NotNull
