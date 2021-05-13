@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventInviteCreate extends Event {
 
     static {
-        Skript.registerEvent("Invite Create", SimpleEvent.class, EventInviteCreate.class, "[discord] [guild] invite creat(e|ion)");
+        Skript.registerEvent("Invite Create", SimpleEvent.class, EventInviteCreate.class, "[discord] [guild] invite creat(e|ion)")
+        .description("Run when someone create a new invite in a guild.")
+        .examples("on invite create:")
+        .since("1.9");
 
         EventValues.registerEventValue(EventInviteCreate.class, Invite.class, new Getter<Invite, EventInviteCreate>() {
             @Nullable

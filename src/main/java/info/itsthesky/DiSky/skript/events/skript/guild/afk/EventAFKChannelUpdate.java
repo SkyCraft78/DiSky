@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventAFKChannelUpdate extends Event {
 
     static {
-        Skript.registerEvent("Invite Create", SimpleEvent.class, EventAFKChannelUpdate.class, "[discord] [guild] afk channel (change|update)");
+        Skript.registerEvent("Invite Create", SimpleEvent.class, EventAFKChannelUpdate.class, "[discord] [guild] afk channel (change|update)")
+            .description("Run when someone change the AFK channel of the guild. Use new afk channel and old afk channel expression.")
+            .examples("on afk channel update:")
+            .since("1.9");
 
         EventValues.registerEventValue(EventAFKChannelUpdate.class, GuildChannel.class, new Getter<GuildChannel, EventAFKChannelUpdate>() {
             @Nullable

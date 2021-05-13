@@ -24,7 +24,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventVoiceLeave extends Event {
 
     static {
-        Skript.registerEvent("Voice Channel Leave", SimpleEvent.class, EventVoiceLeave.class, "[discord] [member] voice channel leave");
+        Skript.registerEvent("Voice Channel Leave", SimpleEvent.class, EventVoiceLeave.class, "[discord] [member] voice channel leave")
+            .description("Fired when any member leave a voice channel.")
+            .examples("on voice channel leave:")
+            .since("1.9");
 
         EventValues.registerEventValue(EventVoiceLeave.class, VoiceChannel.class, new Getter<VoiceChannel, EventVoiceLeave>() {
             @Nullable

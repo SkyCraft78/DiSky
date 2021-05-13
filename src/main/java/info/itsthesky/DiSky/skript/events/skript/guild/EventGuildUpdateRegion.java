@@ -34,7 +34,13 @@ public class EventGuildUpdateRegion extends Event {
     private static final UpdatedValue<String> updatedOwner;
 
     static {
-        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateRegion.class, "[discord] guild region (change|update)");
+        Skript.registerEvent("Guild Owner Update", SimpleEvent.class, EventGuildUpdateRegion.class, "[discord] guild region (change|update)")
+        .description("Run when the region of the guild is updated.",
+                "Possible updated values:",
+                "new guild region",
+                "old guild region")
+        .examples("on guild region change:")
+        .since("1.10");
 
         updatedOwner = new UpdatedValue<>(String.class, EventGuildUpdateRegion.class, "[discord] guild region", true).register();
         new DiSkyEvent<>(GuildUpdateRegionEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventGuildUpdateRegion(e))));

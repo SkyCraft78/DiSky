@@ -22,7 +22,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventDiSkyException extends Event {
 
     static {
-        Skript.registerEvent("DiSky Exception", SimpleEvent.class, EventDiSkyException.class, "[discord] [guild] disky (exception|error|fatal|throwable)");
+        Skript.registerEvent("DiSky Exception", SimpleEvent.class, EventDiSkyException.class, "[discord] [guild] disky (exception|error|fatal|throwable)")
+        .description("Fired when DiSky receive an internal error (throwable or exception), use 'last disky error' to get it, or use event-string.")
+        .examples("on disky exception:")
+        .since("1.8");
 
         EventValues.registerEventValue(EventDiSkyException.class, String.class, new Getter<String, EventDiSkyException>() {
             @Nullable

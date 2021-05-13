@@ -27,7 +27,10 @@ public class EventVoiceMove extends Event {
     final static UpdatedValue<VoiceChannel> updatedValue;
 
     static {
-        Skript.registerEvent("Voice Channel Move", SimpleEvent.class, EventVoiceMove.class, "[discord] [member] [voice] channel move");
+        Skript.registerEvent("Voice Channel Move", SimpleEvent.class, EventVoiceMove.class, "[discord] [member] [voice] channel move")
+            .description("Fired when any member is moved to another voice channel.")
+            .examples("on member channel move:")
+            .since("1.9");
         updatedValue = new UpdatedValue<>(VoiceChannel.class, EventVoiceMove.class, "[voice] channel", true);
 
         EventValues.registerEventValue(EventVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EventVoiceMove>() {

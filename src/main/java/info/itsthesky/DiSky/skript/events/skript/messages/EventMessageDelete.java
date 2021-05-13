@@ -27,7 +27,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventMessageDelete extends Event {
 
     static {
-        Skript.registerEvent("Message Delete", SimpleEvent.class, EventMessageDelete.class, "[discord] [guild] message delete");
+        Skript.registerEvent("Message Delete", SimpleEvent.class, EventMessageDelete.class, "[discord] [guild] message delete")
+        .description("Run when any message is deleted. Use event-string to get the message's content.")
+        .examples("on message delete:")
+        .since("1.3");
 
         EventValues.registerEventValue(EventMessageDelete.class, String.class, new Getter<String, EventMessageDelete>() {
             @Nullable

@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventTrackEnd extends Event {
 
     static {
-        Skript.registerEvent("Track End", SimpleEvent.class, EventTrackEnd.class, "[discord] (audio|track) (finish[ed]|end)");
+        Skript.registerEvent("Track End", SimpleEvent.class, EventTrackEnd.class, "[discord] (audio|track) (finish[ed]|end)")
+            .description("Fired when a track just ended in a guild.")
+            .examples("on track end:")
+            .since("1.6, 1.8 (more event-value)");
 
         EventValues.registerEventValue(EventTrackEnd.class, AudioTrack.class, new Getter<AudioTrack, EventTrackEnd>() {
             @Nullable

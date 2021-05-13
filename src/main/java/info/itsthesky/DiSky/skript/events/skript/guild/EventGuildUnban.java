@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventGuildUnban extends Event {
 
     static {
-        Skript.registerEvent("Guild Unban", SimpleEvent.class, EventGuildUnban.class, "[discord] guild [member] unban");
+        Skript.registerEvent("Guild Unban", SimpleEvent.class, EventGuildUnban.class, "[discord] guild [member] unban")
+        .description("Run when a member is unbanned from a guild")
+        .examples("on guild unban:")
+        .since("1.4");
 
         EventValues.registerEventValue(EventGuildUnban.class, User.class, new Getter<User, EventGuildUnban>() {
             @Nullable

@@ -28,7 +28,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventRoleRemove extends Event {
 
     static {
-        Skript.registerEvent("Member Role Remove", SimpleEvent.class, EventRoleRemove.class, "[discord] [member] role remove");
+        Skript.registerEvent("Member Role Remove", SimpleEvent.class, EventRoleRemove.class, "[discord] [member] role remove")
+        .description("Run when any role is removed from a member.")
+        .examples("on member role remove:")
+        .since("1.9");
 
         EventValues.registerEventValue(EventRoleRemove.class, User.class, new Getter<User, EventRoleRemove>() {
             @Nullable

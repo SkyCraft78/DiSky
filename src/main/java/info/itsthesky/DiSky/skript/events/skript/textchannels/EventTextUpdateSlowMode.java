@@ -36,7 +36,13 @@ public class EventTextUpdateSlowMode extends Event {
     private static final UpdatedValue<Integer> updatedOwner;
 
     static {
-        Skript.registerEvent("Text Channel Slow Mode Update", SimpleEvent.class, EventTextUpdateSlowMode.class, "[discord] [text] channel slow[-][ ]mode (change|update)");
+        Skript.registerEvent("Text Channel Slow Mode Update", SimpleEvent.class, EventTextUpdateSlowMode.class, "[discord] [text] channel slow[-][ ]mode (change|update)")
+        .description("Run when the slow mode of a text channel is updated.",
+                "Possible updated values:",
+                "new [discord] [text] channel slow[-][ ]mode",
+                "old [discord] [text] channel slow[-][ ]mode")
+        .examples("on channel slow mode change:")
+        .since("1.10");
 
         updatedOwner = new UpdatedValue<>(Integer.class, EventTextUpdateSlowMode.class, "[discord] [text] channel slow[-][ ]mode", true).register();
         new DiSkyEvent<>(TextChannelUpdateSlowmodeEvent.class, e -> Utils.sync(() -> DiSky.getPluginManager().callEvent(new EventTextUpdateSlowMode(e))));
