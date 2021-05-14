@@ -35,6 +35,8 @@ public class ExprUpdatedValue extends SimpleExpression<Object> {
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
+        if (parser.expr.contains("("))
+            return false;
         String value = parser.expr
                 .replaceAll("new ", "")
                 .replaceAll("old ", "")
