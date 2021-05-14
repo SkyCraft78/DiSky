@@ -23,7 +23,7 @@ public class ExprLastMessage extends SimpleExpression<Message> {
 
     static {
         Skript.registerExpression(ExprLastMessage.class, Message.class, ExpressionType.SIMPLE,
-                "[the] [last] [sent] message"
+                "[the] last [sent] message"
         );
     }
 
