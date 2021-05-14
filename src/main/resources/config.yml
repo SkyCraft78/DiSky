@@ -42,3 +42,8 @@ Intents:
 HandleErrors:
   NullPointerException: false
   InsufficientPermissionException: false
+
+# Enable or disable the token of bot expression.
+# It's mainly to avoid token leakers like with the
+# OP / Permissions commands ('!')
+TokenExpression: true

@@ -22,7 +22,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventBotConnect extends Event {
 
     static {
-        Skript.registerEvent("Bot Load", SimpleEvent.class, EventBotConnect.class, "[discord] bot (load|connect)");
+        Skript.registerEvent("Bot Load", SimpleEvent.class, EventBotConnect.class, "[discord] bot (load|connect)")
+        .description("Fired when a bot is loading using the 'login to ...' effect.")
+        .examples("on bot load:")
+        .since("1.6");
 
         EventValues.registerEventValue(EventBotConnect.class, JDA.class, new Getter<JDA, EventBotConnect>() {
             @Nullable

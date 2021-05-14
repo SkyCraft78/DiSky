@@ -32,7 +32,13 @@ import org.jetbrains.annotations.Nullable;
 public class EventMessageEdit extends Event {
 
     static {
-        Skript.registerEvent("Message Edit", SimpleEvent.class, EventMessageEdit.class, "[discord] message edit");
+        Skript.registerEvent("Message Edit", SimpleEvent.class, EventMessageEdit.class, "[discord] message edit")
+        .description("Run when any message is edited",
+        "To get the new and old content, see for:",
+        "%new content% and %old content%",
+        "Both will return a string with the new and the old content!")
+        .examples("on message edit:")
+        .since("1.4");
 
         EventValues.registerEventValue(EventMessageEdit.class, User.class, new Getter<User, EventMessageEdit>() {
             @Nullable

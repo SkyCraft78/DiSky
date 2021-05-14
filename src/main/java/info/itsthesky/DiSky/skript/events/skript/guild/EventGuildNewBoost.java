@@ -36,7 +36,13 @@ public class EventGuildNewBoost extends Event {
     private static final UpdatedValue<Integer> updatedAmount;
 
     static {
-        Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildNewBoost.class, "[discord] [guild] new [member] boost");
+        Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildNewBoost.class, "[discord] [guild] new [member] boost")
+            .description("Run when a member boost a new time in the guild.",
+                    "Possible updated values:",
+                    "new boost amount",
+                    "old boost amount")
+            .examples("on guild new boost:")
+            .since("1.10");
 
         updatedAmount = new UpdatedValue<>(Integer.class, EventGuildNewBoost.class, "[discord] boost amount", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateBoostCountEvent.class, e -> Utils.sync(() -> {

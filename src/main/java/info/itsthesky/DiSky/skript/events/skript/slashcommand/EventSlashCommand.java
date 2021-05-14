@@ -28,7 +28,10 @@ public class EventSlashCommand extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("Slash Command", SimpleEvent.class, EventSlashCommand.class, "[discord] slash command");
+        Skript.registerEvent("Slash Command", SimpleEvent.class, EventSlashCommand.class, "[discord] slash command")
+        .description("Fired when a SLASH command is executed by any user. Use %event-string% for the command name!\n See the wiki to know how to get the options :)\nWiki: https://github.com/SkyCraft78/DiSky/wiki/Slash-Commands")
+        .examples("on slash command:")
+        .since("1.5");
 
         EventValues.registerEventValue(EventSlashCommand.class, TextChannel.class, new Getter<TextChannel, EventSlashCommand>() {
             @Nullable

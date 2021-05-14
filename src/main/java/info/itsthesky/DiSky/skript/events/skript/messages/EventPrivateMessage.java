@@ -25,7 +25,11 @@ import org.jetbrains.annotations.Nullable;
 public class EventPrivateMessage extends Event {
 
     static {
-        Skript.registerEvent("Private Message", SimpleEvent.class, EventPrivateMessage.class, "[discord] (private|direct) message receive");
+        Skript.registerEvent("Private Message", SimpleEvent.class, EventPrivateMessage.class, "[discord] (private|direct) message receive")
+        .description("Run when any message is sent to the bot's DM")
+        .examples("on private message receive:",
+                "\treply with \"I'm not a human, you can't talk to me :c\"")
+        .since("1.1");
 
         EventValues.registerEventValue(EventPrivateMessage.class, User.class, new Getter<User, EventPrivateMessage>() {
             @Nullable

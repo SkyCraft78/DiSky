@@ -27,7 +27,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventReactionAdd extends Event {
 
     static {
-        Skript.registerEvent("Reaction Add", SimpleEvent.class, EventReactionAdd.class, "[discord] [guild] reaction add");
+        Skript.registerEvent("Reaction Add", SimpleEvent.class, EventReactionAdd.class, "[discord] [guild] reaction add")
+        .description("Run when any message receive a reaction. Use event-string to get the messge id.")
+        .examples("on reaction add:")
+        .since("1.3");
 
         EventValues.registerEventValue(EventReactionAdd.class, Message.class, new Getter<Message, EventReactionAdd>() {
             @Nullable

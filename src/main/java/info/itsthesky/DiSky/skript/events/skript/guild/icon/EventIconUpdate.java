@@ -25,7 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventIconUpdate extends Event {
 
     static {
-        Skript.registerEvent("Invite Create", SimpleEvent.class, EventIconUpdate.class, "[discord] guild icon (change|update)");
+        Skript.registerEvent("Invite Create", SimpleEvent.class, EventIconUpdate.class, "[discord] guild icon (change|update)")
+            .description("Run when someone change the icon of the specific guild. See old icon url and new icon url.")
+            .examples("on guild icon update:")
+            .since("1.9");
 
         EventValues.registerEventValue(EventIconUpdate.class, JDA.class, new Getter<JDA, EventIconUpdate>() {
             @Nullable

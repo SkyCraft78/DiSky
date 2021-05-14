@@ -24,7 +24,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventNickChange extends Event {
 
     static {
-        Skript.registerEvent("Nickname Change", SimpleEvent.class, EventNickChange.class, "[discord] [member] nick[name] change");
+        Skript.registerEvent("Nickname Change", SimpleEvent.class, EventNickChange.class, "[discord] [member] nick[name] change")
+        .description("Run when any member change his nickname")
+        .examples("on member nickname change:")
+        .since("1.3");
 
         EventValues.registerEventValue(EventNickChange.class, Member.class, new Getter<Member, EventNickChange>() {
             @Nullable

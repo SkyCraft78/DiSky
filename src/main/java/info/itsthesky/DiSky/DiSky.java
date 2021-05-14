@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 public class DiSky extends JavaPlugin {
 
+    public static final String CONFIG = "config.yml";
     /* Initialisation */
     private static DiSky instance;
     private Logger logger;
@@ -54,12 +55,12 @@ public class DiSky extends JavaPlugin {
             Skript.error("Skript isn't installed or doesn't accept registrations.");
             pluginManager.disablePlugin(this);
         }
-        Utils.saveResourceAs("config.yml");
-        File file = new File(getDataFolder(), "config.yml");
+        Utils.saveResourceAs(CONFIG);
+        File file = new File(getDataFolder(), CONFIG);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         List<GatewayIntent> gatewayIntents = new ArrayList<>();
         for (GatewayIntent intent : GatewayIntent.values()) {
-            if (Utils.getOrSetDefault("config.yml", "Intents." + intent.name(), true))
+            if (Utils.getOrSetDefault(CONFIG, "Intents." + intent.name(), true))
                 gatewayIntents.add(intent);
         }
         intents = gatewayIntents.toArray(new GatewayIntent[0]);

@@ -29,7 +29,11 @@ public class EventMemberJoin extends Event {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
-        Skript.registerEvent("Member Join", SimpleEvent.class, EventMemberJoin.class, "[discord] (user|member) join (guild|server)");
+        Skript.registerEvent("Member Join", SimpleEvent.class, EventMemberJoin.class, "[discord] (user|member) join (guild|server)")
+        .description("Fired when a user join any guild where the bot is in.")
+        .examples("on member join guild:",
+                "\tsend message \"**Welcome to the server, `%name of event-user%`!**\" to channel with id \"750449611302371469\"")
+        .since("1.0, 1.7 (event-invite");
 
         EventValues.registerEventValue(EventMemberJoin.class, User.class, new Getter<User, EventMemberJoin>() {
             @Nullable

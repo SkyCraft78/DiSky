@@ -27,7 +27,10 @@ import org.jetbrains.annotations.Nullable;
 public class EventReactionRemove extends Event {
 
     static {
-        Skript.registerEvent("Reaction Remove", SimpleEvent.class, EventReactionRemove.class, "[discord] [guild] reaction remove");
+        Skript.registerEvent("Reaction Remove", SimpleEvent.class, EventReactionRemove.class, "[discord] [guild] reaction remove")
+        .description("Run when any member remove a reaction from a message")
+        .examples("on reaction remove:")
+        .since("1.3");
 
         EventValues.registerEventValue(EventReactionRemove.class, Message.class, new Getter<Message, EventReactionRemove>() {
             @Nullable

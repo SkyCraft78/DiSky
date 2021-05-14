@@ -21,8 +21,10 @@ import org.bukkit.event.Event;
 public class ExprToken extends SimpleExpression<String> {
 
 	static {
-		Skript.registerExpression(ExprToken.class, String.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] token of [the] %bot%");
+		if (Utils.getOrSetDefault("config.yml", "TokenExpression", true)) {
+			Skript.registerExpression(ExprToken.class, String.class, ExpressionType.SIMPLE,
+					"["+ Utils.getPrefixName() +"] [the] token of [the] %bot%");
+		}
 	}
 
 	private Expression<JDA> exprBot;

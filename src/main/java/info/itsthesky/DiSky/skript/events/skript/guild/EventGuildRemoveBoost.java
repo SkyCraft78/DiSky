@@ -36,7 +36,13 @@ public class EventGuildRemoveBoost extends Event {
     private static final UpdatedValue<Integer> updatedAmount;
 
     static {
-        Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildRemoveBoost.class, "[discord] [guild] remove [member] boost");
+        Skript.registerEvent("Guild New Boost", SimpleEvent.class, EventGuildRemoveBoost.class, "[discord] [guild] remove [member] boost")
+        .description("Run when a member remove a boost from the guild.",
+                "Possible updated values:",
+                "new boost amount",
+                "old boost amount")
+        .examples("on guild new boost:")
+        .since("1.10");
 
         updatedAmount = new UpdatedValue<>(Integer.class, EventGuildRemoveBoost.class, "[discord] boost amount", true).register();
         BotManager.customListener.add(new DiSkyEvent<>(GuildUpdateBoostCountEvent.class, e -> Utils.sync(() -> {
