@@ -30,7 +30,7 @@ public class ExprBotPrefix extends SimplePropertyExpression<Object, String> {
     @Override
     public String convert(Object entity) {
         if (entity instanceof JDA) return BotManager.prefixes.get(entity);
-        return BotManager.prefixes.get(BotManager.getBot(entity.toString()));
+        return BotManager.prefixes.get(BotManager.getBot(entity.toString(), false));
     }
 
     @Override
@@ -62,12 +62,12 @@ public class ExprBotPrefix extends SimplePropertyExpression<Object, String> {
             case SET:
                 if (prefix == null) return;
                 if (entity instanceof JDA) BotManager.setDefaultPrefixes((JDA) entity, prefix);
-                if (entity instanceof String) BotManager.setDefaultPrefixes(BotManager.getBot(entity.toString()), prefix);
+                if (entity instanceof String) BotManager.setDefaultPrefixes(BotManager.getBot(entity.toString(), false), prefix);
                 break;
             case RESET:
                 if (!(prefix == null)) return;
                 if (entity instanceof JDA) BotManager.setDefaultPrefixes((JDA) entity, null);
-                if (entity instanceof String) BotManager.setDefaultPrefixes(BotManager.getBot(entity.toString()), null);
+                if (entity instanceof String) BotManager.setDefaultPrefixes(BotManager.getBot(entity.toString(), false), null);
         }
     }
 }

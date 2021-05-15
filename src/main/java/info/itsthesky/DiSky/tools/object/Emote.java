@@ -5,14 +5,15 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.Role;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class Emote implements IMentionable {
-    private String name;
+    private final String name;
     private net.dv8tion.jda.api.entities.Emote emote;
     private boolean isEmote = false;
-    private String mention;
+    private final String mention;
 
     public Emote(String name) {
         this.name = name;
@@ -66,12 +67,16 @@ public class Emote implements IMentionable {
         return isEmote && emote.isAnimated();
     }
 
+    public boolean compare(Emote emote) {
+        return emote.getAsMention().equals(getAsMention());
+    }
+
     public String getID() {
         return isEmote ? emote.getId() : null;
     }
 
     @Override
-    public String getAsMention() {
+    public @NotNull String getAsMention() {
         return isEmote ? mention : name;
     }
 

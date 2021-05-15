@@ -36,7 +36,7 @@ import java.util.List;
 @Since("1.0")
 public class EffReplyWith extends Effect {
 
-    private static final List<String> allowedEvents = Arrays.asList(
+    public static final List<String> allowedEvents = Arrays.asList(
             "EventMessageReceive",
             "EventBotMessageReceive",
             "EventCommand",

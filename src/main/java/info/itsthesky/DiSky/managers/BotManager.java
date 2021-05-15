@@ -164,13 +164,23 @@ public class BotManager {
     /**
      * Get, if loaded, the JDA instance of a bot from its name (returns null if the bot isn't loaded)
      * @param name The name (= id) of the wanted bot
+     * @param skipWarning If we alert the user if the bot doesn't exist
      * @return The JDA instance of the specific bot
      */
-    public static JDA getBot(final String name) {
-        if (!bots.containsKey(name)) {
+    public static JDA getBot(final String name, final boolean skipWarning) {
+        if (!bots.containsKey(name) && !skipWarning) {
             logger.warning("The bot named '"+name+"' is not loaded, but you're trying to use it in an effect / expression!");
             return null;
         }
         return bots.get(name);
+    }
+
+    /**
+     * Same as {@link BotManager#getBot(String, boolean)} but doesn't specify a skip warning boolean.
+     * @param name The name (= id) of the wanted bot
+     * @return The JDA instance of the specific bot
+     */
+    public static JDA getBot(final String name) {
+        return getBot(name, false);
     }
 }
