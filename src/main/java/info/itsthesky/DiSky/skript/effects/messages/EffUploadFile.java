@@ -90,18 +90,24 @@ public class EffUploadFile extends Effect {
 
             if (f instanceof BufferedImage) {
                 BufferedImage image = (BufferedImage) f;
-                byte[] array = getByteArray(image, "png");
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(image, "png", os);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 
                 if (content == null) {
-                    resultMessage = channel.sendFile(array, "image.png").complete();
+                    resultMessage = channel.sendFile(is, "image.png").complete();
                 } else {
 
                     if (content instanceof MessageBuilder) {
-                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(array, "image.png").complete();
+                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(is, "image.png").complete();
                     } else if (content instanceof EmbedBuilder) {
-                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(array, "image.png").complete();
+                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(is, "image.png").complete();
                     } else {
-                        resultMessage = channel.sendMessage(content.toString()).addFile(array, "image.png").complete();
+                        resultMessage = channel.sendMessage(content.toString()).addFile(is, "image.png").complete();
                     }
                 }
                 return;
