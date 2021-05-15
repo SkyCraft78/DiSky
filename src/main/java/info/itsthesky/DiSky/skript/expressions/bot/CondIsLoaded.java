@@ -13,6 +13,7 @@ import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 
 @Name("Is a bot loaded")
 @Description("See if a specific bot is loaded on the server or not.")
@@ -22,35 +23,35 @@ public class CondIsLoaded extends Condition {
 
 	static {
 		Skript.registerCondition(CondIsLoaded.class,
-				"["+ Utils.getPrefixName() +"] %bot% (is|was) (loaded|online) [on the server]",
-		"["+ Utils.getPrefixName() +"] %bot% (isn't|is not|wasn't|was not) (loaded|online) [on the server]");
+				"["+ Utils.getPrefixName() +"] [bot] [(named|with name)] %string% (is|was) (loaded|online) [on the server]",
+		"["+ Utils.getPrefixName() +"] [bot] [(named|with name)] %string% (isn't|is not|wasn't|was not) (loaded|online) [on the server]");
 	}
 
-	private Expression<JDA> exprBot;
+	private Expression<String> exprBot;
 	private int pattern;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		exprBot = (Expression<JDA>) exprs[0];
+		exprBot = (Expression<String>) exprs[0];
 		pattern = matchedPattern;
 		return true;
 	}
 
 	@Override
 	public boolean check(Event e) {
-		JDA bot = exprBot.getSingle(e);
+		String bot = exprBot.getSingle(e);
 		if (bot == null) return false;
 		if (pattern == 0) {
-			return BotManager.getBots().containsKey(BotManager.getNameByJDA(bot));
+			return BotManager.getBot(bot, true) != null;
 		} else {
-			return !BotManager.getBots().containsKey(BotManager.getNameByJDA(bot));
+			return BotManager.getBot(bot, true) == null;
 		}
 	}
 
 	@Override
-	public String toString(Event e, boolean debug) {
-		return exprBot.toString(e, debug) + " is loaded";
+	public @NotNull String toString(@NotNull Event e, boolean debug) {
+		return exprBot.toString(e, debug) + " "+ (pattern == 0 ? " is" : " is not") +" loaded";
 	}
 
 }

@@ -12,6 +12,7 @@ import ch.njol.skript.log.RetainingLogHandler;
 import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.StringMode;
+import ch.njol.skript.util.Timespan;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.NonNullPair;
 import ch.njol.util.StringUtils;
@@ -46,6 +47,8 @@ public class CommandFactory {
             .addEntry("executable in", true)
             .addEntry("permissions", true)
             .addEntry("permission message", true)
+            .addEntry("guild cooldown", true)
+            .addEntry("cooldown message", true)
             .addSection("trigger", false);
 
     public HashMap<CommandData, CommandObject> commandMap = new HashMap<>();
@@ -224,6 +227,14 @@ public class CommandFactory {
         String usage = ScriptLoader.replaceOptions(node.get("usage", ""));
         String category = ScriptLoader.replaceOptions(node.get("category", ""));
 
+        Timespan cooldownGuild = Timespan.parse(ScriptLoader.replaceOptions(node.get("guild cooldown", "0 second")));
+        if (cooldownGuild == null) {
+            Skript.error("Cannot parse a non-timespan cooldown for the discord command. Input: '"+ScriptLoader.replaceOptions(node.get("guild cooldown", ""))+"'");
+            return null;
+        }
+        //Timespan cooldownGuild = Timespan.parse(ScriptLoader.replaceOptions(node.get("guild cooldown", "")));
+        String cooldownMessage = ScriptLoader.replaceOptions(node.get("cooldown message", ""));
+
         String permList = ScriptLoader.replaceOptions(node.get("permissions", ""));
         List<String> perms = permList.isEmpty() ? new ArrayList<>() : Arrays.asList(permList.split(listPattern));
 
@@ -278,8 +289,8 @@ public class CommandFactory {
             commandObject = new CommandObject(
                     node.getConfig().getFile(), command, pattern.toString(), currentArguments,
                     prefixes, aliases, description, usage, roles, places, bots, ScriptLoader.loadItems(trigger),
-                    perms, permMessage,
-                    category
+                    perms, permMessage, category,
+                    cooldownGuild, cooldownMessage
             );
         } finally {
             EffectSection.stopLog(errors);

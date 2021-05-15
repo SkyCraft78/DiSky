@@ -6,6 +6,7 @@ import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.log.ParseLogHandler;
 import ch.njol.skript.log.SkriptLogger;
+import ch.njol.skript.util.Timespan;
 import ch.njol.skript.util.Utils;
 import info.itsthesky.disky.managers.BotManager;
 import net.dv8tion.jda.api.Permission;
@@ -28,6 +29,8 @@ public class CommandObject {
     private final String category;
     private final String pattern;
     private final String permMessage;
+    private final Timespan cooldownGuild;
+    private final String cooldownMessage;
     private final List<String> bots;
 
     private Trigger trigger;
@@ -37,12 +40,14 @@ public class CommandObject {
     public CommandObject(File script, String name, String pattern, List<Argument<?>> arguments, List<Expression<String>> prefixes,
                          List<String> aliases, String description, String usage, List<String> roles,
                          List<ChannelType> executableIn, List<String> bots, List<TriggerItem> items,
-                         List<String> perms, String permMessage,
-                         String category) {
+                         List<String> perms, String permMessage, String category,
+                         Timespan cooldownGuild, String cooldownMessage) {
         this.name = name;
         if (aliases != null) {
             aliases.removeIf(alias -> alias.equalsIgnoreCase(name));
         }
+        this.cooldownGuild = cooldownGuild;
+        this.cooldownMessage = cooldownMessage;
         this.aliases = aliases;
         this.roles = roles;
         this.executableIn = executableIn;
@@ -82,11 +87,13 @@ public class CommandObject {
             }
 
             List<Permission> permissions = info.itsthesky.disky.tools.Utils.convertPerms(perms.toArray(new String[0]));
-            if (!event.getMember().hasPermission(permissions)) {
-                if (permMessage != null) {
-                    event.getMessageChannel().sendMessage(permMessage).queue();
+            if (event.getGuild() != null) {
+                if (!event.getMember().hasPermission(permissions)) {
+                    if (permMessage != null) {
+                        event.getMessageChannel().sendMessage(permMessage).queue();
+                    }
+                    return false;
                 }
-                return false;
             }
 
             // again, bukkit apis are mostly sync so run it on the main thread
