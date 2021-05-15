@@ -30,7 +30,8 @@ public class ExprPresence extends SimpleExpression<Activity> {
 				"["+ Utils.getPrefixName() +"] listening [to] %string%",
 				"["+ Utils.getPrefixName() +"] watching [to] %string%",
 				"["+ Utils.getPrefixName() +"] playing [to] %string%",
-				"["+ Utils.getPrefixName() +"] streaming [to] %string% with [the] url %string%"
+				"["+ Utils.getPrefixName() +"] streaming [to] %string% with [the] url %string%",
+				"["+ Utils.getPrefixName() +"] competing [to] %string%"
 				);
 	}
 
@@ -62,6 +63,8 @@ public class ExprPresence extends SimpleExpression<Activity> {
 				activity = Activity.playing(input);
 			case 3:
 				activity = Activity.streaming(input, url);
+			case 4:
+				activity = Activity.competing(input);
 		}
 		return new Activity[] {activity};
 	}
@@ -86,7 +89,9 @@ public class ExprPresence extends SimpleExpression<Activity> {
 			case 2:
 				return "playing " + exprInput.toString(e, debug);
 			case 3:
-				return "steaming " + exprInput.toString(e, debug) + " with url " + exprURL.toString(e, debug);
+				return "streaming " + exprInput.toString(e, debug) + " with url " + exprURL.toString(e, debug);
+			case 4:
+				return "competing " + exprInput.toString(e, debug);
 		}
 		return "error";
 	}

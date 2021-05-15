@@ -55,6 +55,9 @@ public class EffSetPresence extends Effect {
             case STREAMING:
                 bot.getPresence().setActivity(Activity.streaming(activity.getName(), activity.getUrl()));
                 break;
+            case COMPETING:
+                bot.getPresence().setActivity(Activity.competing(activity.getName()));
+                break;
         }
     }
 
