@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,10 +25,12 @@ public class WaiterListener extends ListenerAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public void onGenericEvent(GenericEvent event) {
-        events.forEach((waiter) -> {
-            if (!waiter.getClazz().equals(event.getClass())) return;
-            if (waiter.getVerify().test(event)) waiter.getConsumer().accept(event);
-        });
+        try {
+            events.forEach((waiter) -> {
+                if (!waiter.getClazz().equals(event.getClass())) return;
+                if (waiter.getVerify().test(event)) waiter.getConsumer().accept(event);
+            });
+        } catch (ConcurrentModificationException ignored) {}
     }
 
     /* @Override
