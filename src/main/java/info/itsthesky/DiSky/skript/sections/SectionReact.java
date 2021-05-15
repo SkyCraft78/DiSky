@@ -116,9 +116,9 @@ public class SectionReact extends EffectSection {
 
 								runSection(event);
 
-								if (((Cancellable) event).isCancelled()) ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
-
-								Variables.removeLocals(event);
+								try {
+									if (((Cancellable) event).isCancelled()) ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
+								} catch(ClassCastException ignored) { }
 							}
 					));
 		});
