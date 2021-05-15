@@ -16,10 +16,12 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Types {
@@ -30,28 +32,27 @@ public class Types {
 				.description("Represent a category in a guild, which is already created.")
 				.since("1.4.2")
 				.parser(new Parser<Category>() {
-					@SuppressWarnings("unchecked")
 					@Override
-					public Category parse(final String s, final ParseContext context) {
+					public @NotNull Category parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getCategoryById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getCategoryById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
 
 					@Override
-					public String toString(Category c, int flags) {
+					public @NotNull String toString(@NotNull Category c, int flags) {
 						return c.getName();
 					}
 
 					@Override
-					public String toVariableNameString(Category cat) {
+					public @NotNull String toVariableNameString(@NotNull Category cat) {
 						return cat.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return "[a-z ]+";
 					}
 				}));
@@ -63,28 +64,55 @@ public class Types {
 				.parser(new Parser<CategoryBuilder>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
 					@Override
-					public String toString(CategoryBuilder c, int flags) {
+					public @NotNull String toString(@NotNull CategoryBuilder c, int flags) {
 						return c.getName();
 					}
 
 					@Override
-					public String toVariableNameString(CategoryBuilder cat) {
+					public @NotNull String toVariableNameString(@NotNull CategoryBuilder cat) {
 						return cat.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
+						return "[a-z ]+";
+					}
+
+					@Override
+					public @NotNull CategoryBuilder parse(@NotNull String s, @NotNull ParseContext context) {
+						return null;
+					}
+				}));
+		Classes.registerClass(new ClassInfo<>(Activity.class, "presence")
+				.user("presences?")
+				.name("Online Presence")
+				.description("Represent a custom presence used in 'mark %bot% as %presence%' effect")
+				.since("1.12")
+				.parser(new Parser<Activity>() {
+
+					@Override
+					public @NotNull String toString(@NotNull Activity c, int flags) {
+						return c.getName();
+					}
+
+					@Override
+					public @NotNull String toVariableNameString(@NotNull Activity c) {
+						return c.getName();
+					}
+
+					@Override
+					public @NotNull String getVariableNamePattern() {
 						return "[a-z ]+";
 					}
 
 					@Nullable
 					@Override
-					public CategoryBuilder parse(String s, ParseContext context) {
+					public Activity parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				}));
@@ -97,23 +125,23 @@ public class Types {
 				.parser(new Parser<AudioSite>() {
 
 					@Override
-					public String toString(AudioSite c, int flags) {
+					public @NotNull String toString(@NotNull AudioSite c, int flags) {
 						return c.name().toLowerCase(Locale.ROOT);
 					}
 
 					@Override
-					public String toVariableNameString(AudioSite c) {
+					public @NotNull String toVariableNameString(@NotNull AudioSite c) {
 						return c.name().toLowerCase(Locale.ROOT);
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return "[a-z ]+";
 					}
 
 					@Nullable
 					@Override
-					public AudioSite parse(String s, ParseContext context) {
+					public AudioSite parse(@NotNull String s, @NotNull ParseContext context) {
 						for (AudioSite site : AudioSite.values()) if (site.name().toLowerCase(Locale.ROOT).replace("_", " ").equalsIgnoreCase(s)) return site;
 						return null;
 					}
@@ -126,27 +154,27 @@ public class Types {
 				.parser(new Parser<JDA>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(JDA o, int flags) {
+					public @NotNull String toString(@NotNull JDA o, int flags) {
 						return BotManager.getNameByJDA(o);
 					}
 
 					@Override
-					public String toVariableNameString(JDA o) {
+					public @NotNull String toVariableNameString(@NotNull JDA o) {
 						return BotManager.getNameByJDA(o);
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public JDA parse(String s, ParseContext context) {
+					public JDA parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -159,27 +187,27 @@ public class Types {
 				.parser(new Parser<Emote>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(Emote o, int flags) {
+					public @NotNull String toString(@NotNull Emote o, int flags) {
 						return o.getAsMention();
 					}
 
 					@Override
-					public String toVariableNameString(Emote o) {
+					public @NotNull String toVariableNameString(@NotNull Emote o) {
 						return o.getAsMention();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public Emote parse(String s, ParseContext context) {
+					public Emote parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -192,27 +220,27 @@ public class Types {
 				.parser(new Parser<Badge>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(Badge o, int flags) {
+					public @NotNull String toString(@NotNull Badge o, int flags) {
 						return o.name().toLowerCase(Locale.ROOT).replace("_", "");
 					}
 
 					@Override
-					public String toVariableNameString(Badge o) {
+					public @NotNull String toVariableNameString(@NotNull Badge o) {
 						return o.name().toLowerCase(Locale.ROOT).replace("_", "");
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public Badge parse(String s, ParseContext context) {
+					public Badge parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -225,27 +253,27 @@ public class Types {
 				.parser(new Parser<WebhookMessageBuilder>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(WebhookMessageBuilder o, int flags) {
-						return o.build().getUsername();
+					public @NotNull String toString(@NotNull WebhookMessageBuilder o, int flags) {
+						return Objects.requireNonNull(o.build().getUsername());
 					}
 
 					@Override
-					public String toVariableNameString(WebhookMessageBuilder o) {
-						return o.build().getUsername();
+					public @NotNull String toVariableNameString(@NotNull WebhookMessageBuilder o) {
+						return Objects.requireNonNull(o.build().getUsername());
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public WebhookMessageBuilder parse(String s, ParseContext context) {
+					public WebhookMessageBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -258,27 +286,27 @@ public class Types {
 				.parser(new Parser<TextChannelBuilder>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(TextChannelBuilder o, int flags) {
+					public @NotNull String toString(@NotNull TextChannelBuilder o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(TextChannelBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull TextChannelBuilder o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public TextChannelBuilder parse(String s, ParseContext context) {
+					public TextChannelBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -291,31 +319,30 @@ public class Types {
 				.parser(new Parser<TextChannel>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
 					@Override
-					public String toString(TextChannel o, int flags) {
+					public @NotNull String toString(@NotNull TextChannel o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(TextChannel o) {
+					public @NotNull String toVariableNameString(@NotNull TextChannel o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public TextChannel parse(final String s, final ParseContext context) {
+					public @NotNull TextChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getTextChannelById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getTextChannelById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
@@ -329,29 +356,28 @@ public class Types {
 				.parser(new Parser<User>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 					@Override
-					public String toString(User o, int flags) {
+					public @NotNull String toString(@NotNull User o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(User o) {
+					public @NotNull String toVariableNameString(@NotNull User o) {
 						return o.getName() + "#" + o.getDiscriminator();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public User parse(final String s, final ParseContext context) {
+					public @NotNull User parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
-							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
@@ -365,30 +391,29 @@ public class Types {
 				.parser(new Parser<Role>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
 					@Override
-					public String toString(Role o, int flags) {
+					public @NotNull String toString(@NotNull Role o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(Role o) {
+					public @NotNull String toVariableNameString(@NotNull Role o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public Role parse(final String s, final ParseContext context) {
+					public @NotNull Role parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
-							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getRoleById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getRoleById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
@@ -402,31 +427,30 @@ public class Types {
 				.parser(new Parser<Member>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
 					@Override
-					public String toString(Member o, int flags) {
+					public @NotNull String toString(@NotNull Member o, int flags) {
 						return o.getEffectiveName();
 					}
 
 					@Override
-					public String toVariableNameString(Member o) {
+					public @NotNull String toVariableNameString(@NotNull Member o) {
 						return o.getUser().getName() + "#" + o.getUser().getDiscriminator();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public Member parse(final String s, final ParseContext context) {
+					public @NotNull Member parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, true, true) == null ? null : lastEvent.getGuild().getMemberById(Utils.parseLong(s, true, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, true, true) == null ? null : lastEvent.getGuild().getMemberById(Utils.parseLong(s, true, true))));
 						}
 						return null;
 					}
@@ -440,27 +464,27 @@ public class Types {
 				.parser(new Parser<Message>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(Message o, int flags) {
+					public @NotNull String toString(@NotNull Message o, int flags) {
 						return o.getContentRaw();
 					}
 
 					@Override
-					public String toVariableNameString(Message o) {
+					public @NotNull String toVariableNameString(@NotNull Message o) {
 						return o.getContentRaw();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public Message parse(String s, ParseContext context) {
+					public Message parse(@NotNull String s, @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							Long input = Utils.parseLong(s, false, true);
 							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
@@ -485,31 +509,30 @@ public class Types {
 				.parser(new Parser<GuildChannel>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
 					@Override
-					public String toString(GuildChannel o, int flags) {
+					public @NotNull String toString(@NotNull GuildChannel o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(GuildChannel o) {
+					public @NotNull String toVariableNameString(@NotNull GuildChannel o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public GuildChannel parse(final String s, final ParseContext context) {
+					public @NotNull GuildChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getGuildChannelById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getGuildChannelById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
@@ -523,27 +546,27 @@ public class Types {
 				.parser(new Parser<Webhook>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(Webhook o, int flags) {
+					public @NotNull String toString(@NotNull Webhook o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(Webhook o) {
+					public @NotNull String toVariableNameString(@NotNull Webhook o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public Webhook parse(String s, ParseContext context) {
+					public Webhook parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -556,27 +579,27 @@ public class Types {
 				.parser(new Parser<info.itsthesky.disky.tools.object.messages.Message>() {
 
 					@Override
-					public String toString(info.itsthesky.disky.tools.object.messages.Message o, int flags) {
+					public @NotNull String toString(info.itsthesky.disky.tools.object.messages.@NotNull Message o, int flags) {
 						return o.toString();
 					}
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toVariableNameString(info.itsthesky.disky.tools.object.messages.Message o) {
+					public @NotNull String toVariableNameString(info.itsthesky.disky.tools.object.messages.@NotNull Message o) {
 						return o.getContent();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public info.itsthesky.disky.tools.object.messages.Message parse(String s, ParseContext context) {
+					public info.itsthesky.disky.tools.object.messages.Message parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -589,31 +612,30 @@ public class Types {
 				.parser(new Parser<Guild>() {
 
 					@Override
-					public String toString(Guild o, int flags) {
+					public @NotNull String toString(@NotNull Guild o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(Guild o) {
+					public @NotNull String toVariableNameString(@NotNull Guild o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return context.equals(ParseContext.COMMAND);
 					}
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public Guild parse(final String s, final ParseContext context) {
+					public @NotNull Guild parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getGuildById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getGuildById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
@@ -629,22 +651,22 @@ public class Types {
 				.parser(new Parser<EmbedBuilder>() {
 
 					@Override
-					public String toString(EmbedBuilder o, int flags) {
+					public @NotNull String toString(@NotNull EmbedBuilder o, int flags) {
 						return o.getDescriptionBuilder().toString();
 					}
 
 					@Override
-					public String toVariableNameString(EmbedBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull EmbedBuilder o) {
 						return ToStringBuilder.reflectionToString(o);
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public EmbedBuilder parse(String s, ParseContext context) {
+					public EmbedBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -659,27 +681,27 @@ public class Types {
 				.parser(new Parser<CommandObject>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(CommandObject o, int flags) {
+					public @NotNull String toString(@NotNull CommandObject o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(CommandObject o) {
+					public @NotNull String toVariableNameString(@NotNull CommandObject o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public CommandObject parse(String s, ParseContext context) {
+					public CommandObject parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -694,28 +716,28 @@ public class Types {
 				.parser(new Parser<Invite>() {
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Override
-					public String toString(Invite o, int flags) {
+					public @NotNull String toString(@NotNull Invite o, int flags) {
 						return o.getCode();
 					}
 
 					@Override
-					public String toVariableNameString(Invite o) {
+					public @NotNull String toVariableNameString(@NotNull Invite o) {
 						return o.getCode();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Nullable
 					@Override
-					public Invite parse(String s, ParseContext context) {
+					public Invite parse(@NotNull String s, @NotNull ParseContext context) {
 						if (context != ParseContext.COMMAND) return null;
 						CommandEvent event = CommandEvent.lastEvent;
 						String input = s
@@ -738,22 +760,22 @@ public class Types {
 				.parser(new Parser<MessageBuilder>() {
 
 					@Override
-					public String toString(MessageBuilder o, int flags) {
+					public @NotNull String toString(@NotNull MessageBuilder o, int flags) {
 						return o.toString();
 					}
 
 					@Override
-					public String toVariableNameString(MessageBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull MessageBuilder o) {
 						return o.toString();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public MessageBuilder parse(String s, ParseContext context) {
+					public MessageBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -768,23 +790,23 @@ public class Types {
 				.parser(new Parser<InviteBuilder>() {
 
 					@Override
-					public String toString(InviteBuilder o, int flags) {
+					public @NotNull String toString(@NotNull InviteBuilder o, int flags) {
 						return o.toString();
 					}
 
 					@Override
-					public String toVariableNameString(InviteBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull InviteBuilder o) {
 						return o.toString();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Nullable
 					@Override
-					public InviteBuilder parse(String s, ParseContext context) {
+					public InviteBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -799,23 +821,23 @@ public class Types {
 				.parser(new Parser<Message.Attachment>() {
 
 					@Override
-					public String toString(Message.Attachment o, int flags) {
+					public @NotNull String toString(Message.@NotNull Attachment o, int flags) {
 						return o.getFileName();
 					}
 
 					@Override
-					public String toVariableNameString(Message.Attachment o) {
+					public @NotNull String toVariableNameString(Message.@NotNull Attachment o) {
 						return o.getFileName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Nullable
 					@Override
-					public Message.Attachment parse(String s, ParseContext context) {
+					public Message.Attachment parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -830,22 +852,22 @@ public class Types {
 				.parser(new Parser<RoleBuilder>() {
 
 					@Override
-					public String toString(RoleBuilder o, int flags) {
+					public @NotNull String toString(@NotNull RoleBuilder o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(RoleBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull RoleBuilder o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public RoleBuilder parse(String s, ParseContext context) {
+					public RoleBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -860,28 +882,28 @@ public class Types {
 				.parser(new Parser<VoiceChannelBuilder>() {
 
 					@Override
-					public String toString(VoiceChannelBuilder o, int flags) {
+					public @NotNull String toString(@NotNull VoiceChannelBuilder o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(VoiceChannelBuilder o) {
+					public @NotNull String toVariableNameString(@NotNull VoiceChannelBuilder o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return false;
 					}
 
 					@Nullable
 					@Override
-					public VoiceChannelBuilder parse(String s, ParseContext context) {
+					public VoiceChannelBuilder parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -894,7 +916,7 @@ public class Types {
 				.since("1.4")
 				.parser(new Parser<Permission>() {
 					@Override
-					public Permission parse(String input, ParseContext context) {
+					public @NotNull Permission parse(@NotNull String input, @NotNull ParseContext context) {
 						for (Permission perm : Permission.values()) {
 							if (perm.name().equalsIgnoreCase(input.toUpperCase(Locale.ROOT).replace(" ", "_"))) return perm;
 						}
@@ -902,17 +924,17 @@ public class Types {
 					}
 
 					@Override
-					public String toString(Permission c, int flags) {
+					public @NotNull String toString(@NotNull Permission c, int flags) {
 						return c.getName();
 					}
 
 					@Override
-					public String toVariableNameString(Permission perm) {
+					public @NotNull String toVariableNameString(@NotNull Permission perm) {
 						return perm.getName().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 				})
@@ -926,7 +948,7 @@ public class Types {
 				.since("1.6")
 				.parser(new Parser<PlayError>() {
 					@Override
-					public PlayError parse(String input, ParseContext context) {
+					public @NotNull PlayError parse(@NotNull String input, @NotNull ParseContext context) {
 						for (PlayError perm : PlayError.values()) {
 							if (perm.name().equalsIgnoreCase(input.replaceAll(" ", "_").toUpperCase(Locale.ROOT))) return perm;
 						}
@@ -934,17 +956,17 @@ public class Types {
 					}
 
 					@Override
-					public String toString(PlayError c, int flags) {
+					public @NotNull String toString(@NotNull PlayError c, int flags) {
 						return c.name();
 					}
 
 					@Override
-					public String toVariableNameString(PlayError perm) {
+					public @NotNull String toVariableNameString(@NotNull PlayError perm) {
 						return perm.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 				})
@@ -956,33 +978,32 @@ public class Types {
 				.since("1.6")
 				.parser(new Parser<VoiceChannel>() {
 
-					@SuppressWarnings("unchecked")
 					@Override
-					public VoiceChannel parse(final String s, final ParseContext context) {
+					public @NotNull VoiceChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getVoiceChannelById(Utils.parseLong(s, false, true)));
+							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getVoiceChannelById(Utils.parseLong(s, false, true))));
 						}
 						return null;
 					}
 
 					@Override
-					public String toString(VoiceChannel c, int flags) {
+					public @NotNull String toString(@NotNull VoiceChannel c, int flags) {
 						return c.getName();
 					}
 
 					@Override
-					public String toVariableNameString(VoiceChannel perm) {
+					public @NotNull String toVariableNameString(@NotNull VoiceChannel perm) {
 						return perm.getName();
 					}
 
 					@Override
-					public boolean canParse(ParseContext context) {
+					public boolean canParse(@NotNull ParseContext context) {
 						return true;
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 				})
@@ -995,7 +1016,7 @@ public class Types {
 				.since("1.6")
 				.parser(new Parser<OnlineStatus>() {
 					@Override
-					public OnlineStatus parse(String input, ParseContext context) {
+					public @NotNull OnlineStatus parse(@NotNull String input, @NotNull ParseContext context) {
 						for (OnlineStatus status : OnlineStatus.values()) {
 							if (status.name().equalsIgnoreCase(input.replaceAll(" ", "_").toUpperCase())) return status;
 						}
@@ -1003,17 +1024,17 @@ public class Types {
 					}
 
 					@Override
-					public String toString(OnlineStatus status, int flags) {
+					public @NotNull String toString(@NotNull OnlineStatus status, int flags) {
 						return status.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
-					public String toVariableNameString(OnlineStatus status) {
+					public @NotNull String toVariableNameString(@NotNull OnlineStatus status) {
 						return status.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 				})
@@ -1028,22 +1049,22 @@ public class Types {
 				.parser(new Parser<SlashCommand>() {
 
 					@Override
-					public String toString(SlashCommand o, int flags) {
+					public @NotNull String toString(@NotNull SlashCommand o, int flags) {
 						return o.getName();
 					}
 
 					@Override
-					public String toVariableNameString(SlashCommand o) {
+					public @NotNull String toVariableNameString(@NotNull SlashCommand o) {
 						return o.getName();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 					@Nullable
 					@Override
-					public SlashCommand parse(String s, ParseContext context) {
+					public SlashCommand parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -1058,23 +1079,23 @@ public class Types {
 				.parser(new Parser<AudioTrack>() {
 
 					@Override
-					public String toString(AudioTrack o, int flags) {
+					public @NotNull String toString(@NotNull AudioTrack o, int flags) {
 						return o.getInfo().title;
 					}
 
 					@Override
-					public String toVariableNameString(AudioTrack o) {
+					public @NotNull String toVariableNameString(@NotNull AudioTrack o) {
 						return o.getInfo().title;
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Nullable
 					@Override
-					public AudioTrack parse(String s, ParseContext context) {
+					public AudioTrack parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})
@@ -1095,22 +1116,22 @@ public class Types {
 				.parser(new Parser<OptionType>() {
 
 					@Override
-					public String toString(OptionType o, int flags) {
+					public @NotNull String toString(@NotNull OptionType o, int flags) {
 						return o.name();
 					}
 
 					@Override
-					public String toVariableNameString(OptionType o) {
+					public @NotNull String toVariableNameString(@NotNull OptionType o) {
 						return o.name();
 					}
 
 					@Override
-					public String getVariableNamePattern() {
+					public @NotNull String getVariableNamePattern() {
 						return ".+";
 					}
 
 					@Override
-					public OptionType parse(String s, final ParseContext context) {
+					public @NotNull OptionType parse(@NotNull String s, final @NotNull ParseContext context) {
 						for (OptionType op : OptionType.values()) {
 							if (op.name().equalsIgnoreCase(s.toUpperCase())) {
 								return op;
