@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -59,7 +60,12 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void shuffleQueue() {
-        Collections.shuffle((List<?>) queue);
+        ArrayList items = new ArrayList<>(queue);
+        queue.clear();
+        Collections.shuffle(items);
+        for (Object track : items) {
+            queue.offer((AudioTrack) track);
+        }
     }
 
     /**
