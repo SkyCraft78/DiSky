@@ -8,9 +8,11 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.awt.image.BufferedImage;
 
 @Name("Embed Image")
 @Description("Set or clear the image of an embed.")
@@ -61,11 +63,11 @@ public class ExprEmbedImage extends SimplePropertyExpression<EmbedBuilder, Strin
                 break;
             case SET:
                 for (EmbedBuilder embed : getExpr().getArray(e)) {
-                    embed.setImage((String) delta[0]);
+                    if (delta[0] instanceof String) {
+                        embed.setImage(delta[0].toString());
+                    }
                 }
                 break;
-            default:
-                return;
         }
     }
 }

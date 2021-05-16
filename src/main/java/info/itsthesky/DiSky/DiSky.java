@@ -40,6 +40,26 @@ public class DiSky extends JavaPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        /* JDA Check */
+        try {
+            Class.forName("net.dv8tion.jda.api.JDAInfo");
+        } catch (ClassNotFoundException ignored) { }
+        String customVersion = "";
+        try {
+            customVersion = Utils.getFieldValue("net.dv8tion.jda.api.JDAInfo.VERSION").toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (!customVersion.equalsIgnoreCase(JDAInfo.VERSION)) {
+            getLogger().severe("DiSky found another JDA version installed on the Server!");
+            getLogger().severe("Search over your plugins if none of them are already using the JDA.");
+            getLogger().severe("Version found: " + customVersion + " Version needed: " + JDAInfo.VERSION);
+            getLogger().severe("Plugins such as DiscordSRV or Vixio can be the cause of that problem!");
+            pluginManager.disablePlugin(this);
+            return;
+        }
+
+
         /* Skript loading */
         getServer().getConsoleSender().sendMessage(Utils.colored("&bDiSky &9is loading ..."));
         if ((pluginManager.getPlugin("Skript") != null) && Skript.isAcceptRegistrations()) {
