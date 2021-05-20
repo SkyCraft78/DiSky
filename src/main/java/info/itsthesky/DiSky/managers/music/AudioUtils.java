@@ -122,7 +122,8 @@ public class AudioUtils {
         }
     }
 
-    private static void connectToFirstVoiceChannel(AudioManager audioManager, VoiceChannel channel) {
+    public static void connectToFirstVoiceChannel(AudioManager audioManager, VoiceChannel channel) {
+        audioManager.closeAudioConnection();
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
             audioManager.openAudioConnection(channel);
         }
