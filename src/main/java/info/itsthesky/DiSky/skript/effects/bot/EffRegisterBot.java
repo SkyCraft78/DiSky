@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.effects;
+package info.itsthesky.disky.skript.effects.bot;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
