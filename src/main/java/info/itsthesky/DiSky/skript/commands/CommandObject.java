@@ -82,9 +82,11 @@ public class CommandObject {
                     return false;
                 }
             }
-            if (bots != null && !bots.contains(BotManager.getNameByJDA(event.getBot()))) {
-                return false;
-            }
+            try {
+                if (bots != null && !bots.contains(BotManager.getNameByJDA(event.getBot()))) {
+                    return false;
+                }
+            } catch (NullPointerException ignored) {}
 
             List<Permission> permissions = info.itsthesky.disky.tools.Utils.convertPerms(perms.toArray(new String[0]));
             if (event.getGuild() != null) {
