@@ -41,7 +41,7 @@ public class SectionReact extends EffectSection {
 
 	static {
 		Skript.registerCondition(SectionReact.class,
-				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using [the] [bot] [(named|with name)] %-string%] [to run]"
+				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using %-bot%] [to run]"
 		);
 		ExprEventValues.values.put("message", valueMessage);
 		ExprEventValues.values.put("member", valueMember);
@@ -53,14 +53,14 @@ public class SectionReact extends EffectSection {
 
 	private Expression<Emote> exprReact;
 	private Expression<Message> exprMessage;
-	private Expression<String> exprName;
+	private Expression<JDA> exprName;
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
 		exprMessage = (Expression<Message>) exprs[0];
 		exprReact = (Expression<Emote>) exprs[1];
-		if (exprs.length != 2) exprName = (Expression<String>) exprs[2];
+		if (exprs.length != 2) exprName = (Expression<JDA>) exprs[2];
 		if (checkIfCondition()) return false;
 		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
 
@@ -76,7 +76,7 @@ public class SectionReact extends EffectSection {
 			if (message == null || emote == null) return;
 			if (exprName != null) {
 				JDA msgJDA = message.getJDA();
-				JDA botJDA = BotManager.getBot(exprName.getSingle(event));
+				JDA botJDA = exprName.getSingle(event);
 				if (botJDA == null) return;
 				if (msgJDA != botJDA) return;
 			}

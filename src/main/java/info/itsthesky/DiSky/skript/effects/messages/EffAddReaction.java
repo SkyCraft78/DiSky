@@ -8,7 +8,10 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.skript.sections.VariablesMaps;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
@@ -43,17 +46,21 @@ public class EffAddReaction extends Effect {
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            Emote[] emotes = exprEmote.getAll(e);
-            JDA bot = exprBot.getSingle(e);
             Message message = exprMessage.getSingle(e);
-            if (emotes == null || bot == null || message == null) return;
-            if (!Utils.areJDASimilar(message.getJDA(), bot)) return;
+            Emote[] emotes = exprEmote.getAll(e);
+            if (message == null || emotes.length == 0) return;
+            if (exprBot != null) {
+                JDA msgJDA = message.getJDA();
+                JDA botJDA = exprBot.getSingle(e);
+                if (botJDA == null) return;
+                if (msgJDA != botJDA) return;
+            }
 
             for (Emote emote : emotes) {
                 if (emote.isEmote()) {
-                    message.addReaction(emote.getEmote()).queue();
+                    message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
                 } else {
-                    message.addReaction(emote.getName()).queue();
+                    message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
                 }
             }
         });
