@@ -59,6 +59,9 @@ public class EffDeleteEntity extends Effect {
                 } else if (en instanceof TextChannel) {
                     if (exprBot != null && !Utils.areJDASimilar(((TextChannel) en).getJDA(), exprBot.getSingle(e))) return;
                     ((TextChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
+                } else if (en instanceof VoiceChannel) {
+                    if (exprBot != null && !Utils.areJDASimilar(((VoiceChannel) en).getJDA(), exprBot.getSingle(e))) return;
+                    ((VoiceChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
                 } else if (en instanceof GuildChannel && ((GuildChannel) en).getType().equals(ChannelType.TEXT)) {
                     if (exprBot != null && !Utils.areJDASimilar(((TextChannel) en).getJDA(), exprBot.getSingle(e))) return;
                     ((TextChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
