@@ -86,7 +86,7 @@ public class DiSky extends JavaPlugin {
         intents = gatewayIntents.toArray(new GatewayIntent[0]);
 
         /* Skript color adapter */
-        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
+        boolean usesSkript24 = !(Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
         SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
         if (usesSkript24) logger.info("You're using an old version of Skript. Enable Color and Date adapter!");
 

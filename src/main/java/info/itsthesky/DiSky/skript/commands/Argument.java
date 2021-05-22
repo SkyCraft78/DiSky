@@ -56,8 +56,8 @@ public class Argument<T> {
         }
         Expression<? extends T> d = null;
         if (def != null) {
+            final RetainingLogHandler log = SkriptLogger.startRetainingLog();
             if (def.startsWith("%") && def.endsWith("%")) {
-                final RetainingLogHandler log = SkriptLogger.startRetainingLog();
                 try {
                     d = new SkriptParser("" + def.substring(1, def.length() - 1), SkriptParser.PARSE_EXPRESSIONS, ParseContext.COMMAND).parseExpression(type.getC());
                     if (d == null) {
@@ -69,7 +69,6 @@ public class Argument<T> {
                     log.stop();
                 }
             } else {
-                final RetainingLogHandler log = SkriptLogger.startRetainingLog();
                 try {
                     if (type.getC() == String.class) {
                         if (def.startsWith("\"") && def.endsWith("\""))
