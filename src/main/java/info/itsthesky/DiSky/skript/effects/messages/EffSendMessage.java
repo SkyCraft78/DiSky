@@ -58,59 +58,74 @@ public class EffSendMessage extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             try {
-                Object channel = exprChannel.getSingle(e);
+                Object entity = exprChannel.getSingle(e);
                 Object content = exprMessage.getSingle(e);
-                if (channel == null || content == null) return;
+                if (entity == null || content == null) return;
                 Message storedMessage;
 
-                TextChannel channel1 = null;
-                if (channel instanceof TextChannel) channel1 = (TextChannel) channel;
-                if (channel instanceof GuildChannel && ((GuildChannel) channel).getType().equals(ChannelType.TEXT)) channel1 = (TextChannel) channel;
-
-                if (channel instanceof User || channel instanceof Member) {
-                    User user;
-                    if (channel instanceof Member) {
-                        user = ((Member) channel).getUser();
-                    } else {
-                        user = (User) channel;
-                    }
-                    if (content instanceof EmbedBuilder) {
-                        storedMessage = user.openPrivateChannel()
-                                .flatMap(channel2 -> channel2.sendMessage(((EmbedBuilder) content).build()))
-                                .complete(true);
-                    } else if (content instanceof MessageBuilder) {
-                        storedMessage = user.openPrivateChannel()
-                                .flatMap(channel2 -> channel2.sendMessage(((MessageBuilder) content).build()))
-                                .complete(true);
-                    } else {
-                        storedMessage = user.openPrivateChannel()
-                                .flatMap(channel2 -> channel2.sendMessage(content.toString()))
-                                .complete(true);
-                    }
-                    ExprLastMessage.lastMessage = storedMessage;
-                    if (exprVar == null) return;
-                    if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
-                    Variable var = (Variable) exprVar;
-                    Utils.setSkriptVariable(var, storedMessage, e);
+                /* Message cast */
+                MessageBuilder toSend = null;
+                switch (content.getClass().getSimpleName()) {
+                    case "EmbedBuilder":
+                        toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                        break;
+                    case "String":
+                        toSend = new MessageBuilder(content.toString());
+                        break;
+                    case "MessageBuilder":
+                        toSend = (MessageBuilder) content;
+                        break;
+                    case "Message":
+                        toSend = new MessageBuilder((Message) content);
+                        break;
+                }
+                if (toSend == null) {
+                    Skript.error("[DiSky] Cannot parse or cast the message in the send effect!");
+                    return;
                 }
 
-                if (channel1 == null) return;
-                if (!Utils.areJDASimilar(channel1.getJDA(), exprBot == null ? null : exprBot.getSingle(e))) return;
-
-                if (content instanceof EmbedBuilder) {
-                    storedMessage = channel1.sendMessage(((EmbedBuilder) content).build()).complete();
-                } else if (content instanceof MessageBuilder) {
-                    storedMessage = channel1.sendMessage(((MessageBuilder) content).build()).complete();
-                } else {
-                    storedMessage = channel1.sendMessage(content.toString()).complete();
+                /* Channel Cast */
+                MessageChannel channel = null;
+                switch (entity.getClass().getSimpleName()) {
+                    case "TextChannel":
+                    case "TextChannelImpl":
+                        channel = (MessageChannel) entity;
+                        break;
+                    case "GuildChannel":
+                    case "GuildChannelImpl":
+                        channel = ((GuildChannel) entity).getType().equals(ChannelType.TEXT) ? (MessageChannel) entity : null;
+                        break;
+                    case "User":
+                    case "UserImpl":
+                        channel = ((User) entity).openPrivateChannel().complete();
+                        break;
+                    case "Member":
+                    case "MemberImpl":
+                        channel = ((Member) entity).getUser().openPrivateChannel().complete();
+                        break;
                 }
+                if (channel == null) {
+                    Skript.error("[DiSky] Cannot parse or cast the message channel in the send effect!");
+                    return;
+                }
+
+                /* 'with bot' verification */
+                if (exprBot != null && exprBot.getSingle(e) != null) {
+                    JDA bot = exprBot.getSingle(e);
+                    if (!Utils.areJDASimilar(channel.getJDA(), bot)) return;
+                }
+
+                /* Final send :D */
+                storedMessage = channel.sendMessage(toSend.build()).complete(true);
+
+                /* Store section */
                 ExprLastMessage.lastMessage = storedMessage;
                 if (exprVar == null) return;
                 if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
                 Variable var = (Variable) exprVar;
                 Utils.setSkriptVariable(var, storedMessage, e);
             } catch (RateLimitedException ex) {
-                DiSky.getInstance().getLogger().severe("DiSky tried to get a message, but was rate limited.");
+                DiSky.getInstance().getLogger().severe("DiSky tried to get a message, but was rate limited. ("+ex.getMessage()+")");
             }
         });
     }
