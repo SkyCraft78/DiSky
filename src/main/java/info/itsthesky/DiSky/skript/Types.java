@@ -193,12 +193,12 @@ public class Types {
 
 					@Override
 					public @NotNull String toString(@NotNull Emote o, int flags) {
-						return o.getAsMention();
+						return o.getName();
 					}
 
 					@Override
 					public @NotNull String toVariableNameString(@NotNull Emote o) {
-						return o.getAsMention();
+						return o.getName();
 					}
 
 					@Override
