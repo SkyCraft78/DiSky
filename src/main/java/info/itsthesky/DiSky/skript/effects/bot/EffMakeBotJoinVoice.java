@@ -49,7 +49,7 @@ public class EffMakeBotJoinVoice extends Effect {
             GuildChannel channel = exprChannel.getSingle(e);
             if (bot == null || channel == null) return;
             if (!channel.getType().equals(ChannelType.VOICE)) return;
-            if (!Utils.areJDASimilar(bot, channel.getGuild())) return;
+            if (!Utils.areJDASimilar(channel.getGuild().getJDA(), bot)) return;
             AudioUtils.connectToFirstVoiceChannel(channel.getGuild().getAudioManager(), (VoiceChannel) channel);
         });
     }

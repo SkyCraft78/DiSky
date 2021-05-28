@@ -42,7 +42,7 @@ public class EffPlayAudio extends Effect {
     protected void execute(Event e) {
         AudioTrack[] tracks = exprTracks.getAll(e);
         GuildChannel channel = exprChannel.getSingle(e);
-        if (tracks == null || channel == null) return;
+        if (channel == null) return;
         if (!channel.getType().equals(ChannelType.VOICE)) return;
         AudioUtils.play(channel.getGuild(), (VoiceChannel) channel, tracks);
     }

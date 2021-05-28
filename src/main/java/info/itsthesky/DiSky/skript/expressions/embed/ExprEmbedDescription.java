@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.MultiplyPropertyExpression;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.SlashCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,10 +27,10 @@ import java.util.List;
         "clear desc of {_embed}",
         "set description of command to \"This is an awesome command!\""})
 @Since("1.0")
-public class ExprEmbedDescription extends SimplePropertyExpression<Object, String[]> {
+public class ExprEmbedDescription extends MultiplyPropertyExpression<Object, String> {
 
     static {
-        register(ExprEmbedDescription.class, String[].class,
+        register(ExprEmbedDescription.class, String.class,
                 "[(embed|command)] (desc|description)",
                 "embed/commandbuilder"
         );
@@ -47,8 +48,8 @@ public class ExprEmbedDescription extends SimplePropertyExpression<Object, Strin
     }
 
     @Override
-    public Class<? extends String[]> getReturnType() {
-        return String[].class;
+    public Class<? extends String> getReturnType() {
+        return String.class;
     }
 
     @Override
