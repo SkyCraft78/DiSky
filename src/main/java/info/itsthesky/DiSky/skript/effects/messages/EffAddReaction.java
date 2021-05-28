@@ -27,7 +27,7 @@ public class EffAddReaction extends Effect {
 
     static {
         Skript.registerEffect(EffAddReaction.class,
-                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [(message|reactions of)] %message% with %bot%]");
+                "["+ Utils.getPrefixName() +"] (add|append) %emotes% to [(message|reactions of)] %message% [with %bot%]");
     }
 
     private Expression<Emote> exprEmote;

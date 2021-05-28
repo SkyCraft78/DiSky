@@ -14,7 +14,8 @@ import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public class ExprCommandOption extends SimpleExpression<Object> {
         String id = exprID.getSingle(e);
         if (id == null) return new Object[0];
         if (e instanceof EventSlashCommand) {
-            SlashCommandEvent.OptionData option = StaticData.lastSlashCommandEvent.getOption(id);
+            OptionMapping option = StaticData.lastSlashCommandEvent.getOption(id);
             if (option == null) return new Object[0];
             switch (option.getType()) {
                 case CHANNEL:

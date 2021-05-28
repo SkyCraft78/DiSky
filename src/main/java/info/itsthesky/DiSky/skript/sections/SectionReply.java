@@ -34,7 +34,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.dv8tion.jda.api.interactions.commands.CommandHook;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
@@ -112,7 +112,7 @@ public class SectionReply extends EffectSection {
             need to use that, however Discord will wait forever for an answer :)
              */
 					SlashCommandEvent event = ((EventSlashCommand) e).getEvent();
-					CommandHook hook = event.getHook();
+					InteractionHook hook = event.getHook();
 					hook.setEphemeral(true);
 					if (message instanceof Message) {
 						hook.sendMessage((Message) message).queue();

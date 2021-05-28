@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.managers.music.AudioUtils;
+import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Metrics;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.versions.V2_3;
@@ -11,6 +12,7 @@ import info.itsthesky.disky.tools.versions.V2_4;
 import info.itsthesky.disky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,6 +61,7 @@ public class DiSky extends JavaPlugin {
             return;
         }
 
+        RestAction.setDefaultFailure(DiSkyErrorHandler::logException);
 
         /* Skript loading */
         getServer().getConsoleSender().sendMessage(Utils.colored("&bDiSky &9is loading ..."));
@@ -86,9 +89,9 @@ public class DiSky extends JavaPlugin {
         intents = gatewayIntents.toArray(new GatewayIntent[0]);
 
         /* Skript color adapter */
-        boolean usesSkript24 = !(Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
+        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
         SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
-        if (usesSkript24) logger.info("You're using an old version of Skript. Enable Color and Date adapter!");
+        if (!usesSkript24) logger.info("You're using an old version of Skript. Enable Color and Date adapter!");
 
         /* Metrics */
         int pluginId = 10911;

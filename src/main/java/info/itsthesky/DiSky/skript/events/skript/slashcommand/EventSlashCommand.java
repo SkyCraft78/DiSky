@@ -86,7 +86,7 @@ public class EventSlashCommand extends Event {
         super(Utils.areEventAsync());
         StaticData.lastSlashCommandEvent = e;
         this.e = e;
-        e.acknowledge(true).queue();
+        //e.acknowledge(true).queue();
     }
 
     @NotNull
