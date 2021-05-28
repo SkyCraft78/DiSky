@@ -14,6 +14,8 @@ import info.itsthesky.disky.tools.object.*;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.button.Button;
+import net.dv8tion.jda.api.interactions.button.ButtonStyle;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -85,6 +87,49 @@ public class Types {
 
 					@Override
 					public @NotNull CategoryBuilder parse(@NotNull String s, @NotNull ParseContext context) {
+						return null;
+					}
+				}));
+		Classes.registerClass(new ClassInfo<>(ButtonBuilder.class, "button")
+				.user("buttons?")
+				.name("Message Button")
+				.description("Represent a message button.")
+				.since("1.12")
+		);
+		Classes.registerClass(new ClassInfo<>(ButtonStyle.class, "buttoncolor")
+				.user("buttoncolors?")
+				.name("Button Color")
+				.description("Use in button builder, a specific color of a button.")
+				.usage("primary, success, secondary and danger")
+				.since("1.12")
+				.parser(new Parser<ButtonStyle>() {
+
+					@Override
+					public @NotNull String toString(@NotNull ButtonStyle c, int flags) {
+						return c.name().toLowerCase(Locale.ROOT).replaceAll("_", " ");
+					}
+
+					@Override
+					public @NotNull String toVariableNameString(@NotNull ButtonStyle c) {
+						return c.name().toLowerCase(Locale.ROOT).replaceAll("_", " ");
+					}
+
+					@Override
+					public boolean canParse(ParseContext context) {
+						return true;
+					}
+
+					@Override
+					public @NotNull String getVariableNamePattern() {
+						return "[a-z ]+";
+					}
+
+					@Nullable
+					@Override
+					public ButtonStyle parse(@NotNull String s, @NotNull ParseContext context) {
+						try {
+							return ButtonStyle.valueOf(s.toUpperCase(Locale.ROOT).replaceAll(" ", "_"));
+						} catch (Exception ignored) { }
 						return null;
 					}
 				}));

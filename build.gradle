@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
     implementation 'org.jetbrains:annotations:20.1.0'
     compile 'club.minnced:discord-webhooks:0.5.5-rc'
-    compile('com.github.dv8fromtheworld:jda:5951675') {
+    compile('com.github.dv8fromtheworld:jda:c114c34') {
         exclude module: "opus-java"
     }
     compile 'com.github.natanbc:lavadsp:0.7.7'

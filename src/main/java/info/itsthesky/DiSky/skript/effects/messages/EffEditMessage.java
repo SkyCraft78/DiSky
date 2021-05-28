@@ -10,11 +10,19 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
+import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.interactions.ActionRow;
+import net.dv8tion.jda.api.interactions.Component;
+import net.dv8tion.jda.api.interactions.button.Button;
 import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Name("Edit Message")
 @Description("Edit any message from the bot with new message or embed.")
@@ -46,12 +54,21 @@ public class EffEditMessage extends Effect {
             Message message = exprMessage.getSingle(e);
             Object newValue = exprNew.getSingle(e);
             if (message == null || newValue == null) return;
+
+            List<Button> current = StaticData.actions.containsKey(message.getIdLong()) ? StaticData.actions.get(message.getIdLong()) : new ArrayList<>();
+            
             if (newValue instanceof EmbedBuilder) {
-                message.editMessage(((EmbedBuilder) newValue).build()).queue();
+                message.editMessage(((EmbedBuilder) newValue).build())
+                        .setActionRows(ActionRow.of(current.toArray(new Component[0])))
+                        .queue();
             } else if (newValue instanceof MessageBuilder) {
-                message.editMessage(((MessageBuilder) newValue).build()).queue(null, DiSkyErrorHandler::logException);
+                message.editMessage(((MessageBuilder) newValue).build())
+                        .setActionRows(ActionRow.of(current.toArray(new Component[0])))
+                        .queue(null, DiSkyErrorHandler::logException);
             } else {
-                message.editMessage(newValue.toString()).queue(null, DiSkyErrorHandler::logException);
+                message.editMessage(newValue.toString())
+                        .setActionRows(ActionRow.of(current.toArray(new Component[0])))
+                        .queue(null, DiSkyErrorHandler::logException);
             }
         });
     }
