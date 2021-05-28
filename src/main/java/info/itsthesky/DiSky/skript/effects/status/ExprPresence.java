@@ -57,12 +57,16 @@ public class ExprPresence extends SimpleExpression<Activity> {
 		switch (pattern) {
 			case 0:
 				activity = Activity.listening(input);
+				break;
 			case 1:
 				activity = Activity.watching(input);
+				break;
 			case 2:
 				activity = Activity.playing(input);
+				break;
 			case 3:
 				activity = Activity.streaming(input, url);
+				break;
 			case 4:
 				activity = Activity.competing(input);
 		}
