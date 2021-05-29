@@ -7,12 +7,16 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.skript.events.skript.EventButtonClick;
+import info.itsthesky.disky.skript.events.skript.EventButtonsSection;
 import info.itsthesky.disky.skript.events.skript.EventReactSection;
 import info.itsthesky.disky.skript.events.skript.EventReplySection;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author ItsTheSky
@@ -23,22 +27,25 @@ public class ExprEventValues extends SimpleExpression<Object> {
                 "event-%*classinfo%");
     }
 
-    public static HashMap<String, EventValue<?>> values = new HashMap<>();
-    private String cInfo;
+    public static HashMap<Class<? extends Event>, List<EventValue<?>>> eventValues = new HashMap<>();
+
     private EventValue<?> value;
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
         if (!ScriptLoader.isCurrentEvent(EventReactSection.class) &&
-                !ScriptLoader.isCurrentEvent(EventReplySection.class))
+                !ScriptLoader.isCurrentEvent(EventReplySection.class) &&
+                !ScriptLoader.isCurrentEvent(EventButtonsSection.class))
             return false;
+
         String cInfo = parser.expr.replaceAll("event-", "");
-        if (!values.containsKey(cInfo)) {
-            Skript.error("There's no event-" + cInfo + " in a react section event");
-            return false;
-        }
-        value = values.get(cInfo);
-        this.cInfo = cInfo;
+
+        List<EventValue<?>> eValues = eventValues.get(ScriptLoader.getCurrentEvents()[0]);
+        if (eValues == null || eValues.isEmpty()) return false;
+        EventValue<?> value = null;
+        for (EventValue<?> vs : eValues) if (vs.getcInfo().equals(cInfo)) value = vs;
+        if (value == null) return false;
+        this.value = value;
         return true;
     }
 

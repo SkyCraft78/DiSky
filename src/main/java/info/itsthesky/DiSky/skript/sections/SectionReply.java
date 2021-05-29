@@ -11,14 +11,8 @@ import ch.njol.skript.lang.Variable;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandFactory;
-import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
-import info.itsthesky.disky.skript.events.skript.EventReactSection;
 import info.itsthesky.disky.skript.events.skript.EventReplySection;
-import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
-import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
-import info.itsthesky.disky.skript.events.skript.slashcommand.EventSlashCommand;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
@@ -31,12 +25,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+
+import java.util.Arrays;
+
+import static info.itsthesky.disky.skript.effects.messages.EffReplyWith.*;
 
 @Name("Reply and Wait")
 @Description("Reply in a message, and wait until a user send another message after that. Can specify if the bot will detect it one time online or multiple.")
@@ -54,11 +50,13 @@ public class SectionReply extends EffectSection {
 		Skript.registerCondition(SectionReply.class,
 				"["+ Utils.getPrefixName() +"] reply with [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%] [and wait [the] answer from %-member%] [to run [one time]]"
 		);
-		ExprEventValues.values.put("message", valueMessage);
-		ExprEventValues.values.put("member", valueMember);
-		ExprEventValues.values.put("user", valueUser);
-		ExprEventValues.values.put("guild", valueGuild);
-		ExprEventValues.values.put("bot", valueBot);
+		ExprEventValues.eventValues.put(EventReplySection.class, Arrays.asList(
+				valueMessage,
+				valueMember,
+				valueUser,
+				valueGuild,
+				valueBot
+		));
 	}
 
 	private Expression<Object> exprMessage;
@@ -92,101 +90,36 @@ public class SectionReply extends EffectSection {
 			try {
 				Object message = exprMessage.getSingle(e);
 				if (message == null) return;
-				if (!EffReplyWith.allowedEvents.contains(e.getEventName())) {
-					DiSky.getInstance().getLogger().severe("You can't use 'reply with' effect without a discord guild based event!");
+
+				/* Message cast */
+				MessageBuilder toSend = null;
+				switch (message.getClass().getSimpleName()) {
+					case "EmbedBuilder":
+						toSend = new MessageBuilder().setEmbed(((EmbedBuilder) message).build());
+						break;
+					case "String":
+						toSend = new MessageBuilder(message.toString());
+						break;
+					case "MessageBuilder":
+						toSend = (MessageBuilder) message;
+						break;
+					case "Message":
+						toSend = new MessageBuilder((Message) message);
+						break;
+				}
+				if (toSend == null) {
+					Skript.error("[DiSky] Cannot parse or cast the message in the send effect!");
 					return;
 				}
-				TextChannel channel = null;
+
 				Message storedMessage;
-
-				EventPrivateMessage eventPrivate = null;
-				if (e.getEventName().equalsIgnoreCase("EventPrivateMessage")) {
-					eventPrivate = (EventPrivateMessage) e;
-				} else if (e instanceof EventMessageReceive) {
-					channel = ((EventMessageReceive) e).getEvent().getTextChannel();
-				} else if (e instanceof CommandEvent) {
-					channel = (TextChannel) ((CommandEvent) e).getMessageChannel();
-				} else if (e instanceof EventSlashCommand) {
-            /* Slash command have their own reply system
-            They're using webhook instead of user, and we
-            need to use that, however Discord will wait forever for an answer :)
-             */
-					SlashCommandEvent event = ((EventSlashCommand) e).getEvent();
-					InteractionHook hook = event.getHook();
-					hook.setEphemeral(true);
-					if (message instanceof Message) {
-						hook.sendMessage((Message) message).queue();
-						return;
-					} else if (message instanceof EmbedBuilder) {
-						// Because of a JDA's bug, we can't send embed currently via ephemeral message :c
-                /* MessageEmbed embed = ((EmbedBuilder) message).build();
-                System.out.println(embed);
-                hook.sendMessage(embed).queue(); */
-						DiSky.getInstance().getLogger()
-								.warning("Replying with Embed in slash command are currently not supported! See our discord for more information :)");
-						hook.sendMessage(":warning: Error, see console for more information!").queue();
-						return;
-					} else if (message instanceof MessageBuilder) {
-						hook.sendMessage(((MessageBuilder) message).build()).queue(null, DiSkyErrorHandler::logException);
-						return;
-					} else {
-						hook.sendMessage(message.toString()).queue(null, DiSkyErrorHandler::logException);
-						return;
-					}
-				}
-
-				boolean isFromPrivate = false;
-				if (eventPrivate != null) isFromPrivate = true;
-
-				if (message instanceof Message) {
-					if (isFromPrivate) {
-						storedMessage = eventPrivate
-								.getEvent()
-								.getPrivateChannel()
-								.sendMessage((Message) message).complete(true);
-					} else {
-						storedMessage = channel.getJDA()
-								.getTextChannelById(
-										channel.getId()
-								).sendMessage((Message) message).complete(true);
-					}
-				} else if (message instanceof EmbedBuilder) {
-					if (isFromPrivate) {
-						storedMessage = eventPrivate
-								.getEvent()
-								.getPrivateChannel()
-								.sendMessage(((EmbedBuilder) message).build()).complete(true);
-					} else {
-						storedMessage = channel.getJDA()
-								.getTextChannelById(
-										channel.getId()
-								).sendMessage(((EmbedBuilder) message).build()).complete(true);
-					}
-				}  else if (message instanceof MessageBuilder) {
-					if (isFromPrivate) {
-						storedMessage = eventPrivate
-								.getEvent()
-								.getPrivateChannel()
-								.sendMessage(((MessageBuilder) message).build()).complete(true);
-					} else {
-						storedMessage = channel.getJDA()
-								.getTextChannelById(
-										channel.getId()
-								).sendMessage(((MessageBuilder) message).build()).complete(true);
-					}
+				if (IS_HOOK) {
+					storedMessage = LAST_INTERACTION.getHook().setEphemeral(true).sendMessage(toSend.build()).complete(true);
+					IS_HOOK = false;
 				} else {
-					if (isFromPrivate) {
-						storedMessage = eventPrivate
-								.getEvent()
-								.getPrivateChannel()
-								.sendMessage(message.toString()).complete(true);
-					} else {
-						storedMessage = channel.getJDA()
-								.getTextChannelById(
-										channel.getId()
-								).sendMessage(message.toString()).complete(true);
-					}
+					storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
 				}
+
 				ExprLastMessage.lastMessage = storedMessage;
 				if (exprVar != null) {
 					if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;

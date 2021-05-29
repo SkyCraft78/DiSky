@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
+import java.util.Arrays;
+
 @Name("React to Message")
 @Description("React to a message with an emote like the 'add reaction' effect. However, this section will be fired when someone react to this emote too.")
 @Examples("react to event-message with reaction \"smile\"")
@@ -43,12 +45,14 @@ public class SectionReact extends EffectSection {
 		Skript.registerCondition(SectionReact.class,
 				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using %-bot%] [to run]"
 		);
-		ExprEventValues.values.put("message", valueMessage);
-		ExprEventValues.values.put("member", valueMember);
-		ExprEventValues.values.put("user", valueUser);
-		ExprEventValues.values.put("guild", valueGuild);
-		ExprEventValues.values.put("bot", valueBot);
-		ExprEventValues.values.put("emote", valueEmote);
+		ExprEventValues.eventValues.put(EventReactSection.class, Arrays.asList(
+				valueMessage,
+				valueMember,
+				valueUser,
+				valueGuild,
+				valueBot,
+				valueEmote
+		));
 	}
 
 	private Expression<Emote> exprReact;
