@@ -49,11 +49,12 @@ public class EffManagePermission extends Effect {
         Permission[] perm = exprPerm.getArray(e);
         Object target = exprTarget.getSingle(e);
         Object entity = exprEntity.getSingle(e);
-        if (perm == null || target == null) return;
+        if (perm.length == 0 || target == null) return;
 
-        TextChannel channel = null;
+        GuildChannel channel = null;
         if (entity instanceof TextChannel) channel = (TextChannel) entity;
-        if (entity instanceof GuildChannel && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) channel = (TextChannel) entity;
+        if (entity instanceof VoiceChannel) channel = (VoiceChannel) entity;
+        if (entity instanceof GuildChannel) channel = (GuildChannel) entity;
 
         if (target instanceof Role) {
             Role role = (Role) target;
