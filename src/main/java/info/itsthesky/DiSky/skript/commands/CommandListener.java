@@ -68,16 +68,15 @@ public class CommandListener extends ListenerAdapter {
                         usedCommand = mentions ? content.split(" ")[0].replaceFirst("!", "") : content.split(" ")[0];
                     }
 
-                    String usedPrefixes = usedCommand.split("")[0].toLowerCase(Locale.ROOT);
+                    try {
+                        String usedPrefixes = usedCommand.split("")[0].toLowerCase(Locale.ROOT);
+                    } catch (Exception ignored) {}
                     String rawCommand = "";
 
+                    // TODO: 29/05/2021 Fix the global prefix system. HArd to interfere with original one :'(
                     if (nonNull(usedCommand)) {
-                        if ((nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) || (globalPrefixes.contains(usedPrefixes) && usedCommand.equalsIgnoreCase(usedPrefixes + rawCommand))) {
-                            if (nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias)) {
-                                event.setPrefix(rawPrefix);
-                            } else {
-                                event.setPrefix(usedPrefixes);
-                            }
+                        if ((nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias))) {
+                            event.setPrefix(rawPrefix);
                             try {
                                 event.setArguments(content.substring((usedCommand).length() + 1));
                             } catch (StringIndexOutOfBoundsException e1) {
