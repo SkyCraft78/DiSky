@@ -12,19 +12,20 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
 @Name("ID of Discord entity")
 @Description("Return the discord ID of a channel, user, member, role, guild, etc...")
-@Examples("set {_id} to discord id of event-bot")
+@Examples("set {_id} to discord id of event-button")
 @Since("1.0")
 public class ExprIdOf extends SimpleExpression<String> {
 
 	static {
 		Skript.registerExpression(ExprIdOf.class, String.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] [discord] id of [the] [discord] [entity] %string/role/user/member/bot/emote/textchannel/voicechannel/channel/message/guild%");
+				"["+ Utils.getPrefixName() +"] [the] [discord] id of [the] [discord] [entity] %string/role/user/member/bot/button/emote/textchannel/voicechannel/channel/message/guild%");
 	}
 
 	private Expression<Object> exprEntity;
@@ -68,6 +69,8 @@ public class ExprIdOf extends SimpleExpression<String> {
 			return new String[] {((Category) entity).getId()};
 		} else if (entity instanceof VoiceChannel) {
 			return new String[] {((VoiceChannel) entity).getId()};
+		} else if (entity instanceof ButtonBuilder) {
+			return new String[] {((ButtonBuilder) entity).getId()};
 		}
 
 		return new String[0];

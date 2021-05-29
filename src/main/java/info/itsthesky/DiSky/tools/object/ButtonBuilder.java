@@ -1,6 +1,5 @@
 package info.itsthesky.disky.tools.object;
 
-import ch.njol.skript.Skript;
 import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.interactions.button.Button;
 import net.dv8tion.jda.api.interactions.button.ButtonStyle;
@@ -57,11 +56,12 @@ public class ButtonBuilder {
             DiSky.getInstance().getLogger().severe("[DiSky] You're trying to build and empty (without content / emote) message button!");
             return null;
         }
+
         Button button;
-        String c = content == null ? emote.getAsMention() : content;
+        String c = content;
         ButtonStyle style = isLink ? ButtonStyle.LINK : color;
 
-        button = Button.of(style, idOrURl, c);
+        button = emote == null ? Button.of(style, idOrURl, c) : Button.of(style, idOrURl, c).withEmoji(emote.getEmoji());
         return isDisabled ? button.asDisabled() : button.asEnabled();
     }
 
@@ -82,7 +82,7 @@ public class ButtonBuilder {
     }
 
     public boolean isEmpty() {
-        return content == null || emote == null;
+        return content == null;
     }
 
     public String getContent() {
