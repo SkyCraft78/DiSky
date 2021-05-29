@@ -60,7 +60,7 @@ public class EffReplyTo extends Effect {
             if (msg instanceof Message) storedMessage = target.reply((Message) msg).mentionRepliedUser(mention).complete();
             if (msg instanceof EmbedBuilder) storedMessage = target.reply(((EmbedBuilder) msg).build()).mentionRepliedUser(mention).complete();
             if (msg instanceof MessageBuilder) storedMessage = target.reply(((MessageBuilder) msg).build()).mentionRepliedUser(mention).complete();
-            if (storedMessage == null) storedMessage = target.reply(msg.toString()).complete();
+            if (storedMessage == null) storedMessage = target.reply(msg.toString()).mentionRepliedUser(mention).complete();
 
             ExprLastMessage.lastMessage = storedMessage;
             if (exprVar == null) return;

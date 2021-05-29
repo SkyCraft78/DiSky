@@ -1,5 +1,6 @@
 package info.itsthesky.disky.skript.commands;
 
+import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Guild;
@@ -32,7 +33,9 @@ public class CommandEvent extends Event implements Cancellable {
 	public CommandEvent(String prefix, String usedAlias, CommandObject command, String arguments, Guild guild,
                         MessageChannel messagechannel, GuildChannel channel, Message message, User user,
                         Member member, JDA bot) {
-		this.arguments = arguments == null ? "" : arguments;
+        EffReplyWith.IS_HOOK = false;
+        EffReplyWith.LAST_CHANNEL = messagechannel;
+	    this.arguments = arguments == null ? "" : arguments;
         this.command = command;
         this.guild = guild;
         this.user = user;

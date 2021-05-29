@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
@@ -86,7 +87,9 @@ public class EventSlashCommand extends Event {
         super(Utils.areEventAsync());
         StaticData.lastSlashCommandEvent = e;
         this.e = e;
-        //e.acknowledge(true).queue();
+        EffReplyWith.IS_HOOK = true;
+        EffReplyWith.LAST_INTERACTION = e;
+        e.deferReply().queue();
     }
 
     @NotNull

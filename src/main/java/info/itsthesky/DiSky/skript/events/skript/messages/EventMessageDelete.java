@@ -10,6 +10,7 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.managers.cache.CachedMessage;
 import info.itsthesky.disky.managers.cache.Messages;
+import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.*;
@@ -93,6 +94,8 @@ public class EventMessageDelete extends Event {
             final GuildMessageDeleteEvent e
             ) {
         super(Utils.areEventAsync());
+        EffReplyWith.IS_HOOK = false;
+        EffReplyWith.LAST_CHANNEL = e.getChannel();
         this.e = e;
     }
 

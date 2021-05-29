@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -101,6 +102,8 @@ public class EventMessageReceive extends Event {
             final MessageReceivedEvent e
             ) {
         super(Utils.areEventAsync());
+        EffReplyWith.IS_HOOK = false;
+        EffReplyWith.LAST_CHANNEL = e.getChannel();
         this.event = e;
     }
 

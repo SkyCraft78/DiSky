@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.messages.Channel;
@@ -108,6 +109,8 @@ public class EventReactionAdd extends Event {
             ) {
         super(Utils.areEventAsync());
         this.e = e;
+        EffReplyWith.IS_HOOK = false;
+        EffReplyWith.LAST_CHANNEL = e.getChannel();
     }
 
     @NotNull
