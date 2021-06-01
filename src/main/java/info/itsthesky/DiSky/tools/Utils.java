@@ -10,6 +10,7 @@ import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -74,6 +76,14 @@ public class Utils extends ListenerAdapter {
             guild = (Guild) event.getClass().getDeclaredMethod("getEvent()").getClass().getDeclaredMethod("getGuild()").invoke(event);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ignored) { }
         return guild;
+    }
+    
+    public static List<ButtonBuilder> convertButtons(List<Button> originals) {
+        final List<ButtonBuilder> buttonBuilders = new ArrayList<>();
+        for (Button button : originals) {
+            buttonBuilders.add(ButtonBuilder.fromButton(button));
+        }
+        return buttonBuilders;
     }
 
     private static  <T> Object getDefaultValue(T object) {
