@@ -7,6 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
+import info.itsthesky.disky.tools.object.TextChannelBuilder;
 import info.itsthesky.disky.tools.object.VoiceChannelBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -64,6 +65,7 @@ public class ExprCategoryParent extends SimplePropertyExpression<Object, Categor
 
                 if (entity instanceof VoiceChannelBuilder) ((VoiceChannelBuilder) entity).setParent(category);
                 if (entity instanceof VoiceChannel) ((VoiceChannel) entity).getManager().setParent(category).queue();
+                if (entity instanceof TextChannelBuilder) ((TextChannelBuilder) entity).setCategory(category);
                 if (entity instanceof TextChannel) ((TextChannel) entity).getManager().setParent(category).queue();
                 if (entity instanceof GuildChannel) ((GuildChannel) entity).getManager().setParent(category).queue();
 

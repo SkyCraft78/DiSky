@@ -7,6 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
+import info.itsthesky.disky.tools.object.TextChannelBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
@@ -59,6 +60,7 @@ public class ExprNSFWState extends SimplePropertyExpression<Object, Boolean> {
         boolean newState = (Boolean) delta[0];
         if (mode == Changer.ChangeMode.SET) {
             for (Object entity : getExpr().getArray(e)) {
+                if (entity instanceof TextChannelBuilder) ((TextChannelBuilder) entity).setNsfw(newState);
                 if (entity instanceof TextChannel) ((TextChannel) entity).getManager().setNSFW(newState).queue();
                 if ((entity instanceof GuildChannel) && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) ((TextChannel) entity).getManager().setNSFW(newState).queue();
             }

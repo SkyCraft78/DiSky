@@ -7,6 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
+import info.itsthesky.disky.tools.object.TextChannelBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -61,6 +62,7 @@ public class ExprTopic extends SimplePropertyExpression<Object, String> {
         if (mode == Changer.ChangeMode.SET) {
             for (Object entity : getExpr().getArray(e)) {
                 if (entity instanceof TextChannel) ((TextChannel) entity).getManager().setTopic(topic).queue();
+                if (entity instanceof TextChannelBuilder) ((TextChannelBuilder) entity).setTopic(topic);
                 if ((entity instanceof GuildChannel) && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) ((TextChannel) entity).getManager().setTopic(topic).queue();
             }
         }

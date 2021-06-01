@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.TextChannelBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -61,6 +62,7 @@ public class ExprSlowMode extends SimplePropertyExpression<Object, Number> {
         int slow = Utils.round(Double.valueOf(delta[0].toString()));
         if (mode == Changer.ChangeMode.SET) {
             for (Object entity : getExpr().getArray(e)) {
+                if (entity instanceof TextChannelBuilder) ((TextChannelBuilder) entity).setSlowmode(slow);
                 if (entity instanceof TextChannel) ((TextChannel) entity).getManager().setSlowmode(slow).queue();
                 if ((entity instanceof GuildChannel) && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) ((TextChannel) entity).getManager().setSlowmode(slow).queue();
             }
