@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -18,7 +19,7 @@ import org.bukkit.event.Event;
 @Description("Make the specific bot leave the specific guild.")
 @Examples("make bot named \"MyBot\" leave event-guild")
 @Since("1.8")
-public class EffMakeBotLeave extends Effect {
+public class EffMakeBotLeave extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffMakeBotLeave.class,

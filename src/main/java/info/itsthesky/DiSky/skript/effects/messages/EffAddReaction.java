@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -15,6 +16,7 @@ import info.itsthesky.disky.skript.sections.VariablesMaps;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
@@ -23,7 +25,7 @@ import org.bukkit.event.Event;
 @Description("Add a specific reaction, on message.")
 @Examples("add reaction \"smile\" to event-message")
 @Since("1.3")
-public class EffAddReaction extends Effect {
+public class EffAddReaction extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffAddReaction.class,
@@ -31,14 +33,14 @@ public class EffAddReaction extends Effect {
     }
 
     private Expression<Emote> exprEmote;
-    private Expression<Message> exprMessage;
+    private Expression<UpdatingMessage> exprMessage;
     private Expression<JDA> exprBot;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         this.exprEmote = (Expression<Emote>) exprs[0];
-        this.exprMessage = (Expression<Message>) exprs[1];
+        this.exprMessage = (Expression<UpdatingMessage>) exprs[1];
         this.exprBot = (Expression<JDA>) exprs[2];
         return true;
     }
@@ -46,11 +48,11 @@ public class EffAddReaction extends Effect {
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            Message message = exprMessage.getSingle(e);
+            UpdatingMessage message = exprMessage.getSingle(e);
             Emote[] emotes = exprEmote.getAll(e);
             if (message == null || emotes.length == 0) return;
             if (exprBot != null) {
-                JDA msgJDA = message.getJDA();
+                JDA msgJDA = message.getMessage().getJDA();
                 JDA botJDA = exprBot.getSingle(e);
                 if (botJDA == null) return;
                 if (msgJDA != botJDA) return;
@@ -58,9 +60,9 @@ public class EffAddReaction extends Effect {
 
             for (Emote emote : emotes) {
                 if (emote.isEmote()) {
-                    message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+                    message.getMessage().addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
                 } else {
-                    message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+                    message.getMessage().addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
                 }
             }
         });

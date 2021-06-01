@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -12,13 +13,17 @@ import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
+import info.itsthesky.disky.tools.AsyncEffect;
+import ch.njol.skript.lang.Effect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.event.Event;
 
 @Name("Send discord Message")
@@ -30,7 +35,7 @@ import org.bukkit.event.Event;
         "\t\tset timestamp of embed to now\n" +
         "\tsend last embed to text channel with id \"818182473502294066\"")
 @Since("1.0")
-public class EffSendMessage extends Effect {
+public class EffSendMessage extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
@@ -119,14 +124,14 @@ public class EffSendMessage extends Effect {
                 storedMessage = channel.sendMessage(toSend.build()).complete(true);
 
                 /* Store section */
-                ExprLastMessage.lastMessage = storedMessage;
+                ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
                 if (exprVar == null) return;
-                if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
                 Variable var = (Variable) exprVar;
-                Utils.setSkriptVariable(var, storedMessage, e);
+                Utils.setSkriptVariable(var, UpdatingMessage.from(storedMessage), e);
             } catch (RateLimitedException ex) {
                 DiSky.getInstance().getLogger().severe("DiSky tried to get a message, but was rate limited. ("+ex.getMessage()+")");
             }
+
         });
     }
 

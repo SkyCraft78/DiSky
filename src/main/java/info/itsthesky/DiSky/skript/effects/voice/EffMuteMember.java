@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -19,7 +20,7 @@ import org.bukkit.event.Event;
 @Description("Mute or unmute a member in a guild.")
 @Examples("mute event-member")
 @Since("1.9")
-public class EffMuteMember extends Effect {
+public class EffMuteMember extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffMuteMember.class,

@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -26,7 +27,7 @@ import java.util.List;
 @Description("Grab all X latest message of a text channel and purge (= delete) them.")
 @Examples("purge last 50 messages from event-channel")
 @Since("1.5.2")
-public class EffPurgeMessages extends Effect {
+public class EffPurgeMessages extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffPurgeMessages.class,

@@ -4,6 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -16,7 +17,7 @@ import org.bukkit.event.Event;
 @Name("Register Embed Template")
 @Description("Register a new embed template using an existing template and an id. See also 'make embed using template \"ID\"' section.")
 @Since("1.7")
-public class EffRegisterEmbed extends Effect {
+public class EffRegisterEmbed extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffRegisterEmbed.class,

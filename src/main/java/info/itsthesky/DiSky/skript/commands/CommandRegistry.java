@@ -16,6 +16,7 @@ import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -75,10 +76,10 @@ public class CommandRegistry extends SelfRegisteringSkriptEvent {
                 }
                 , 0);
 
-        EventValues.registerEventValue(CommandEvent.class, Message.class, new Getter<Message, CommandEvent>() {
+        EventValues.registerEventValue(CommandEvent.class, UpdatingMessage.class, new Getter<UpdatingMessage, CommandEvent>() {
                     @Override
-                    public Message get(CommandEvent event) {
-                        return event.getMessage();
+                    public UpdatingMessage get(CommandEvent event) {
+                        return UpdatingMessage.from(event.getMessage());
                     }
                 }
                 , 0);

@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -19,7 +20,7 @@ import org.bukkit.event.Event;
 @Description("Move a member to another voice channel.")
 @Examples("move event-member to voice channel with id \"818182473502294073\"")
 @Since("1.9")
-public class EffMoveMember extends Effect {
+public class EffMoveMember extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffMoveMember.class,

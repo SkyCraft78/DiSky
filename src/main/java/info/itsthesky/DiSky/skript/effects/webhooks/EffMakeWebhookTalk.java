@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -21,7 +22,7 @@ import org.bukkit.event.Event;
 @Description("Make a webhook send a specific message, embed or webhook message builder in his channel.\nSee more information about this on the wiki: https://github.com/SkyCraft78/DiSky/wiki/Webhooks")
 @Examples("make webhook \"name\" send message \"Hello World !\"")
 @Since("1.8")
-public class EffMakeWebhookTalk extends Effect {
+public class EffMakeWebhookTalk extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffMakeWebhookTalk.class, // [the] [bot] [(named|with name)] %string%

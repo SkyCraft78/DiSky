@@ -12,6 +12,7 @@ public class Emote implements IMentionable {
     private boolean isEmote = false;
     private final String mention;
     private Emoji emoji;
+    private long id;
 
     public Emote(String name) {
         this.name = name;
@@ -34,14 +35,8 @@ public class Emote implements IMentionable {
 
     public Emote(Emoji emoji) {
         this.emoji = emoji;
-        if (emoji.isCustom()) {
-            this.name = emoji.getName();
-            this.isEmote = true;
-            this.mention = emoji.getAsMention();
-        } else {
-            this.name = emoji.getName();
-            this.mention = name;
-        }
+        this.mention = emoji.getName();
+        this.name = emoji.getName();
     }
 
     public Emote(net.dv8tion.jda.api.entities.Emote emote) {
@@ -102,6 +97,6 @@ public class Emote implements IMentionable {
 
     @Override
     public long getIdLong() {
-        return 0;
+        return this.id;
     }
 }

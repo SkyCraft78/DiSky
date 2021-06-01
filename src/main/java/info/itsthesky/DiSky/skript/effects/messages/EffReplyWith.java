@@ -5,33 +5,28 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
+import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.dv8tion.jda.api.interactions.Interaction;
 import org.bukkit.event.Event;
 
 @Name("Reply with Message")
 @Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern!")
 @Examples("reply with \"Hello World :globe_with_meridians:\"")
 @Since("1.0")
-public class EffReplyWith extends Effect {
-
-    public static MessageChannel LAST_CHANNEL;
-    public static Boolean IS_HOOK = false;
-    public static Interaction LAST_INTERACTION;
+public class EffReplyWith extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
@@ -81,19 +76,27 @@ public class EffReplyWith extends Effect {
                     return;
                 }
 
-                Message storedMessage;
-                if (IS_HOOK) {
-                    storedMessage = LAST_INTERACTION.getHook().setEphemeral(true).sendMessage(toSend.build()).complete(true);
+                MessageChannel LAST_CHANNEL = null;
+                boolean IS_HOOK;
+                try {
+                    Object classEvent = e.getClass().getDeclaredMethod("getEvent").invoke(e);
+                    LAST_CHANNEL = (MessageChannel) classEvent.getClass().getDeclaredMethod("getChannel").invoke(classEvent);
                     IS_HOOK = false;
-                } else {
-                    storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
+                } catch (Exception reflect) {
+                    try {
+                        LAST_CHANNEL = (MessageChannel) e.getClass().getDeclaredMethod("getChannel").invoke(e);
+                    } catch (Exception reflect2) {
+                        reflect2.printStackTrace();
+                        DiSky.getInstance().getConsoleLogger().severe("Cannot get the last channel from a message event !");
+                        return;
+                    }
                 }
-
-                ExprLastMessage.lastMessage = storedMessage;
+                Message storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
+                ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
                 if (exprVar == null) return;
                 if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
                 Variable var = (Variable) exprVar;
-                Utils.setSkriptVariable(var, storedMessage, e);
+                Utils.setSkriptVariable(var, UpdatingMessage.from(storedMessage), e);
             } catch (RateLimitedException ex) {
                 DiSky.getInstance().getLogger().severe("DiSky tried to get a message, but was rate limited.");
             }

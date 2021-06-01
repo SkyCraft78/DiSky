@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 @Description("Ban a member from a specific guild. With an optional reason. The optional amount of days specified will be removed every messages.")
 @Examples("ban event-member because of \"ur so bad bro\"")
 @Since("1.12")
-public class EffBanUser extends Effect {
+public class EffBanUser extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffBanUser.class,

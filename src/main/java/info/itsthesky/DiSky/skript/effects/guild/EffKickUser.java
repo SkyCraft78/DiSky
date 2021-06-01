@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 @Description("Kick a specific member from his guild.")
 @Examples("kick event-member because of \"ur so bad bro v2\"")
 @Since("1.12")
-public class EffKickUser extends Effect {
+public class EffKickUser extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffKickUser.class,

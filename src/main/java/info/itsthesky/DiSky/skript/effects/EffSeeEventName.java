@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -16,7 +17,7 @@ import org.bukkit.event.Event;
 @Description("Simple debug effect to sout the event's name which this effect is in.")
 @Examples("sout the event name")
 @Since("1.0")
-public class EffSeeEventName extends Effect {
+public class EffSeeEventName extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffSeeEventName.class,

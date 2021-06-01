@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -24,7 +25,7 @@ import org.bukkit.event.Event;
 @Description("Make the specific bot join a voice channel.")
 @Examples("make bot named \"MyBot\" join event-channel")
 @Since("1.12")
-public class EffMakeBotJoinVoice extends Effect {
+public class EffMakeBotJoinVoice extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffMakeBotJoinVoice.class,

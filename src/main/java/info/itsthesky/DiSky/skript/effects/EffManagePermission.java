@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -20,7 +21,7 @@ import org.bukkit.event.Event;
 @Description("Allow or deny a discord permission to a role or a user in a channel.")
 @Examples("allow administrator to public role of guild # Make every member administrator >:D")
 @Since("1.4")
-public class EffManagePermission extends Effect {
+public class EffManagePermission extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffManagePermission.class,

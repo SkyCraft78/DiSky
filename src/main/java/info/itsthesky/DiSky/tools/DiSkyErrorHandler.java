@@ -15,13 +15,11 @@ public class DiSkyErrorHandler {
     private final static Logger logger = DiSky.getInstance().getLogger();
 
     public static void executeHandleCode(Event e, Consumer<Event> consumer) {
-        //new Thread(() -> {
-            try {
-                consumer.accept(e);
-            } catch (Exception ex) {
-                logException(ex);
-            }
-        //}).start();
+        try {
+            consumer.accept(e);
+        } catch (Exception ex) {
+            logException(ex);
+        }
     }
 
     public static void logException(Throwable ex) {

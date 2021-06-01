@@ -5,6 +5,8 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -13,6 +15,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -40,7 +43,7 @@ import java.net.URLConnection;
         "\t\t\tstop\n" +
         "\t\tupload arg-1 with content arg-2 to event-channel")
 @Since("1.4, 1.10 (added locale files & custom content)")
-public class EffUploadFile extends Effect {
+public class EffUploadFile extends AsyncEffect {
 
     static {
         String pImage = "[file] %string%";
@@ -71,22 +74,59 @@ public class EffUploadFile extends Effect {
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            Object target = exprChannel.getSingle(e);
+            Object entity = exprChannel.getSingle(e);
+            Object content = exprContent.getSingle(e);
             Object f = exprFile.getSingle(e);
-            @Nullable Object content = exprContent == null ? null : exprContent.getSingle(e);
-            if (target == null || f == null) return;
-            Message resultMessage;
-            MessageChannel channel = null;
-            if (exprBot != null && !Utils.areJDASimilar(((GuildChannel) target).getJDA(), exprBot.getSingle(e))) return;
+            if (entity == null || content == null) return;
+            Message storedMessage;
 
-            if (target instanceof GuildChannel && ((GuildChannel) target).getType().equals(ChannelType.TEXT)) {
-                channel = (MessageChannel) target;
-            } else if (target instanceof Member || target instanceof User) {
-                User user = (User) target;
-                channel = user.openPrivateChannel().complete();
+            /* Message cast */
+            MessageBuilder toSend = null;
+            switch (content.getClass().getSimpleName()) {
+                case "EmbedBuilder":
+                    toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                    break;
+                case "String":
+                    toSend = new MessageBuilder(content.toString());
+                    break;
+                case "MessageBuilder":
+                    toSend = (MessageBuilder) content;
+                    break;
+                case "Message":
+                    toSend = new MessageBuilder((Message) content);
+                    break;
             }
 
-            if (channel == null) return;
+            /* Channel Cast */
+            MessageChannel channel = null;
+            switch (entity.getClass().getSimpleName()) {
+                case "TextChannel":
+                case "TextChannelImpl":
+                    channel = (MessageChannel) entity;
+                    break;
+                case "GuildChannel":
+                case "GuildChannelImpl":
+                    channel = ((GuildChannel) entity).getType().equals(ChannelType.TEXT) ? (MessageChannel) entity : null;
+                    break;
+                case "User":
+                case "UserImpl":
+                    channel = ((User) entity).openPrivateChannel().complete();
+                    break;
+                case "Member":
+                case "MemberImpl":
+                    channel = ((Member) entity).getUser().openPrivateChannel().complete();
+                    break;
+            }
+            if (channel == null) {
+                Skript.error("[DiSky] Cannot parse or cast the message channel in the upload effect!");
+                return;
+            }
+
+            /* 'with bot' verification */
+            if (exprBot != null && exprBot.getSingle(e) != null) {
+                JDA bot = exprBot.getSingle(e);
+                if (!Utils.areJDASimilar(channel.getJDA(), bot)) return;
+            }
 
             if (f instanceof BufferedImage) {
                 BufferedImage image = (BufferedImage) f;
@@ -98,18 +138,14 @@ public class EffUploadFile extends Effect {
                 }
                 ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 
-                if (content == null) {
-                    resultMessage = channel.sendFile(is, "image.png").complete();
+                if (toSend == null) {
+                    storedMessage = channel.sendFile(is, "image.png").complete();
                 } else {
-
-                    if (content instanceof MessageBuilder) {
-                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(is, "image.png").complete();
-                    } else if (content instanceof EmbedBuilder) {
-                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(is, "image.png").complete();
-                    } else {
-                        resultMessage = channel.sendMessage(content.toString()).addFile(is, "image.png").complete();
-                    }
+                    storedMessage = channel.sendMessage(toSend.build()).addFile(is, "image.png").complete();
                 }
+                ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
+                if (exprVar == null) return;
+                Utils.setSkriptVariable((Variable<?>) exprVar, UpdatingMessage.from(storedMessage), e);
                 return;
             }
 
@@ -121,17 +157,10 @@ public class EffUploadFile extends Effect {
                 if (stream == null) return;
 
 
-                if (content == null) {
-                    resultMessage = channel.sendFile(stream, "file." + ext).complete();
+                if (toSend == null) {
+                    storedMessage = channel.sendFile(stream, "file." + ext).complete();
                 } else {
-
-                    if (content instanceof MessageBuilder) {
-                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(stream, "file." + ext).complete();
-                    } else if (content instanceof EmbedBuilder) {
-                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(stream, "file." + ext).complete();
-                    } else {
-                        resultMessage = channel.sendMessage(content.toString()).addFile(stream, "file." + ext).complete();
-                    }
+                    storedMessage = channel.sendMessage(toSend.build()).addFile(stream, "file." + ext).complete();
                 }
 
             } else {
@@ -139,22 +168,16 @@ public class EffUploadFile extends Effect {
                 File file = new File(url);
                 if (!file.exists()) DiSkyErrorHandler.logException(new FileNotFoundException("Can't found the file to send in a channel! (Path: "+file.getPath()+")"));
 
-                if (content == null) {
-                    resultMessage = channel.sendFile(file).complete();
+                if (toSend == null) {
+                    storedMessage = channel.sendFile(file).complete();
                 } else {
-
-                    if (content instanceof MessageBuilder) {
-                        resultMessage = channel.sendMessage(((MessageBuilder) content).build()).addFile(file).complete();
-                    } else if (content instanceof EmbedBuilder) {
-                        resultMessage = channel.sendMessage(((EmbedBuilder) content).build()).addFile(file).complete();
-                    } else {
-                        resultMessage = channel.sendMessage(content.toString()).addFile(file).complete();
-                    }
+                    storedMessage = channel.sendMessage(toSend.build()).addFile(file).complete();
                 }
             }
+            ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
+            if (exprVar == null) return;
+            Utils.setSkriptVariable((Variable<?>) exprVar, UpdatingMessage.from(storedMessage), e);
 
-            if (!(exprVar == null) && !(exprVar instanceof Variable)) return;
-            Utils.setSkriptVariable((Variable<?>) exprVar, resultMessage, e);
         });
     }
 

@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -24,7 +25,7 @@ import org.bukkit.event.Event;
         "\ttrigger:\n" +
         "\t\tsend bot typing in event-channel")
 @Since("1.5.2")
-public class EffSendTyping extends Effect {
+public class EffSendTyping extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffSendTyping.class,

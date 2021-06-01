@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -19,7 +20,7 @@ import org.bukkit.event.Event;
         "\n You can't use it as discord bot after shutdown it!")
 @Examples("shutdown the bot named \"MyBot\"")
 @Since("1.0")
-public class EffShutdownBot extends Effect {
+public class EffShutdownBot extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffShutdownBot.class,

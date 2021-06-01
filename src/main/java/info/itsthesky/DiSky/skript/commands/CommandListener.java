@@ -41,7 +41,8 @@ public class CommandListener extends ListenerAdapter {
                         textChannel = e.getTextChannel();
                         guild = e.getGuild();
                     }
-                    CommandEvent event = new CommandEvent(null, alias, command, null,
+                    CommandEvent event = new CommandEvent(e,
+                            null, alias, command, null,
                             guild, e.getChannel(), textChannel, message,
                             e.getAuthor(), e.getMember(), e.getJDA());
 

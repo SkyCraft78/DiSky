@@ -5,16 +5,16 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.event.Event;
@@ -26,7 +26,7 @@ import org.bukkit.event.Event;
         "\tremove event-emote added by event-user from event-message"
 })
 @Since("1.3")
-public class EffRemoveReaction extends Effect {
+public class EffRemoveReaction extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffRemoveReaction.class,
@@ -35,14 +35,14 @@ public class EffRemoveReaction extends Effect {
 
     private Expression<Emote> exprEmote;
     private Expression<Object> exprUser;
-    private Expression<Message> exprMessage;
+    private Expression<UpdatingMessage> exprUpdatingMessage;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         this.exprEmote = (Expression<Emote>) exprs[0];
         this.exprUser = (Expression<Object>) exprs[1];
-        this.exprMessage = (Expression<Message>) exprs[2];
+        this.exprUpdatingMessage = (Expression<UpdatingMessage>) exprs[2];
         return true;
     }
 
@@ -50,7 +50,7 @@ public class EffRemoveReaction extends Effect {
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             Object entity = exprUser.getSingle(e);
-            Message message = exprMessage.getSingle(e);
+            UpdatingMessage message = exprUpdatingMessage.getSingle(e);
             if (entity == null || message == null) return;
 
             User user;
@@ -62,7 +62,7 @@ public class EffRemoveReaction extends Effect {
                 user = Utils.searchMember((JDA) entity, ((JDA) entity).getSelfUser().getId()).getUser();
             }
 
-            for (MessageReaction messageReaction : message.getReactions()) {
+            for (MessageReaction messageReaction : message.getMessage().getReactions()) {
                 for (Emote emote : this.exprEmote.getAll(e)) {
                     if (messageReaction.getReactionEmote().getName().equalsIgnoreCase(emote.getName())) {
                         messageReaction.removeReaction(user).queue();

@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -17,7 +18,7 @@ import org.bukkit.event.Event;
 @Description("Register a new webhook client, using a specific ID and its url or token.")
 @Examples("register webhook \"name\" using url \"url\"")
 @Since("1.8")
-public class EffRegisterWebhook extends Effect {
+public class EffRegisterWebhook extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffRegisterWebhook.class, // [the] [bot] [(named|with name)] %string%

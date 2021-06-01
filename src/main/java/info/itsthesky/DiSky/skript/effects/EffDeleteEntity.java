@@ -5,12 +5,14 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -24,7 +26,7 @@ import org.bukkit.event.Event;
         "\t\twait 5 second\n" +
         "\t\tdelete discord entity {_msg}")
 @Since("1.2")
-public class EffDeleteEntity extends Effect {
+public class EffDeleteEntity extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffDeleteEntity.class,
@@ -65,10 +67,10 @@ public class EffDeleteEntity extends Effect {
                 } else if (en instanceof GuildChannel && ((GuildChannel) en).getType().equals(ChannelType.TEXT)) {
                     if (exprBot != null && !Utils.areJDASimilar(((TextChannel) en).getJDA(), exprBot.getSingle(e))) return;
                     ((TextChannel) en).delete().queue(null, DiSkyErrorHandler::logException);
-                } else if (en instanceof Message) {
-                    Message message = (Message) en;
-                    if (exprBot != null && !Utils.areJDASimilar(message.getJDA(), exprBot.getSingle(e))) return;
-                    message.delete().queue(null, DiSkyErrorHandler::logException);
+                } else if (en instanceof UpdatingMessage) {
+                    UpdatingMessage message = (UpdatingMessage) en;
+                    if (exprBot != null && !Utils.areJDASimilar(message.getMessage().getJDA(), exprBot.getSingle(e))) return;
+                    message.getMessage().delete().queue(null, DiSkyErrorHandler::logException);
                 }
             }
         });

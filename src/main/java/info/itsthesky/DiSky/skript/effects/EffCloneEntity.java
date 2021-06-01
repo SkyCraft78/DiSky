@@ -5,6 +5,7 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
@@ -25,7 +26,7 @@ import org.bukkit.event.Event;
         "\t\tclone arg-1 and store it in {_c}\n" +
         "\t\treply with \"Channel cloned: %mention tag of {_c}%\"")
 @Since("1.5.3")
-public class EffCloneEntity extends Effect {
+public class EffCloneEntity extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffCloneEntity.class,
