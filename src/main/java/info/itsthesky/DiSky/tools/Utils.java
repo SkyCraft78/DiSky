@@ -1,11 +1,14 @@
 package info.itsthesky.disky.tools;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.lang.VariableString;
+import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.util.Date;
 import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.Variables;
+import ch.njol.util.Kleenean;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import info.itsthesky.disky.DiSky;
@@ -43,9 +46,12 @@ public class Utils extends ListenerAdapter {
     private static final Boolean defaultBoolean = false;
     private static final Object defaultObject = "";
     public static final Field VARIABLE_NAME;
+    public static Field HAS_DELAY_BEFORE;
+    public static final boolean USE_2_6;
     public static boolean variableNameGetterExists = Skript.methodExists(Variable.class, "getName");
 
     static {
+        boolean _USE_2_6;
 
         if (!variableNameGetterExists) {
 
@@ -63,6 +69,41 @@ public class Utils extends ListenerAdapter {
             VARIABLE_NAME = null;
         }
 
+        try {
+            //noinspection JavaReflectionMemberAccess
+            Field _FIELD = ScriptLoader.class.getDeclaredField("hasDelayBefore");
+            _FIELD.setAccessible(true);
+            HAS_DELAY_BEFORE = _FIELD;
+            _USE_2_6 = true;
+        } catch (NoSuchFieldException ignored) {
+            _USE_2_6 = false;
+        }
+
+        USE_2_6 = _USE_2_6;
+    }
+
+    public static Kleenean getHasDelayBefore() {
+        try {
+            if (HAS_DELAY_BEFORE != null) {
+                return (Kleenean) HAS_DELAY_BEFORE.get(null);
+            } else {
+                return ParserInstance.get().getHasDelayBefore();
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void setHasDelayBefore(Kleenean hasDelayBefore) {
+        try {
+            if (HAS_DELAY_BEFORE != null) {
+                HAS_DELAY_BEFORE.set(null, hasDelayBefore);
+            } else {
+                ParserInstance.get().setHasDelayBefore(hasDelayBefore);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Color toJavaColor(org.bukkit.Color bukkitColor) {

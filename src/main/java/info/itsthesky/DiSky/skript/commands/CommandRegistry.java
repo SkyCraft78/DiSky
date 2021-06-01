@@ -16,6 +16,7 @@ import ch.njol.skript.log.SkriptLogger;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
@@ -119,14 +120,14 @@ public class CommandRegistry extends SelfRegisteringSkriptEvent {
 
         String originalName = ScriptLoader.getCurrentEventName();
         Class<? extends Event>[] originalEvents = ScriptLoader.getCurrentEvents();
-        Kleenean originalDelay = ScriptLoader.hasDelayBefore;
+        Kleenean originalDelay = Utils.getHasDelayBefore();
         ScriptLoader.setCurrentEvent("discord command", CommandEvent.class);
 
         CommandObject cmd = CommandFactory.getInstance().add(sectionNode);
         command = cmd == null ? command : cmd.getName();
 
         ScriptLoader.setCurrentEvent(originalName, originalEvents);
-        ScriptLoader.hasDelayBefore = originalDelay;
+        Utils.setHasDelayBefore(originalDelay);
         nukeSectionNode(sectionNode);
 
         return cmd != null;

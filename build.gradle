@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.5.3') {
+    implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.6-alpha1') {
         exclude group: 'com.sk89q.worldguard', module: 'worldguard-legacy'
         exclude group: 'net.milkbowl.vault', module: 'Vault'
     }

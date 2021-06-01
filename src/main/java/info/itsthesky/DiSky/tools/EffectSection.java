@@ -160,11 +160,11 @@ public abstract class EffectSection extends Condition {
         if (section != null && name != null && events != null && events.length > 0) {
             String previousName = ScriptLoader.getCurrentEventName();
             Class<? extends Event>[] previousEvents = ScriptLoader.getCurrentEvents();
-            Kleenean previousDelay = ScriptLoader.hasDelayBefore;
+            Kleenean previousDelay = Utils.getHasDelayBefore();
             ScriptLoader.setCurrentEvent(name, events);
             loadSection(setNext);
             ScriptLoader.setCurrentEvent(previousName, previousEvents);
-            ScriptLoader.hasDelayBefore = previousDelay;
+            Utils.setHasDelayBefore(previousDelay);
         }
     }
 

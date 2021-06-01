@@ -27,12 +27,9 @@ public class ExprVarTypeOf extends SimpleExpression<String> {
     protected String[] get(Event e) {
         Object var = exprVar.getSingle(e);
         if (var == null) return new String[0];
-        String clazz = var.getClass().getName();
-        int size = clazz.length();
-        String value = clazz.split("\\.")[size - 1]
-                .replaceAll("Impl", "");
+        String clazz = var.getClass().getSimpleName();
         return new String[] {
-                value
+                clazz
         };
     }
 
