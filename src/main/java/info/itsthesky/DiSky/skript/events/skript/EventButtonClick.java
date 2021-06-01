@@ -6,10 +6,11 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
-import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.MessageEvent;
 import info.itsthesky.disky.skript.events.util.DiSkyEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -18,7 +19,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EventButtonClick extends Event {
+public class EventButtonClick extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Button Click", SimpleEvent.class, EventButtonClick.class, "[discord] [guild] button [hook] click")
@@ -68,6 +69,14 @@ public class EventButtonClick extends Event {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventButtonClick.class, UpdatingMessage.class, new Getter<UpdatingMessage, EventButtonClick>() {
+            @Nullable
+            @Override
+            public UpdatingMessage get(final @NotNull EventButtonClick event) {
+                return UpdatingMessage.from(event.getEvent().getMessage());
+            }
+        }, 0);
+
         EventValues.registerEventValue(EventButtonClick.class, User.class, new Getter<User, EventButtonClick>() {
             @Nullable
             @Override
@@ -95,8 +104,6 @@ public class EventButtonClick extends Event {
         super(Utils.areEventAsync());
         e.deferEdit().queue();
         this.e = e;
-        EffReplyWith.IS_HOOK = true;
-        EffReplyWith.LAST_INTERACTION = e;
     }
 
     @NotNull
@@ -111,5 +118,10 @@ public class EventButtonClick extends Event {
 
     public ButtonClickEvent getEvent() {
         return e;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return e.getChannel();
     }
 }

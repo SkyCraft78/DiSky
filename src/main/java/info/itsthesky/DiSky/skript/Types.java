@@ -14,8 +14,7 @@ import info.itsthesky.disky.tools.object.*;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.button.Button;
-import net.dv8tion.jda.api.interactions.button.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.*;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -96,10 +95,16 @@ public class Types {
 				.description("Represent a message button.")
 				.since("1.12")
 		);
-		Classes.registerClass(new ClassInfo<>(ButtonStyle.class, "buttoncolor")
-				.user("buttoncolors?")
-				.name("Button Color")
-				.description("Use in button builder, a specific color of a button.")
+		Classes.registerClass(new ClassInfo<>(ButtonRow.class, "buttonrow")
+				.user("buttonrows?")
+				.name("Message Buttons Row")
+				.description("Represent a message buttons row, with a maximum of 5 buttons per row.")
+				.since("1.13")
+		);
+		Classes.registerClass(new ClassInfo<>(ButtonStyle.class, "buttonstyle")
+				.user("buttonstyles?")
+				.name("Button Style")
+				.description("Use in button builder, a specific style of a button.")
 				.usage("primary, success, secondary and danger")
 				.since("1.12")
 				.parser(new Parser<ButtonStyle>() {
@@ -501,12 +506,12 @@ public class Types {
 					}
 				})
 		);
-		Classes.registerClass(new ClassInfo<>(Message.class, "message")
+		Classes.registerClass(new ClassInfo<>(UpdatingMessage.class, "message")
 				.user("messages?")
 				.name("Discord Message")
 				.description("Represent a discord message, with ID, author, reactions, etc...")
 				.since("1.0")
-				.parser(new Parser<Message>() {
+				.parser(new Parser<UpdatingMessage>() {
 
 					@Override
 					public boolean canParse(@NotNull ParseContext context) {
@@ -514,13 +519,13 @@ public class Types {
 					}
 
 					@Override
-					public @NotNull String toString(@NotNull Message o, int flags) {
-						return o.getContentRaw();
+					public @NotNull String toString(@NotNull UpdatingMessage o, int flags) {
+						return o.getMessage().getContentRaw();
 					}
 
 					@Override
-					public @NotNull String toVariableNameString(@NotNull Message o) {
-						return o.getContentRaw();
+					public @NotNull String toVariableNameString(@NotNull UpdatingMessage o) {
+						return o.getMessage().getContentRaw();
 					}
 
 					@Override
@@ -529,7 +534,7 @@ public class Types {
 					}
 					@Nullable
 					@Override
-					public Message parse(@NotNull String s, @NotNull ParseContext context) {
+					public UpdatingMessage parse(@NotNull String s, @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							Long input = Utils.parseLong(s, false, true);
 							for (Map.Entry<String, JDA> entry : BotManager.getBots().entrySet()) {
@@ -537,7 +542,7 @@ public class Types {
 								JDA jda = entry.getValue();
 								for (Guild guild : jda.getGuilds()) {
 									for (TextChannel channel : guild.getTextChannels()) {
-										return channel.retrieveMessageById(input).complete();
+										return UpdatingMessage.from(channel.retrieveMessageById(input).complete());
 									}
 								}
 							}
@@ -612,39 +617,6 @@ public class Types {
 					@Nullable
 					@Override
 					public Webhook parse(@NotNull String s, @NotNull ParseContext context) {
-						return null;
-					}
-				})
-		);
-		Classes.registerClass(new ClassInfo<>(info.itsthesky.disky.tools.object.messages.Message.class, "staticmessage")
-				.user("staticmessages?")
-				.name("Static Discord Message")
-				.description("Represent a static discord message, which mean a message / embed which is not sent yet.")
-				.since("1.0")
-				.parser(new Parser<info.itsthesky.disky.tools.object.messages.Message>() {
-
-					@Override
-					public @NotNull String toString(info.itsthesky.disky.tools.object.messages.@NotNull Message o, int flags) {
-						return o.toString();
-					}
-
-					@Override
-					public boolean canParse(@NotNull ParseContext context) {
-						return false;
-					}
-
-					@Override
-					public @NotNull String toVariableNameString(info.itsthesky.disky.tools.object.messages.@NotNull Message o) {
-						return o.getContent();
-					}
-
-					@Override
-					public @NotNull String getVariableNamePattern() {
-						return ".+";
-					}
-					@Nullable
-					@Override
-					public info.itsthesky.disky.tools.object.messages.Message parse(@NotNull String s, @NotNull ParseContext context) {
 						return null;
 					}
 				})

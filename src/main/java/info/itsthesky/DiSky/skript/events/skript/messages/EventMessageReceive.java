@@ -10,6 +10,7 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -42,7 +43,6 @@ public class EventMessageReceive extends Event {
             }
         }, 0);
 
-
         EventValues.registerEventValue(EventMessageReceive.class, GuildChannel.class, new Getter<GuildChannel, EventMessageReceive>() {
             @Nullable
             @Override
@@ -51,11 +51,11 @@ public class EventMessageReceive extends Event {
             }
         }, 0);
 
-        EventValues.registerEventValue(EventMessageReceive.class, Message.class, new Getter<Message, EventMessageReceive>() {
+        EventValues.registerEventValue(EventMessageReceive.class, UpdatingMessage.class, new Getter<UpdatingMessage, EventMessageReceive>() {
             @Nullable
             @Override
-            public Message get(final @NotNull EventMessageReceive event) {
-                return event.getEvent().getMessage();
+            public UpdatingMessage get(final @NotNull EventMessageReceive event) {
+                return UpdatingMessage.from(event.getEvent().getMessage());
             }
         }, 0);
 
@@ -102,8 +102,7 @@ public class EventMessageReceive extends Event {
             final MessageReceivedEvent e
             ) {
         super(Utils.areEventAsync());
-        EffReplyWith.IS_HOOK = false;
-        EffReplyWith.LAST_CHANNEL = e.getChannel();
+
         this.event = e;
     }
 

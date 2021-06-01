@@ -13,6 +13,8 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
+import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -53,8 +55,8 @@ public class ExprIdOf extends SimpleExpression<String> {
 			return new String[] {((User) entity).getId()};
 		} else if (entity instanceof MessageChannel) {
 			return new String[] {((MessageChannel) entity).getId()};
-		} else if (entity instanceof Message) {
-			return new String[] {((Message) entity).getId()};
+		} else if (entity instanceof UpdatingMessage) {
+			return new String[] {((UpdatingMessage) entity).getID()};
 		} else if (entity instanceof GuildChannel) {
 			return new String[] {((GuildChannel) entity).getId()};
 		} else if (entity instanceof Role) {
@@ -63,8 +65,8 @@ public class ExprIdOf extends SimpleExpression<String> {
 			return new String[] {((Member) entity).getId()};
 		} else if (entity instanceof JDA) {
 			return new String[] {((JDA) entity).getSelfUser().getId()};
-		} else if (entity instanceof MessageReaction.ReactionEmote) {
-			return new String[] {((MessageReaction.ReactionEmote) entity).getId()};
+		} else if (entity instanceof Emote) {
+			return new String[] {((Emote) entity).getID()};
 		} else if (entity instanceof Category) {
 			return new String[] {((Category) entity).getId()};
 		} else if (entity instanceof VoiceChannel) {

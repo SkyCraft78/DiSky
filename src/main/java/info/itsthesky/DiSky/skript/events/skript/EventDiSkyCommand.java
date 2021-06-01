@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.commands.CommandObject;
+import info.itsthesky.disky.skript.events.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Fired when any discord command from DiSky is done.")
 @Examples("on disky command:")
 @Since("1.8")
-public class EventDiSkyCommand extends Event {
+public class EventDiSkyCommand extends Event implements MessageEvent {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
@@ -118,5 +119,10 @@ public class EventDiSkyCommand extends Event {
     }
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return e.getChannel();
     }
 }

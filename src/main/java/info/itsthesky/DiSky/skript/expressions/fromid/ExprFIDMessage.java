@@ -12,6 +12,7 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -20,10 +21,10 @@ import org.bukkit.event.Event;
 @Description("Return a message from its id. IT SEARCH ALL OVER DISCORD & EVERY CHANNEL! I highly recommend to specify the channel the message is in!")
 @Examples("set {_msg} to discord message with id \"731885527762075648\" in channel with id \"731885527762075648\"")
 @Since("1.11")
-public class ExprFIDMessage extends SimpleExpression<Message> {
+public class ExprFIDMessage extends SimpleExpression<UpdatingMessage> {
 
 	static {
-		Skript.registerExpression(ExprFIDMessage.class, Message.class, ExpressionType.SIMPLE,
+		Skript.registerExpression(ExprFIDMessage.class, UpdatingMessage.class, ExpressionType.SIMPLE,
 				"["+ Utils.getPrefixName() +"] [discord] message with [the] id %string% [in [the] [channel] %channel/textchannel%]"
 		);
 	}
@@ -40,15 +41,15 @@ public class ExprFIDMessage extends SimpleExpression<Message> {
 	}
 
 	@Override
-	protected Message[] get(Event e) {
+	protected UpdatingMessage[] get(Event e) {
 		String id = exprID.getSingle(e);
 		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new Message[0];
-		if (!Utils.isNumeric(id)) return new Message[0];
+		if (bot == null || id == null) return new UpdatingMessage[0];
+		if (!Utils.isNumeric(id)) return new UpdatingMessage[0];
 		if (exprChannel != null && exprChannel.getSingle(e) != null && exprChannel.getSingle(e).getType().equals(ChannelType.TEXT)) {
-			return new Message[] {((TextChannel) exprChannel.getSingle(e)).retrieveMessageById(id).complete()};
+			return new UpdatingMessage[] {UpdatingMessage.from(((TextChannel) exprChannel.getSingle(e)).retrieveMessageById(id).complete())};
 		} else {
-			return new Message[] {Utils.searchMessage(bot, id)};
+			return new UpdatingMessage[] {UpdatingMessage.from(Utils.searchMessage(bot, id))};
 		}
 	}
 
@@ -58,8 +59,8 @@ public class ExprFIDMessage extends SimpleExpression<Message> {
 	}
 
 	@Override
-	public Class<? extends Message> getReturnType() {
-		return Message.class;
+	public Class<? extends UpdatingMessage> getReturnType() {
+		return UpdatingMessage.class;
 	}
 
 	@Override

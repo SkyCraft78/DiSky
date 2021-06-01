@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -29,12 +30,12 @@ public class CommandEvent extends Event implements Cancellable {
     private final GuildChannel channel;
     private final JDA bot;
     private String arguments;
+    private MessageReceivedEvent event;
 
-	public CommandEvent(String prefix, String usedAlias, CommandObject command, String arguments, Guild guild,
+	public CommandEvent(MessageReceivedEvent event,
+                        String prefix, String usedAlias, CommandObject command, String arguments, Guild guild,
                         MessageChannel messagechannel, GuildChannel channel, Message message, User user,
                         Member member, JDA bot) {
-        EffReplyWith.IS_HOOK = false;
-        EffReplyWith.LAST_CHANNEL = messagechannel;
 	    this.arguments = arguments == null ? "" : arguments;
         this.command = command;
         this.guild = guild;
@@ -46,11 +47,13 @@ public class CommandEvent extends Event implements Cancellable {
         this.messagechannel = messagechannel;
         this.prefix = prefix;
         this.bot = bot;
+        this.event = event;
         lastEvent = this;
     }
 
     public CommandEvent(CommandEvent original) {
-        this(original.getPrefix(),
+        this(original.getEvent(),
+                original.getPrefix(),
                 original.getUsedAlias(),
                 original.getCommand(),
 				original.getArguments(),
@@ -61,6 +64,10 @@ public class CommandEvent extends Event implements Cancellable {
                 original.getUser(),
                 original.getMember(),
                 original.getBot());
+    }
+
+    public MessageReceivedEvent getEvent() {
+        return event;
     }
 
     public CommandObject getCommand() {

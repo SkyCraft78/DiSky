@@ -9,6 +9,7 @@ import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import info.itsthesky.disky.skript.scope.webhookmessage.ScopeWebhookMessage;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +49,7 @@ public class ExprMessageContent extends SimplePropertyExpression<Object, String>
 	@Nullable
 	@Override
 	public String convert(Object o) {
-		if (o instanceof Message) return ((Message) o).getContentRaw();
+		if (o instanceof UpdatingMessage) return ((UpdatingMessage) o).getMessage().getContentRaw();
 		if (o instanceof WebhookMessageBuilder) return ((WebhookMessageBuilder) o).build().getContent();
 		return null;
 	}

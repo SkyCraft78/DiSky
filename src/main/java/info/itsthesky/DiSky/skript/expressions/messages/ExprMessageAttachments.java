@@ -7,6 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.tools.MultiplyPropertyExpression;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
@@ -16,7 +17,7 @@ import javax.annotation.Nullable;
 @Description("Retrieve every attachments a message have.")
 @Examples("set {_a::*} to attachments of event-message")
 @Since("1.7")
-public class ExprMessageAttachments extends MultiplyPropertyExpression<Message, Message.Attachment> {
+public class ExprMessageAttachments extends MultiplyPropertyExpression<UpdatingMessage, Message.Attachment> {
 
     static {
         register(ExprMessageAttachments.class, Message.Attachment.class,
@@ -27,8 +28,8 @@ public class ExprMessageAttachments extends MultiplyPropertyExpression<Message, 
 
     @Nullable
     @Override
-    public Message.Attachment[] convert(Message entity) {
-        return entity.getAttachments().toArray(new Message.Attachment[0]);
+    public Message.Attachment[] convert(UpdatingMessage entity) {
+        return entity.getMessage().getAttachments().toArray(new Message.Attachment[0]);
     }
 
     @Override

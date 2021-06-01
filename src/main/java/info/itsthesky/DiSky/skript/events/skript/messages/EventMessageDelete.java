@@ -94,8 +94,6 @@ public class EventMessageDelete extends Event {
             final GuildMessageDeleteEvent e
             ) {
         super(Utils.areEventAsync());
-        EffReplyWith.IS_HOOK = false;
-        EffReplyWith.LAST_CHANNEL = e.getChannel();
         this.e = e;
     }
 

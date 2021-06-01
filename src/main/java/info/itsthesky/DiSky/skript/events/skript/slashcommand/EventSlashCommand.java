@@ -87,8 +87,6 @@ public class EventSlashCommand extends Event {
         super(Utils.areEventAsync());
         StaticData.lastSlashCommandEvent = e;
         this.e = e;
-        EffReplyWith.IS_HOOK = true;
-        EffReplyWith.LAST_INTERACTION = e;
         e.deferReply().queue();
     }
 

@@ -11,6 +11,7 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -33,12 +34,12 @@ public class EventReactionAdd extends Event {
         .examples("on reaction add:")
         .since("1.3");
 
-        EventValues.registerEventValue(EventReactionAdd.class, Message.class, new Getter<Message, EventReactionAdd>() {
+        EventValues.registerEventValue(EventReactionAdd.class, UpdatingMessage.class, new Getter<UpdatingMessage, EventReactionAdd>() {
             @Nullable
             @Override
-            public Message get(final @NotNull EventReactionAdd event) {
-                return event.getEvent().getChannel()
-                        .retrieveMessageById(event.getEvent().getMessageId()).complete();
+            public UpdatingMessage get(final @NotNull EventReactionAdd event) {
+                return UpdatingMessage.from(event.getEvent().getChannel()
+                        .retrieveMessageById(event.getEvent().getMessageId()).complete());
             }
         }, 0);
 
@@ -109,8 +110,7 @@ public class EventReactionAdd extends Event {
             ) {
         super(Utils.areEventAsync());
         this.e = e;
-        EffReplyWith.IS_HOOK = false;
-        EffReplyWith.LAST_CHANNEL = e.getChannel();
+
     }
 
     @NotNull

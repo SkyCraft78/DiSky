@@ -9,6 +9,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
@@ -17,12 +18,12 @@ import javax.annotation.Nullable;
 @Name("Last Message")
 @Description("This expression returns the last message sent by the reply or send effect.")
 @Since("1.2")
-public class ExprLastMessage extends SimpleExpression<Message> {
+public class ExprLastMessage extends SimpleExpression<UpdatingMessage> {
 
-    public static Message lastMessage;
+    public static UpdatingMessage lastMessage;
 
     static {
-        Skript.registerExpression(ExprLastMessage.class, Message.class, ExpressionType.SIMPLE,
+        Skript.registerExpression(ExprLastMessage.class, UpdatingMessage.class, ExpressionType.SIMPLE,
                 "[the] last [sent] message"
         );
     }
@@ -34,13 +35,13 @@ public class ExprLastMessage extends SimpleExpression<Message> {
 
     @Nullable
     @Override
-    protected Message[] get(Event e) {
-        return new Message[]{this.lastMessage};
+    protected UpdatingMessage[] get(Event e) {
+        return new UpdatingMessage[]{this.lastMessage};
     }
 
     @Override
-    public Class<? extends Message> getReturnType() {
-        return Message.class;
+    public Class<? extends UpdatingMessage> getReturnType() {
+        return UpdatingMessage.class;
     }
 
     @Override

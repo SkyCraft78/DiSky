@@ -4,6 +4,8 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Message;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -31,6 +33,13 @@ public class EventReplySection extends Event implements Cancellable {
             ) {
         super(Utils.areEventAsync());
         this.message = message;
+
+        Expression e = new ExpressionBuilder("3 * sin(y) - 2 / (x - 2)")
+                .variables("x", "y")
+                .build()
+                .setVariable("x", 2.3)
+                .setVariable("y", 3.14);
+        double result = e.evaluate();
     }
 
     public Message getMessage() {

@@ -58,8 +58,6 @@ public class EventPrivateMessage extends Event {
             final MessageReceivedEvent e
             ) {
         super(Utils.areEventAsync());
-        EffReplyWith.IS_HOOK = false;
-        EffReplyWith.LAST_CHANNEL = e.getChannel();
         this.e = e;
     }
 
