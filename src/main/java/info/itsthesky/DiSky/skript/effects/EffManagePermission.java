@@ -19,7 +19,18 @@ import org.bukkit.event.Event;
 
 @Name("Allow / Deny permission")
 @Description("Allow or deny a discord permission to a role or a user in a channel.")
-@Examples("allow administrator to public role of guild # Make every member administrator >:D")
+@Examples("discord command setupmute:\n" +
+        "\tpermissions: administrator\n" +
+        "\tpermission message: **:x: You don't have the permission!**\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\tmake new role:\n" +
+        "\t\t\tset discord name of role builder to \"Muted\"\n" +
+        "\t\t\tset color of role builder to black\n" +
+        "\t\t\tloop text channels of event-guild:\n" +
+        "\t\t\t\tdeny permission (message write) to role builer in loop-channel\n" +
+        "\t\tcreate last role builder in event-guild and store it in {_role}\n" +
+        "\t\treply with \"**Mute role created: %mention tag of {_role}%!**\"")
 @Since("1.4")
 public class EffManagePermission extends AsyncEffect {
 

@@ -17,7 +17,15 @@ import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 @Name("Pin / Unpin Message")
 @Description("Pin or unpin any message from a channel.")
-@Examples("pin event-message")
+@Examples("discord command ping <string>:\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\tset {_msg} to message with id arg-1 in event-channel\n" +
+        "\t\tif {_msg} is not set:\n" +
+        "\t\t\treply with \"**:x: Can't found that message!**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tpin {_msg}\n" +
+        "\t\treply with \"**:v: Message pinned!**\"")
 @Since("1.6")
 public class EffPinMessage extends AsyncEffect {
 

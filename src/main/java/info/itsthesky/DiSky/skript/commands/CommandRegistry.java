@@ -6,6 +6,7 @@ import ch.njol.skript.config.Config;
 import ch.njol.skript.config.Node;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.doc.Description;
+import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Literal;
@@ -28,7 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 
 @Name("Discord Command")
-@Description("Beta custom DiSky's command system. Took from Vixio and edited a lot to work with DiSky")
+@Description("Custom DiSky discord command system. Arguments works like the normal skript's one and accept both optional and require arguments.")
+@Examples("discord command move <member> <voicechannel>:\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\treply with mention tag of arg-2\n" +
+        "\t\tmove arg-1 to arg-2")
 @Since("1.5.2")
 public class CommandRegistry extends SelfRegisteringSkriptEvent {
 

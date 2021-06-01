@@ -18,7 +18,11 @@ import org.bukkit.event.Event;
 
 @Name("Move Member")
 @Description("Move a member to another voice channel.")
-@Examples("move event-member to voice channel with id \"818182473502294073\"")
+@Examples("discord command move <member> <voicechannel>:\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\treply with mention tag of arg-2\n" +
+        "\t\tmove arg-1 to arg-2")
 @Since("1.9")
 public class EffMoveMember extends AsyncEffect {
 

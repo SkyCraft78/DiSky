@@ -25,7 +25,16 @@ import java.util.List;
 
 @Name("Purge Amount of Message")
 @Description("Grab all X latest message of a text channel and purge (= delete) them.")
-@Examples("purge last 50 messages from event-channel")
+@Examples("discord command purge [<number>]:\n" +
+        "\tprefixes: !\n" +
+        "\tpermissions: manage server\n" +
+        "\tpermission message: **:x: You can't use that command!**\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg-1 is not set:\n" +
+        "\t\t\treply with \"**:x: You must define an amount!**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tpurge last arg messages from event-channel\n" +
+        "\t\treply with \"**✅ Purged %arg-1% messages!**\"")
 @Since("1.5.2")
 public class EffPurgeMessages extends AsyncEffect {
 

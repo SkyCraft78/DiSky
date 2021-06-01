@@ -17,7 +17,6 @@ import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
 import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -28,8 +27,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 @Name("Reply with Message")
 @Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern!")

@@ -23,13 +23,13 @@ import org.bukkit.event.Event;
 
 @Name("Reply To message")
 @Description("Reply TO a message, using the Discord's reply system.")
-@Examples("reply to event-message with \"Hello!\"")
+@Examples({"reply to event-message with \"Hello!\"", "reply to event-message with \"Hello!\" with mentioning false"})
 @Since("1.7")
 public class EffReplyTo extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffReplyTo.class,
-                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ning] %-boolean%] [(with|using) %-bot%] [and store (it|the message) in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ing] %-boolean%] [(with|using) %-bot%] [and store (it|the message) in %-object%]");
     }
 
     private Expression<UpdatingMessage> exprTarget;

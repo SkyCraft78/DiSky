@@ -18,7 +18,7 @@ import org.bukkit.event.Event;
 
 @Name("Clear Message Reactions")
 @Description("Clear every reactions of a specific message.")
-@Examples("clear reactions from event-message")
+@Examples("remove all reactions from event-message")
 @Since("1.10")
 public class EffClearReactions extends AsyncEffect {
 

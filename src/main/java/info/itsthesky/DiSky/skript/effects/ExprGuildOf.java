@@ -10,6 +10,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
@@ -49,6 +50,7 @@ public class ExprGuildOf extends SimpleExpression<Guild> {
         if (entity instanceof Role) return new Guild[] {((Role) entity).getGuild()};
         if (entity instanceof Category) return new Guild[] {((Category) entity).getGuild()};
         if (entity instanceof Invite) return new Guild[] {(Guild) ((Invite) entity).getGuild()};
+        if (entity instanceof UpdatingMessage) return new Guild[] {((UpdatingMessage) entity).getMessage().getGuild()};
         return new Guild[0];
     }
 

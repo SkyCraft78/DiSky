@@ -17,11 +17,10 @@ import org.bukkit.event.Event;
 
 @Name("Presence")
 @Description("Return a custom presence to use in 'mark %bot% as %presence%' effect.")
-@Examples({
-		"mark bot \"NAME\" as listening \"Kill LA Kill, Before my body is Dry\"",
-		"mark bot \"NAME\" as watching \"nanatsu no taizai\"",
-		"mark bot \"NAME\" as playing \"Evoland 2\"",
-		"mark bot \"NAME\" as streaming \"Kill LA Kill, Before my body is Dry\""})
+@Examples("set presence of bot \"NAME\" to listening \"Kill LA Kill, Before my body is Dry\"\n" +
+		"set presence of bot \"NAME\" to watching \"nanatsu no taizai\"\n" +
+		"set presence of bot \"NAME\" to playing \"Evoland 2\"\n" +
+		"set presence of bot \"NAME\" to streaming \"Kill LA Kill, Before my body is Dry\" with url \"https://www.youtube.com/watch?v=2h1OcA7juOQ\"")
 @Since("1.12")
 public class ExprPresence extends SimpleExpression<Activity> {
 

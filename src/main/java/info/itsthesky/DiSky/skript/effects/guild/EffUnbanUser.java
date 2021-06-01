@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 @Name("Unban Member")
 @Description("Unban an user from a specific guild.")
 @Examples("unban user with id \"388744165443371009\" from event-guild")
-@Since("1.12.1")
+@Since("1.13")
 public class EffUnbanUser extends AsyncEffect {
 
     static {

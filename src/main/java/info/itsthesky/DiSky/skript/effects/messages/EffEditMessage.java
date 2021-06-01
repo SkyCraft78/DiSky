@@ -25,7 +25,7 @@ import java.util.List;
 
 @Name("Edit Message")
 @Description("Edit any message from the bot with new message or embed.")
-@Examples("reply with \":v: Custom message ...\" and store it in {_msg}\n" +
+@Examples("reply with \":v: Message ...\" and store it in {_msg}\n" +
         "wait 3 second\n" +
         "edit message {_msg} to show \":x: ... has been edited\"")
 @Since("1.2")
