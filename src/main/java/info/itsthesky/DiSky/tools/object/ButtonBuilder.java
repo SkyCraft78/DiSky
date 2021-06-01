@@ -1,8 +1,9 @@
 package info.itsthesky.disky.tools.object;
 
 import info.itsthesky.disky.DiSky;
-import net.dv8tion.jda.api.interactions.button.Button;
-import net.dv8tion.jda.api.interactions.button.ButtonStyle;
+import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import javax.annotation.Nullable;
 
@@ -10,31 +11,31 @@ public class ButtonBuilder {
 
     private String content;
     private ButtonStyle color;
-    private Emote emote;
+    private Emoji emoji;
     private boolean isLink;
     private boolean isDisabled;
     private String idOrURl;
 
     public ButtonBuilder(String idOrURl, @Nullable Boolean isLink) {
         this.idOrURl = idOrURl;
-        this.content = null;
+        this.content = "";
         this.color = ButtonStyle.PRIMARY;
         this.isDisabled = false;
         this.isLink = isLink != null && isLink;
-        this.emote = null;
+        this.emoji = null;
     }
 
     private ButtonBuilder(
             String content,
             ButtonStyle color,
-            Emote emote,
+            Emoji emoji,
             boolean isLink,
             boolean isDisabled,
             String idOrURl
     ) {
         this.content = content;
         this.color = color;
-        this.emote = emote;
+        this.emoji = emoji;
         this.isLink = isLink;
         this.isDisabled = isDisabled;
         this.idOrURl = idOrURl;
@@ -44,7 +45,7 @@ public class ButtonBuilder {
         return new ButtonBuilder(
                 original.getLabel(),
                 original.getStyle(),
-                (original.getEmoji() != null ? new Emote(original.getEmoji()) : null),
+                (original.getEmoji() != null ? original.getEmoji() : null),
                 original.getStyle().equals(ButtonStyle.LINK),
                 original.isDisabled(),
                 (original.getStyle().equals(ButtonStyle.LINK) ? original.getUrl() : original.getId())
@@ -53,7 +54,7 @@ public class ButtonBuilder {
 
     public Button build() {
         if (isEmpty()) {
-            DiSky.getInstance().getLogger().severe("[DiSky] You're trying to build and empty (without content / emote) message button!");
+            DiSky.getInstance().getLogger().severe("[DiSky] You're trying to build an empty (without content / emote) message button!");
             return null;
         }
 
@@ -61,7 +62,11 @@ public class ButtonBuilder {
         String c = content;
         ButtonStyle style = isLink ? ButtonStyle.LINK : color;
 
-        button = emote == null ? Button.of(style, idOrURl, c) : Button.of(style, idOrURl, c).withEmoji(emote.getEmoji());
+        try {
+            button = emoji == null ? Button.of(style, idOrURl, c) : Button.of(style, idOrURl, c).withEmoji(emoji);
+        } catch (Exception ex) {
+            button = Button.of(style, idOrURl, c);
+        }
         return isDisabled ? button.asDisabled() : button.asEnabled();
     }
 
@@ -70,7 +75,7 @@ public class ButtonBuilder {
         return "ButtonBuilder{" +
                 "content='" + content + '\'' +
                 ", color=" + color +
-                ", emote=" + emote +
+                ", emote=" + emoji +
                 ", isLink=" + isLink +
                 ", isDisabled=" + isDisabled +
                 ", idOrURl='" + idOrURl + '\'' +
@@ -109,12 +114,12 @@ public class ButtonBuilder {
         return idOrURl;
     }
 
-    public Emote getEmote() {
-        return emote;
+    public Emoji getEmoji() {
+        return emoji;
     }
 
-    public void setEmote(Emote emote) {
-        this.emote = emote;
+    public void setEmoji(Emoji emote) {
+        this.emoji = emote;
     }
 
     public boolean isLink() {
