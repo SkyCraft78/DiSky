@@ -18,6 +18,7 @@ import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.waiter.EventValue;
 import info.itsthesky.disky.tools.waiter.ExprEventValues;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
@@ -40,7 +41,7 @@ import static info.itsthesky.disky.skript.effects.messages.EffReplyWith.*;
 @Since("1.12")
 public class SectionReply extends EffectSection {
 
-	private static final EventValue<Message> valueMessage = new EventValue<>(Message.class, "message");
+	private static final EventValue<UpdatingMessage> valueMessage = new EventValue<>(UpdatingMessage.class, "message");
 	private static final EventValue<Member> valueMember = new EventValue<>(Member.class, "member");
 	private static final EventValue<User> valueUser = new EventValue<>(User.class, "user");
 	private static final EventValue<Guild> valueGuild = new EventValue<>(Guild.class, "guild");
@@ -103,8 +104,8 @@ public class SectionReply extends EffectSection {
 					case "MessageBuilder":
 						toSend = (MessageBuilder) message;
 						break;
-					case "Message":
-						toSend = new MessageBuilder((Message) message);
+					case "UpdatingMessage":
+						toSend = new MessageBuilder(((UpdatingMessage) message).getMessage());
 						break;
 				}
 				if (toSend == null) {
@@ -112,15 +113,22 @@ public class SectionReply extends EffectSection {
 					return;
 				}
 
-				Message storedMessage;
-				if (IS_HOOK) {
-					storedMessage = LAST_INTERACTION.getHook().setEphemeral(true).sendMessage(toSend.build()).complete(true);
+				Member waiter = exprWaiter == null ? null : exprWaiter.getSingle(e);
+
+				MessageChannel LAST_CHANNEL;
+				boolean IS_HOOK;
+				try {
+					Object classEvent = e.getClass().getDeclaredMethod("getEvent").invoke(e);
+					LAST_CHANNEL = (MessageChannel) classEvent.getClass().getDeclaredMethod("getChannel").invoke(classEvent);
 					IS_HOOK = false;
-				} else {
-					storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
+				} catch (Exception reflect) {
+					DiSky.getInstance().getConsoleLogger().severe("Cannot get the last channel from a message event !");
+					return;
 				}
 
-				ExprLastMessage.lastMessage = storedMessage;
+				Message storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
+
+				ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
 				if (exprVar != null) {
 					if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
 					Variable var = (Variable) exprVar;
@@ -134,12 +142,13 @@ public class SectionReply extends EffectSection {
 								GuildMessageReceivedEvent.class,
 
 								ev -> ev.getChannel().equals(cha)
-										&& !storedMessage.getJDA().getSelfUser().getId().equals(ev.getMember().getId()),
+										&& !storedMessage.getJDA().getSelfUser().getId().equals(ev.getMember().getId())
+										&& (waiter == null || waiter.getId().equals(ev.getMember().getId())),
 
 								ev -> {
 									if (VariablesMaps.map.get(e) != null) Variables.setLocalVariables(e, VariablesMaps.map.get(e));
 
-									valueMessage.setObject(ev.getMessage());
+									valueMessage.setObject(UpdatingMessage.from(ev.getMessage()));
 									valueGuild.setObject(ev.getGuild());
 									valueMember.setObject(ev.getMember());
 									valueUser.setObject(ev.getMember().getUser());

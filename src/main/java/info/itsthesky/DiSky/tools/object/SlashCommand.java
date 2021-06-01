@@ -48,7 +48,7 @@ public class SlashCommand {
                 description
         );
         for (OptionData data : options) {
-            cmd.addOption(data);
+            cmd.addOptions(data);
         }
         return cmd;
     }

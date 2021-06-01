@@ -17,6 +17,7 @@ import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.waiter.EventValue;
 import info.itsthesky.disky.tools.waiter.ExprEventValues;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
@@ -56,13 +57,13 @@ public class SectionReact extends EffectSection {
 	}
 
 	private Expression<Emote> exprReact;
-	private Expression<Message> exprMessage;
+	private Expression<UpdatingMessage> exprMessage;
 	private Expression<JDA> exprName;
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-		exprMessage = (Expression<Message>) exprs[0];
+		exprMessage = (Expression<UpdatingMessage>) exprs[0];
 		exprReact = (Expression<Emote>) exprs[1];
 		if (exprs.length != 2) exprName = (Expression<JDA>) exprs[2];
 		if (checkIfCondition()) return false;
@@ -75,11 +76,11 @@ public class SectionReact extends EffectSection {
 	@Override
 	public void execute(Event event) {
 		DiSkyErrorHandler.executeHandleCode(event, e -> {
-			Message message = exprMessage.getSingle(event);
+			UpdatingMessage message = exprMessage.getSingle(event);
 			Emote emote = exprReact.getSingle(event);
 			if (message == null || emote == null) return;
 			if (exprName != null) {
-				JDA msgJDA = message.getJDA();
+				JDA msgJDA = message.getMessage().getJDA();
 				JDA botJDA = exprName.getSingle(event);
 				if (botJDA == null) return;
 				if (msgJDA != botJDA) return;
@@ -90,15 +91,15 @@ public class SectionReact extends EffectSection {
 			Variables.setLocalVariables(event, map);
 
 			if (emote.isEmote()) {
-				message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+				message.getMessage().addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
 			} else {
-				message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+				message.getMessage().addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
 			}
 
-			JDA botJDA = message.getJDA();
+			JDA botJDA = message.getMessage().getJDA();
 
-			final Long msgID = message.getIdLong();
-			final TextChannel channel = message.getTextChannel();
+			final Long msgID = message.getMessage().getIdLong();
+			final TextChannel channel = message.getMessage().getTextChannel();
 			WaiterListener.events.add(
 					new WaiterListener.WaitingEvent<>(
 							GuildMessageReactionAddEvent.class,
