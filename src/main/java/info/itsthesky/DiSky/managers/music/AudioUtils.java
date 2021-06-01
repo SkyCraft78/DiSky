@@ -123,7 +123,8 @@ public class AudioUtils {
     }
 
     public static void connectToFirstVoiceChannel(AudioManager audioManager, VoiceChannel channel) {
-        audioManager.closeAudioConnection();
+        if (audioManager.isConnected() && getGuildAudioPlayer(channel.getGuild()).getPlayer().getPlayingTrack() == null)
+            audioManager.closeAudioConnection();
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
             audioManager.openAudioConnection(channel);
         }

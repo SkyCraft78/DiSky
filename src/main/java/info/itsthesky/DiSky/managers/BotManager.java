@@ -7,6 +7,8 @@ import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
 import info.itsthesky.disky.skript.events.JDAListener;
 import info.itsthesky.disky.skript.events.skript.EventBotConnect;
+import info.itsthesky.disky.tools.object.MessageUpdater;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
@@ -71,6 +73,7 @@ public class BotManager {
                     .addEventListeners(new CommandListener())
                     .addEventListeners(new InviteTracker())
                     .addEventListeners(new WaiterListener())
+                    .addEventListeners(new MessageUpdater())
                     .addEventListeners(customListener.toArray(new Object[0]))
                     .enableIntents(Arrays.asList(DiSky.intents))
                     .enableCache(CacheFlag.ACTIVITY)
