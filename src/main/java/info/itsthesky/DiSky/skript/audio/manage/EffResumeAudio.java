@@ -16,7 +16,10 @@ import org.bukkit.event.Event;
 
 @Name("Resume Guild Audio")
 @Description("Resume the current audio a guild is playing.")
-@Examples("pause audio in event-guild")
+@Examples("discord command resume:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tresume in event-guild")
 @Since("1.6")
 public class EffResumeAudio extends Effect {
 

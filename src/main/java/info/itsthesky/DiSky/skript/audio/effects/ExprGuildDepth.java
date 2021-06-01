@@ -19,7 +19,14 @@ import java.util.Collections;
 
 @Name("Guild Depth")
 @Description("Get or change the audio depth of a guild. MUST be between 0.1 AND 0.9 (default is 0.001)")
-@Examples("set depth of event-guild to 1.3")
+@Examples("discord command depth [<number>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg 1 is not set:\n" +
+        "\t\t\treply with \":deer: **Current __depth__: `%depth of event-guild%`**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tset depth of event-guild to arg-1\n" +
+        "\t\treply with \":deer: **The __depth__ has been changed to `%depth of event-guild%` !**\"")
 @Since("1.7")
 public class ExprGuildDepth extends SimplePropertyExpression<Guild, Number> {
 

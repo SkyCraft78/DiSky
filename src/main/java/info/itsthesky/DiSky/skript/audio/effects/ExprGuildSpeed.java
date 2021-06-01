@@ -18,7 +18,14 @@ import java.util.Collections;
 
 @Name("Guild Speed")
 @Description("Get or change the speed of a guild. (Of course, the audio speed)")
-@Examples("set speed of event-guild to 1.3")
+@Examples("discord command speed [<number>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg 1 is not set:\n" +
+        "\t\t\treply with \":cloud_tornado: **Current __speed__: `%speed of event-guild%`**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tset guild speed of event-guild to arg-1\n" +
+        "\t\treply with \":cloud_tornado: **The __speed__ has been changed to `%guild speed of event-guild%` !**\"")
 @Since("1.7")
 public class ExprGuildSpeed extends SimplePropertyExpression<Guild, Number> {
 

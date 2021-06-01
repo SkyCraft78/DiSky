@@ -16,7 +16,15 @@ import javax.annotation.Nullable;
 
 @Name("Guild Volume")
 @Description("Get or change the volume of a guild.")
-@Examples("set volume of event-guild to 50")
+@Examples("discord command volume [<number>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg 1 is not set:\n" +
+        "\t\t\treply with \":speaking_head: **Current __volume__: `%volume of event-guild%`**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tset {_old} to volume of event-guild\n" +
+        "\t\tset volume of event-guild to arg-1\n" +
+        "\t\treply with \":speaking_head: **The __volume__ has been changed: `%{_old}%` -> `%volume of event-guild%`**\"")
 @Since("1.6-pre2")
 public class ExprGuildVolume extends SimplePropertyExpression<Guild, Number> {
 

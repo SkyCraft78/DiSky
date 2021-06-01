@@ -19,7 +19,14 @@ import java.util.Collections;
 
 @Name("Guild Pitch")
 @Description("Get or change the audio pith of a guild.")
-@Examples("set audio pitch of event-guild to 1.3")
+@Examples("discord command pitch [<number>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg 1 is not set:\n" +
+        "\t\t\treply with \":musical_note: **Current __pitch__: `%audio pitch of event-guild%`**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tset audio pitch of event-guild to arg-1\n" +
+        "\t\treply with \":musical_note: **The __pitch__ has been changed to `%audio pitch of event-guild%` !**\"\n")
 @Since("1.7")
 public class ExprGuildPitch extends SimplePropertyExpression<Guild, Number> {
 

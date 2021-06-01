@@ -15,7 +15,17 @@ import org.bukkit.event.Event;
 
 @Name("Disconnect Bot From Guild")
 @Description("Disconnect the bot from a specific guild.")
-@Examples("disconnect bot of event-guild")
+@Examples("discord command stop:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tstop current queue of event-guild\n" +
+        "\t\tdisconnect bot of event-guild\n" +
+        "\t\tmake embed:\n" +
+        "\t\t\tset author of embed to \"Bye, See you next time \uD83D\uDC4B\"\n" +
+        "\t\t\tset author icon of embed to avatar of event-member\n" +
+        "\t\t\tset color of embed to red\n" +
+        "\t\t\tset footer of embed to \"Executed by %discord name of event-member%\"\n" +
+        "\t\treply with last embed")
 @Since("1.9")
 public class EffDisconnectBot extends Effect {
 

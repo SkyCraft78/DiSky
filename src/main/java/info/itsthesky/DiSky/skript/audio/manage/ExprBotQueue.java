@@ -14,7 +14,7 @@ import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-@Name("Bot Queue")
+@Name("Guild Queue")
 @Description("Return all tracks from a specific guild.")
 @Examples("set {_tracks::*} to queue of event-guild")
 @Since("1.6-pre2")

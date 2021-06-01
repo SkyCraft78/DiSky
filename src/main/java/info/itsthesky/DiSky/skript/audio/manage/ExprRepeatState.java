@@ -15,7 +15,18 @@ import javax.annotation.Nullable;
 
 @Name("Repeating State of Guild")
 @Description("Get ot set the repeating state of a guild. If it's true, the track will be repeating every time.")
-@Examples("set repeating state of event-guild to true")
+@Examples("discord command repeat [<boolean>]:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tif arg-1 is not set:\n" +
+        "\t\t\treply with \":x: **You __must__ set the repeating state to `true` or `false`!**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tset repeating state of event-guild to arg-1\n" +
+        "\t\tif bot is repeating in event-guild:\n" +
+        "\t\t\tset {_name} to \"enable\"\n" +
+        "\t\telse:\n" +
+        "\t\t\tset {_name} to \"disable\"\n" +
+        "\t\treply with \":v: **You have `%{_name}%` the repeating state of this guild!**\"")
 @Since("1.11")
 public class ExprRepeatState extends SimplePropertyExpression<Guild, Boolean> {
 

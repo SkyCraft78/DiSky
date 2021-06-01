@@ -18,7 +18,14 @@ import java.io.File;
 @Name("Load Locale Audio")
 @Description("Load a locale audio as an audio track. Supported format are MP3, FLAC, WAV, Matroska/WebM (AAC, Opus or Vorbis codecs), MP4/M4A (AAC codec), OGG streams (Opus, Vorbis and FLAC codecs), AAC streams and Stream playlists (M3U and PLS)")
 @Since("1.11")
-@Examples("load locale track from \"plugins/tracks/my_awesome_track.mp3\" and store it in {_track}")
+@Examples("discord command locale:\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\tload locale track from \"plugins/track.ogg\" and store it in {_track}\n" +
+        "\t\tif {_track} is not set:\n" +
+        "\t\t\treply with \":x: **Track not found!**\"\n" +
+        "\t\t\tstop\n" +
+        "\t\tplay {_track} in voice channel of event-member")
 public class EffLocaleLoad extends Effect {
 
     static {

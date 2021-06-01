@@ -16,7 +16,10 @@ import org.bukkit.event.Event;
 
 @Name("Pause Guild Audio")
 @Description("Pause the current audio a guild is playing.")
-@Examples("pause audio in event-guild")
+@Examples("discord command pause:\n" +
+        "\tprefixes: *\n" +
+        "\ttrigger:\n" +
+        "\t\tpause in event-guild")
 @Since("1.6")
 public class EffPauseAudio extends Effect {
 
