@@ -31,10 +31,11 @@ public class ExprEmoji extends SimpleExpression<Emote> {
     protected Emote[] get(Event e) {
         String[] emote = name.getAll(e);
         Guild guild = this.guild == null ? null : this.guild.getSingle(e);
-        if (emote == null) return null;
+        if (emote.length == 0) return new Emote[0];
         List<Emote> emojis = new ArrayList<>();
-        for (String input : emote) emojis.add(Utils.unicodeFrom(input, guild));
-        if (emojis.isEmpty()) return null;
+        for (String input : emote) {
+            emojis.add(Utils.unicodeFrom(input, guild));
+        }
         return emojis.toArray(new Emote[0]);
     }
 

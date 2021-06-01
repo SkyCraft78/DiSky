@@ -7,12 +7,8 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.disky.skript.scope.category.ScopeCategory;
-import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.CategoryBuilder;
-import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.interactions.button.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 

@@ -8,20 +8,20 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.Emote;
+import net.dv8tion.jda.api.entities.Emoji;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-@Name("Button Emote")
+@Name("Button Emoji")
 @Description("Change the emote of a button. It DOESN'T work with a CUSTOM emote!")
-@Examples("set button emote of button to reaction \":x:\"")
+@Examples("set button emote of button to \"⚠️\"")
 @Since("1.12")
-public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, Emote> {
+public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, String> {
 
     static {
-        register(ExprButtonEmote.class, Emote.class,
+        register(ExprButtonEmote.class, String.class,
                 "[discord] [button] (emote|emoji)",
                 "button"
         );
@@ -29,13 +29,14 @@ public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, Emo
 
     @Nullable
     @Override
-    public Emote convert(ButtonBuilder entity) {
-        return entity.getEmote();
+    public String convert(ButtonBuilder entity) {
+        if (entity.getEmoji() == null) return null;
+        return entity.getEmoji().getAsMention();
     }
 
     @Override
-    public Class<? extends Emote> getReturnType() {
-        return Emote.class;
+    public Class<? extends String> getReturnType() {
+        return String.class;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, Emo
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         if (mode == Changer.ChangeMode.SET) {
-            return CollectionUtils.array(Emote.class);
+            return CollectionUtils.array(String.class);
         }
         return CollectionUtils.array();
     }
@@ -55,11 +56,10 @@ public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, Emo
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         if (delta == null || delta.length == 0) return;
-        if (!(delta[0] instanceof Emote)) return;
-        Emote newState = (Emote) delta[0];
+        String newState = (String) delta[0];
         if (mode == Changer.ChangeMode.SET) {
             for (ButtonBuilder entity : getExpr().getArray(e)) {
-                entity.setEmote(newState);
+                entity.setEmoji(Emoji.ofUnicode(newState));
             }
         }
     }
