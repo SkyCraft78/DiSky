@@ -7,6 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.tools.MultiplyPropertyExpression;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Message;
@@ -19,10 +20,10 @@ import javax.annotation.Nullable;
 @Description("Get all pinned message of a specific text channel.")
 @Examples("set {_msg::*} to pinned message of event-channel")
 @Since("1.0")
-public class ExprPinnedMessages extends MultiplyPropertyExpression<Object, Message> {
+public class ExprPinnedMessages extends MultiplyPropertyExpression<Object, UpdatingMessage> {
 
     static {
-        register(ExprPinnedMessages.class, Message.class,
+        register(ExprPinnedMessages.class, UpdatingMessage.class,
                 "pin[ed] (message[s]|msg)",
                 "channel/textchannel"
         );
@@ -30,15 +31,15 @@ public class ExprPinnedMessages extends MultiplyPropertyExpression<Object, Messa
 
     @Nullable
     @Override
-    public Message[] convert(Object entity) {
-        if (entity instanceof GuildChannel && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) return ((TextChannel) entity).retrievePinnedMessages().complete().toArray(new Message[0]);
-        if (entity instanceof TextChannel) return ((TextChannel) entity).retrievePinnedMessages().complete().toArray(new Message[0]);
+    public UpdatingMessage[] convert(Object entity) {
+        if (entity instanceof GuildChannel && ((GuildChannel) entity).getType().equals(ChannelType.TEXT)) return UpdatingMessage.convert(((TextChannel) entity).retrievePinnedMessages().complete().toArray(new Message[0]));
+        if (entity instanceof TextChannel) return UpdatingMessage.convert(((TextChannel) entity).retrievePinnedMessages().complete().toArray(new Message[0]));
         return null;
     }
 
     @Override
-    public Class<? extends Message> getReturnType() {
-        return Message.class;
+    public Class<? extends UpdatingMessage> getReturnType() {
+        return UpdatingMessage.class;
     }
 
     @Override

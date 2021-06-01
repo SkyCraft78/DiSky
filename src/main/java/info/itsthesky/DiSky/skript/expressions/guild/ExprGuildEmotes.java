@@ -11,8 +11,10 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +23,10 @@ import java.util.List;
 @Description("Return all emotes of the specific guild")
 @Examples("reply with \"This server have %size of emotes of event-guild% emotes!\"")
 @Since("1.3")
-public class ExprGuildEmotes extends SimpleExpression<String> {
+public class ExprGuildEmotes extends SimpleExpression<Emote> {
 
 	static {
-		Skript.registerExpression(ExprGuildEmotes.class, String.class, ExpressionType.SIMPLE,
+		Skript.registerExpression(ExprGuildEmotes.class, Emote.class, ExpressionType.SIMPLE,
 				"["+ Utils.getPrefixName() +"] [the] [discord] [guild] emotes of [the] [guild] %guild%");
 	}
 
@@ -38,14 +40,12 @@ public class ExprGuildEmotes extends SimpleExpression<String> {
 	}
 
 	@Override
-	protected String[] get(final Event e) {
+	protected Emote[] get(final Event e) {
 		Guild guild = exprGuild.getSingle(e);
-		if (guild == null) return new String[0];
-		List<String> emotes = new ArrayList<>();
-		guild.getEmotes().forEach((emote) -> {
-			emotes.add(emote.getId());
-		});
-		return emotes.toArray(new String[0]);
+		if (guild == null) return new Emote[0];
+		final List<Emote> emotes = new ArrayList<>();
+		for (net.dv8tion.jda.api.entities.Emote emote : guild.getEmotes()) emotes.add(Utils.unicodeFrom(emote.getId(), guild));
+		return emotes.toArray(new Emote[0]);
 	}
 
 	@Override
@@ -54,12 +54,12 @@ public class ExprGuildEmotes extends SimpleExpression<String> {
 	}
 
 	@Override
-	public Class<? extends String> getReturnType() {
-		return String.class;
+	public @NotNull Class<? extends Emote> getReturnType() {
+		return Emote.class;
 	}
 
 	@Override
-	public String toString(Event e, boolean debug) {
+	public @NotNull String toString(Event e, boolean debug) {
 		return "emotes of guild " + exprGuild.toString(e, debug);
 	}
 
