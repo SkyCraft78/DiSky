@@ -92,7 +92,7 @@ public class BotManager {
 
         bots.put(name, jda);
         logger.info("The bot named '"+name+"' seems to be loaded correctly!");
-        DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotConnect(jda));
+        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotConnect(jda)));
     }
 
     /**
