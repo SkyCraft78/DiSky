@@ -35,7 +35,14 @@ public class EventGuildUpdateName extends Event {
     private static final UpdatedValue<String> updatedName;
 
     static {
-        Skript.registerEvent("Guild Name Update", SimpleEvent.class, EventGuildUpdateName.class, "[discord] guild name (change|update)");
+        Skript.registerEvent("Guild Name Update", SimpleEvent.class, EventGuildUpdateName.class, "[discord] guild name (change|update)")
+                .description(new String[]{"Run when the name of the guild is updated.",
+                        "Possible updated values:",
+                        "new guild name",
+                        "old guild name",
+                })
+                .examples("on guild name change:")
+                .since("1.10");
 
         updatedName = new UpdatedValue<>(String.class, EventGuildUpdateName.class, "[discord] guild [nick]name", true).register();
 
