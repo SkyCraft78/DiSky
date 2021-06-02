@@ -20,7 +20,16 @@ import org.bukkit.event.Event;
 
 @Name("Add Button to Row")
 @Description("Add a new button to a specific button row. Maximum of 5 button per row, 5 row per message.")
-@Examples("add {_button} to row {_row}")
+@Examples("discord command buttons:\n" +
+        "\tprefixes: !\n" +
+        "\ttrigger:\n" +
+        "\t\treply with \"*buttons ...*\" and store it in {_msg}\n" +
+        "\t\tset {_row} to new buttons row\n" +
+        "\t\tadd new link button with url \"http://disky.itsthesky.info/\" with style danger with content \"DiSky Website\" with emoji \"\uD83D\uDD17\" to row {_row}\n" +
+        "\t\tadd new button with url \"custom-id\" with style danger with content \"Dangerous!\" with emoji \"\uD83D\uDD36\" to row {_row}\n" +
+        "\t\tadd new button with url \"custom-id2\" with style success with content \"Green :D\" with emoji \"\uD83D\uDCD7\" to row {_row}\n" +
+        "\t\tadd new disabled button with url \"custom-id3\" with style secondary with content \"I'm disabled\" with emoji \"\uD83D\uDE2D\" to row {_row}\n" +
+        "\t\tadd row {_row} to message {_msg}")
 @Since("1.13")
 public class EffAddButtonToRow extends AsyncEffect {
 

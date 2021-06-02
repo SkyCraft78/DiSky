@@ -9,7 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.commands.CommandObject;
-import info.itsthesky.disky.skript.events.MessageEvent;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;

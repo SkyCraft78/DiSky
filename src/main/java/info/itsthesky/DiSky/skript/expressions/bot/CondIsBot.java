@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.bukkit.event.Event;
 
 @Name("Is a user a bot")
-@Description("See if a specific user is is a bot or not.")
+@Description("See if a specific user is is a bot or not. Don't forget the 'DISCORD' word in the syntaxes!")
 @Examples("if event-user is a discord bot:")
 @Since("1.5.2")
 public class CondIsBot extends Condition {

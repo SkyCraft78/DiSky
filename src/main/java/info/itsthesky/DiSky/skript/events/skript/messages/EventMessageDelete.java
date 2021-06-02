@@ -11,6 +11,7 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.managers.cache.CachedMessage;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.*;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Run when any message is deleted. Use event-string to get the message's content.")
 @Examples("on message delete:")
 @Since("1.3")
-public class EventMessageDelete extends Event {
+public class EventMessageDelete extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Message Delete", SimpleEvent.class, EventMessageDelete.class, "[discord] [guild] message delete")
@@ -109,5 +110,10 @@ public class EventMessageDelete extends Event {
 
     public GuildMessageDeleteEvent getEvent() {
         return e;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 }

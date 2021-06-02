@@ -15,8 +15,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
 
-@Name("Guild Text Channels")
-@Description("Return all text channels of the specific guild")
+@Name("Guild Channels")
+@Description("Return all channels (both text & voice) of the specific guild")
 @Examples("reply with \"This server have %size of textchannels of event-guild% text channels!\"")
 @Since("1.3")
 public class ExprGuildChannels extends SimpleExpression<TextChannel> {

@@ -6,7 +6,8 @@ import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
-import info.itsthesky.disky.skript.events.MessageEvent;
+import info.itsthesky.disky.skript.events.util.InteractionEvent;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.skript.events.util.DiSkyEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
@@ -14,12 +15,13 @@ import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.interactions.Interaction;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EventButtonClick extends Event implements MessageEvent {
+public class EventButtonClick extends Event implements InteractionEvent {
 
     static {
         Skript.registerEvent("Button Click", SimpleEvent.class, EventButtonClick.class, "[discord] [guild] button [hook] click")
@@ -121,7 +123,7 @@ public class EventButtonClick extends Event implements MessageEvent {
     }
 
     @Override
-    public MessageChannel getChannel() {
-        return e.getChannel();
+    public Interaction getInteraction() {
+        return getEvent().getInteraction();
     }
 }

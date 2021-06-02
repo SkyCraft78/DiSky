@@ -15,8 +15,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
 
 @Name("Guild Boost Tier")
-@Description("Return the boost tier (0, 1, 2 or 3) of specific guild")
-@Examples("reply with \"Guild tier: \"")
+@Description("Return the boost tier (1, 2 or 3) of specific guild")
+@Examples("reply with \"Guild tier: %boost tier of event-guild%\"")
 @Since("1.2")
 public class ExprBoostTier extends SimpleExpression<String> {
 

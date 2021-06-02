@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Run when any member remove a reaction from a message")
 @Examples("on reaction remove:")
 @Since("1.3")
-public class EventReactionRemove extends Event {
+public class EventReactionRemove extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Reaction Remove", SimpleEvent.class, EventReactionRemove.class, "[discord] [guild] reaction remove")
@@ -117,6 +118,11 @@ public class EventReactionRemove extends Event {
     @Override
     public HandlerList getHandlers() {
         return HANDLERS;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 
     public static HandlerList getHandlerList() {

@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 @Examples({"on message receive:",
             "\tsend message (discord id of event-user) to event-channel with event-bot"})
 @Since("1.0")
-public class EventMessageReceive extends Event {
+public class EventMessageReceive extends Event implements MessageEvent {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
@@ -108,6 +109,11 @@ public class EventMessageReceive extends Event {
 
     public MessageReceivedEvent getEvent() {
         return event;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 
     @NotNull

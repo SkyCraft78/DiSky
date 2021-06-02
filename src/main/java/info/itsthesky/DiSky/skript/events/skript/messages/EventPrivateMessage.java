@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 @Examples({"on private message receive:",
             "\treply with \"I'm not a human, you can't talk to me :c\""})
 @Since("1.1")
-public class EventPrivateMessage extends Event {
+public class EventPrivateMessage extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Private Message", SimpleEvent.class, EventPrivateMessage.class, "[discord] (private|direct) message receive")
@@ -73,5 +74,10 @@ public class EventPrivateMessage extends Event {
 
     public MessageReceivedEvent getEvent() {
         return e;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 }

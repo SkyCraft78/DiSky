@@ -9,12 +9,10 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.messages.Channel;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -30,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
         "Both will return a string with the new and the old content!"})
 @Examples("on message edit:")
 @Since("1.4")
-public class EventMessageEdit extends Event {
+public class EventMessageEdit extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Message Edit", SimpleEvent.class, EventMessageEdit.class, "[discord] message edit")
@@ -107,5 +105,10 @@ public class EventMessageEdit extends Event {
 
     public GuildMessageUpdateEvent getEvent() {
         return e;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 }

@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Run when any message receive a reaction. Use event-string to get the message id.")
 @Examples("on reaction add:")
 @Since("1.3")
-public class EventReactionAdd extends Event {
+public class EventReactionAdd extends Event implements MessageEvent {
 
     static {
         Skript.registerEvent("Reaction Add", SimpleEvent.class, EventReactionAdd.class, "[discord] [guild] reaction add")
@@ -121,6 +122,11 @@ public class EventReactionAdd extends Event {
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return getEvent().getChannel();
     }
 
     public GuildMessageReactionAddEvent getEvent() {

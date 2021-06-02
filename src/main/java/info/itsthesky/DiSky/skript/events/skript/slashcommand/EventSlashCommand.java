@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.InteractionEvent;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,6 +17,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.Interaction;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 @Description("Fired when a SLASH command is executed by any user. Use %event-string% for the command name!\n See the wiki to know how to get the options :)\nWiki: https://github.com/SkyCraft78/DiSky/wiki/Slash-Commands")
 @Examples("on slash command:")
 @Since("1.5")
-public class EventSlashCommand extends Event {
+public class EventSlashCommand extends Event implements InteractionEvent {
 
     static {
         // [seen by [bot] [(named|with name)]%string%]
@@ -99,4 +101,9 @@ public class EventSlashCommand extends Event {
         return HANDLERS;
     }
     public SlashCommandEvent getEvent() { return this.e; }
+
+    @Override
+    public Interaction getInteraction() {
+        return getEvent().getInteraction();
+    }
 }
