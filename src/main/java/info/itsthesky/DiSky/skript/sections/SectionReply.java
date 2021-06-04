@@ -1,18 +1,27 @@
 package info.itsthesky.disky.skript.sections;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.Variable;
+import ch.njol.skript.effects.Delay;
+import ch.njol.skript.lang.*;
+import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandFactory;
+import info.itsthesky.disky.skript.events.skript.EventButtonClick;
 import info.itsthesky.disky.skript.events.skript.EventReplySection;
+import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
+import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
+import info.itsthesky.disky.skript.events.skript.slashcommand.EventSlashCommand;
+import info.itsthesky.disky.skript.events.util.InteractionEvent;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
@@ -28,8 +37,10 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -61,22 +72,35 @@ public class SectionReply extends EffectSection {
 	}
 
 	private Expression<Object> exprMessage;
-	private Expression<Object> exprVar;
+	private Variable<?> variable;
 	private Expression<Member> exprWaiter;
 	private boolean oneTime = false;
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-		if (exprs.length == 1) {
-			exprMessage = (Expression<Object>) exprs[0];
-		} else if (exprs.length == 2) {
-			exprMessage = (Expression<Object>) exprs[0];
-			exprVar = (Expression<Object>) exprs[1];
+		exprMessage = (Expression<Object>) exprs[0];
+		exprWaiter = (Expression<Member>) exprs[2];
+
+		Utils.setHasDelayBefore(Kleenean.TRUE);
+
+		if (!ScriptLoader.isCurrentEvent(
+				EventMessageReceive.class,
+				CommandEvent.class,
+				EventPrivateMessage.class,
+				EventSlashCommand.class,
+				EventButtonClick.class
+		)) {
+			Skript.error("The reply section cannot be used in a " + ScriptLoader.getCurrentEventName() + " event.");
+			return false;
+		}
+
+		Expression<?> var = exprs[1];
+		if (var != null && !(var instanceof Variable)) {
+			Skript.error("Cannot store the message in a non-variable expression");
+			return false;
 		} else {
-			exprMessage = (Expression<Object>) exprs[0];
-			exprVar = (Expression<Object>) exprs[1];
-			exprWaiter = (Expression<Member>) exprs[2];
+			variable = (Variable<?>) var;
 		}
 		if (checkIfCondition()) return false;
 		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
@@ -86,89 +110,113 @@ public class SectionReply extends EffectSection {
 	}
 
 	@Override
-	public void execute(Event e) {
-		DiSkyErrorHandler.executeHandleCode(e, Event -> {
-			try {
-				Object message = exprMessage.getSingle(e);
-				if (message == null) return;
+	protected void execute(Event e) {
+		walk(e);
+	}
 
-				/* Message cast */
-				MessageBuilder toSend = null;
-				switch (message.getClass().getSimpleName()) {
-					case "EmbedBuilder":
-						toSend = new MessageBuilder().setEmbed(((EmbedBuilder) message).build());
-						break;
-					case "String":
-						toSend = new MessageBuilder(message.toString());
-						break;
-					case "MessageBuilder":
-						toSend = (MessageBuilder) message;
-						break;
-					case "UpdatingMessage":
-						toSend = new MessageBuilder(((UpdatingMessage) message).getMessage());
-						break;
-				}
-				if (toSend == null) {
-					Skript.error("[DiSky] Cannot parse or cast the message in the send effect!");
-					return;
-				}
+	@Override
+	protected @Nullable TriggerItem walk(Event e) {
+		DiSkyErrorHandler.executeHandleCode(e, event -> {
+			Object message = exprMessage.getSingle(e);
+			if (message == null) return;
 
-				Member waiter = exprWaiter == null ? null : exprWaiter.getSingle(e);
+			debug(e, true);
 
-				MessageChannel LAST_CHANNEL;
-				boolean IS_HOOK;
-				try {
-					Object classEvent = e.getClass().getDeclaredMethod("getEvent").invoke(e);
-					LAST_CHANNEL = (MessageChannel) classEvent.getClass().getDeclaredMethod("getChannel").invoke(classEvent);
-					IS_HOOK = false;
-				} catch (Exception reflect) {
-					DiSky.getInstance().getConsoleLogger().severe("Cannot get the last channel from a message event !");
-					return;
-				}
+			Delay.addDelayedEvent(e); // Mark this event as delayed
+			Object localVars = Variables.removeLocals(e); // Back up local variables
 
-				Message storedMessage = LAST_CHANNEL.sendMessage(toSend.build()).complete(true);
+			if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
+				return;
 
-				ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
-				if (exprVar != null) {
-					if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
-					Variable var = (Variable) exprVar;
-					Utils.setSkriptVariable(var, storedMessage, e);
-				}
+			/* Message cast */
+			MessageBuilder toSend = null;
+			switch (message.getClass().getSimpleName()) {
+				case "EmbedBuilder":
+					toSend = new MessageBuilder().setEmbed(((EmbedBuilder) message).build());
+					break;
+				case "String":
+					toSend = new MessageBuilder(message.toString());
+					break;
+				case "MessageBuilder":
+					toSend = (MessageBuilder) message;
+					break;
+				case "UpdatingMessage":
+					toSend = new MessageBuilder(((UpdatingMessage) message).getMessage());
+					break;
+			}
+			if (toSend == null) {
+				Skript.error("[DiSky] Cannot parse or cast the message in the reply section!");
+				return;
+			}
 
-				final boolean[] alreadyExecuted = {false};
-				final TextChannel cha = storedMessage.getTextChannel();
-				WaiterListener.events.add(
-						new WaiterListener.WaitingEvent<>(
-								GuildMessageReceivedEvent.class,
+			Member waiter = exprWaiter == null ? null : exprWaiter.getSingle(e);
 
-								ev -> ev.getChannel().equals(cha)
-										&& !storedMessage.getJDA().getSelfUser().getId().equals(ev.getMember().getId())
-										&& (waiter == null || waiter.getId().equals(ev.getMember().getId())),
+			if (event instanceof MessageEvent) {
+				((MessageEvent) event).getChannel().sendMessage(toSend.build()).queue(m -> {
+					// Re-set local variables
+					if (localVars != null)
+						Variables.setLocalVariables(event, localVars);
 
-								ev -> {
-									if (VariablesMaps.map.get(e) != null) Variables.setLocalVariables(e, VariablesMaps.map.get(e));
+					ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+					if (variable != null) {
+						variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+					}
 
-									valueMessage.setObject(UpdatingMessage.from(ev.getMessage()));
-									valueGuild.setObject(ev.getGuild());
-									valueMember.setObject(ev.getMember());
-									valueUser.setObject(ev.getMember().getUser());
-									valueBot.setObject(ev.getJDA());
-									if (oneTime){
-										if (alreadyExecuted[0])
-											return;
-									}
-
-									alreadyExecuted[0] = true;
-									runSection(e);
-									try {
-										if (((Cancellable) e).isCancelled()) ev.getMessage().delete().queue(null, DiSkyErrorHandler::logException);
-									} catch(ClassCastException ignored) { }
+					if (getNext() != null) {
+						Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+							Object timing = null;
+							if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+								Trigger trigger = getTrigger();
+								if (trigger != null) {
+									timing = SkriptTimings.start(trigger.getDebugLabel());
 								}
-						));
-			} catch (RateLimitedException ex) {
-				DiSky.getInstance().getLogger().severe("DiSky tried to get a message, but was rate limited.");
+							}
+
+							TriggerItem.walk(getNext(), event);
+
+							Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+							SkriptTimings.stop(timing); // Stop timing if it was even started
+						});
+					} else {
+						Variables.removeLocals(event);
+					}
+					final boolean[] alreadyExecuted = {false};
+					final TextChannel cha = m.getTextChannel();
+					WaiterListener.events.add(
+							new WaiterListener.WaitingEvent<>(
+									GuildMessageReceivedEvent.class,
+
+									ev -> ev.getChannel().equals(cha)
+											&& !m.getJDA().getSelfUser().getId().equals(ev.getMember().getId())
+											&& (waiter == null || waiter.getId().equals(ev.getMember().getId())),
+
+									ev -> {
+										if (VariablesMaps.map.get(e) != null) Variables.setLocalVariables(e, VariablesMaps.map.get(e));
+
+										valueMessage.setObject(UpdatingMessage.from(ev.getMessage()));
+										valueGuild.setObject(ev.getGuild());
+										valueMember.setObject(ev.getMember());
+										valueUser.setObject(ev.getMember().getUser());
+										valueBot.setObject(ev.getJDA());
+										if (oneTime){
+											if (alreadyExecuted[0])
+												return;
+										}
+
+										alreadyExecuted[0] = true;
+										runSection(e);
+										try {
+											if (((Cancellable) e).isCancelled()) ev.getMessage().delete().queue(null, DiSkyErrorHandler::logException);
+										} catch(ClassCastException ignored) { }
+									}
+							));
+				});
+			} else if (event instanceof InteractionEvent) {
+				((InteractionEvent) event).getInteractionEvent().reply(toSend.build()).queue();
 			}
 		});
+		return null;
 	}
 
 	@Override

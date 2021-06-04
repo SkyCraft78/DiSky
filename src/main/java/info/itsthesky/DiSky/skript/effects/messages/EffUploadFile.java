@@ -1,16 +1,17 @@
 package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.effects.Delay;
+import ch.njol.skript.lang.*;
+import ch.njol.skript.timings.SkriptTimings;
+import ch.njol.skript.variables.Variables;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.AsyncEffect;
-import ch.njol.skript.lang.Effect;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
@@ -20,9 +21,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -54,7 +56,7 @@ public class EffUploadFile extends AsyncEffect {
 
     private Expression<Object> exprFile;
     private Expression<Object> exprChannel;
-    private Expression<Object> exprVar;
+    private Variable<?> variable;
     private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
 
@@ -64,38 +66,54 @@ public class EffUploadFile extends AsyncEffect {
         exprFile = (Expression<Object>) exprs[0];
         exprContent = (Expression<Object>) exprs[1];
         exprChannel = (Expression<Object>) exprs[2];
-        if (exprs.length == 3) return true;
         exprBot = (Expression<JDA>) exprs[3];
-        if (exprs.length == 4) return true;
-        exprVar = (Expression<Object>) exprs[4];
+
+        Expression<?> var = exprs[4];
+        if (var != null && !(var instanceof Variable)) {
+            Skript.error("Cannot store the message in a non-variable expression");
+            return false;
+        } else {
+            variable = (Variable<?>) var;
+        }
         return true;
     }
 
     @Override
-    protected void execute(Event e) {
-        DiSkyErrorHandler.executeHandleCode(e, Event -> {
+    protected void execute(Event event) { }
+
+    @Override
+    protected @Nullable TriggerItem walk(Event e) {
+        DiSkyErrorHandler.executeHandleCode(e, event -> {
             Object entity = exprChannel.getSingle(e);
-            Object content = exprContent.getSingle(e);
+            Object content = exprContent == null ? null : exprContent.getSingle(e);
             Object f = exprFile.getSingle(e);
-            if (entity == null || content == null) return;
-            Message storedMessage;
+            if (entity == null) return;
+
+            debug(e, true);
+
+            Delay.addDelayedEvent(e); // Mark this event as delayed
+            Object localVars = Variables.removeLocals(e); // Back up local variables
+
+            if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
+                return;
 
             /* Message cast */
             MessageBuilder toSend = null;
-            switch (content.getClass().getSimpleName()) {
-                case "EmbedBuilder":
-                    toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
-                    break;
-                case "String":
-                    toSend = new MessageBuilder(content.toString());
-                    break;
-                case "MessageBuilder":
-                    toSend = (MessageBuilder) content;
-                    break;
-                case "Message":
-                    toSend = new MessageBuilder((Message) content);
-                    break;
-            }
+            if (content != null)
+                switch (content.getClass().getSimpleName()) {
+                    case "EmbedBuilder":
+                        toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                        break;
+                    case "String":
+                        toSend = new MessageBuilder(content.toString());
+                        break;
+                    case "MessageBuilder":
+                        toSend = (MessageBuilder) content;
+                        break;
+                    case "Message":
+                        toSend = new MessageBuilder((Message) content);
+                        break;
+                }
 
             /* Channel Cast */
             MessageChannel channel = null;
@@ -139,13 +157,68 @@ public class EffUploadFile extends AsyncEffect {
                 ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 
                 if (toSend == null) {
-                    storedMessage = channel.sendFile(is, "image.png").complete();
+                    channel.sendFile(is, "image.png").queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 } else {
-                    storedMessage = channel.sendMessage(toSend.build()).addFile(is, "image.png").complete();
+                    channel.sendMessage(toSend.build()).addFile(is, "image.png").queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 }
-                ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
-                if (exprVar == null) return;
-                Utils.setSkriptVariable((Variable<?>) exprVar, UpdatingMessage.from(storedMessage), e);
                 return;
             }
 
@@ -158,9 +231,67 @@ public class EffUploadFile extends AsyncEffect {
 
 
                 if (toSend == null) {
-                    storedMessage = channel.sendFile(stream, "file." + ext).complete();
+                    channel.sendFile(stream, "file." + ext).queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 } else {
-                    storedMessage = channel.sendMessage(toSend.build()).addFile(stream, "file." + ext).complete();
+                    channel.sendMessage(toSend.build()).addFile(stream, "file." + ext).queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 }
 
             } else {
@@ -169,16 +300,74 @@ public class EffUploadFile extends AsyncEffect {
                 if (!file.exists()) DiSkyErrorHandler.logException(new FileNotFoundException("Can't found the file to send in a channel! (Path: "+file.getPath()+")"));
 
                 if (toSend == null) {
-                    storedMessage = channel.sendFile(file).complete();
+                    channel.sendFile(file).queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 } else {
-                    storedMessage = channel.sendMessage(toSend.build()).addFile(file).complete();
+                    channel.sendMessage(toSend.build()).addFile(file).queue(m -> {
+                        // Re-set local variables
+                        if (localVars != null)
+                            Variables.setLocalVariables(event, localVars);
+
+                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                        if (variable != null) {
+                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                        }
+
+                        if (getNext() != null) {
+                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                                Object timing = null;
+                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                    Trigger trigger = getTrigger();
+                                    if (trigger != null) {
+                                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                                    }
+                                }
+
+                                TriggerItem.walk(getNext(), event);
+
+                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                                SkriptTimings.stop(timing); // Stop timing if it was even started
+                            });
+                        } else {
+                            Variables.removeLocals(event);
+                        }
+                    });
                 }
             }
-            ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
-            if (exprVar == null) return;
-            Utils.setSkriptVariable((Variable<?>) exprVar, UpdatingMessage.from(storedMessage), e);
 
         });
+
+
+        return null;
     }
 
     @Override
