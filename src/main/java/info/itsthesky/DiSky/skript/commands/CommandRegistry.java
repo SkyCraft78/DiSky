@@ -69,7 +69,7 @@ public class CommandRegistry extends SelfRegisteringSkriptEvent {
         EventValues.registerEventValue(CommandEvent.class, GuildChannel.class, new Getter<GuildChannel, CommandEvent>() {
                     @Override
                     public GuildChannel get(CommandEvent event) {
-                        return event.getChannel();
+                        return event.getTxtChannel();
                     }
                 }
                 , 0);

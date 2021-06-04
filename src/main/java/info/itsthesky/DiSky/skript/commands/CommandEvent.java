@@ -1,6 +1,6 @@
 package info.itsthesky.disky.skript.commands;
 
-import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,7 +14,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandEvent extends Event implements Cancellable {
+public class CommandEvent extends Event implements Cancellable, MessageEvent {
 
     public static CommandEvent lastEvent;
 
@@ -59,7 +59,7 @@ public class CommandEvent extends Event implements Cancellable {
 				original.getArguments(),
                 original.getGuild(),
                 original.getMessageChannel(),
-                original.getChannel(),
+                original.getTxtChannel(),
                 original.getMessage(),
                 original.getUser(),
                 original.getMember(),
@@ -90,7 +90,7 @@ public class CommandEvent extends Event implements Cancellable {
         return user;
     }
 
-    public GuildChannel getChannel() {
+    public GuildChannel getTxtChannel() {
         return channel;
     }
 
@@ -140,5 +140,10 @@ public class CommandEvent extends Event implements Cancellable {
     }
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return (MessageChannel) getTxtChannel();
     }
 }

@@ -15,6 +15,7 @@ import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -104,7 +105,6 @@ public class EventButtonClick extends Event implements InteractionEvent {
             final ButtonClickEvent e
             ) {
         super(Utils.areEventAsync());
-        e.deferEdit().queue();
         this.e = e;
     }
 
@@ -122,8 +122,9 @@ public class EventButtonClick extends Event implements InteractionEvent {
         return e;
     }
 
+
     @Override
-    public Interaction getInteraction() {
-        return getEvent().getInteraction();
+    public GenericInteractionCreateEvent getInteractionEvent() {
+        return this.e;
     }
 }

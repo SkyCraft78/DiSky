@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.Interaction;
 import org.bukkit.event.Event;
@@ -89,7 +90,6 @@ public class EventSlashCommand extends Event implements InteractionEvent {
         super(Utils.areEventAsync());
         StaticData.lastSlashCommandEvent = e;
         this.e = e;
-        e.deferReply().queue();
     }
 
     @NotNull
@@ -103,7 +103,7 @@ public class EventSlashCommand extends Event implements InteractionEvent {
     public SlashCommandEvent getEvent() { return this.e; }
 
     @Override
-    public Interaction getInteraction() {
-        return getEvent().getInteraction();
+    public GenericInteractionCreateEvent getInteractionEvent() {
+        return this.e;
     }
 }

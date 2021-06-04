@@ -2,8 +2,11 @@ package info.itsthesky.disky.skript.events.skript;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.event.Cancellable;
@@ -12,7 +15,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EventReplySection extends Event implements Cancellable {
+public class EventReplySection extends Event implements Cancellable, MessageEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
@@ -21,29 +24,22 @@ public class EventReplySection extends Event implements Cancellable {
             @Nullable
             @Override
             public Message get(final @NotNull EventReplySection event) {
-                return event.getMessage();
+                return event.getEvent().getMessage();
             }
         }, 0);
     }
 
-    private final Message message;
+    private final MessageReceivedEvent event;
 
     public EventReplySection(
-            final Message message
+            final MessageReceivedEvent event
             ) {
         super(Utils.areEventAsync());
-        this.message = message;
-
-        Expression e = new ExpressionBuilder("3 * sin(y) - 2 / (x - 2)")
-                .variables("x", "y")
-                .build()
-                .setVariable("x", 2.3)
-                .setVariable("y", 3.14);
-        double result = e.evaluate();
+        this.event = event;
     }
 
-    public Message getMessage() {
-        return message;
+    public MessageReceivedEvent getEvent() {
+        return event;
     }
 
     @NotNull
@@ -65,5 +61,10 @@ public class EventReplySection extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancel) {
         isCancelled = cancel;
+    }
+
+    @Override
+    public MessageChannel getChannel() {
+        return event.getChannel();
     }
 }
