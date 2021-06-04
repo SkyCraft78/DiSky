@@ -78,7 +78,9 @@ public class EffEditMessage extends AsyncEffect {
                 return;
             }
             if (keepButtons) {
-                List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
+                //List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
+                List<ActionRow> rows = new ArrayList<>(message.getMessage().getActionRows());
+
                 message.getMessage().editMessage(toSend.build()).setActionRows(rows).queue();
             } else {
                 message.getMessage().editMessage(toSend.build()).queue();

@@ -62,9 +62,10 @@ public class EffAddRowToMessage extends AsyncEffect {
         UpdatingMessage message = exprMessage.getSingle(e);
         ButtonRow[] row1 = exprRow.getAll(e);
         if (message == null || row1.length == 0) return;
-        
+
+        //List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
+        List<ActionRow> rows = new ArrayList<>(message.getMessage().getActionRows());
         if (!isSet) {
-            List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
             for (ButtonRow row : row1) {
                 List<Button> buttons = new ArrayList<>();
 
@@ -77,30 +78,20 @@ public class EffAddRowToMessage extends AsyncEffect {
             message.getMessage().editMessage(message.getMessage())
                     .setActionRows(rows)
                     .queue();
-            StaticData.actionRows.put(message.getMessage().getIdLong(), rows);   
         } else {
-            List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
+            rows = new ArrayList<>();
             for (ButtonRow row : row1) {
                 List<Button> buttons = new ArrayList<>();
-
                 for (ButtonBuilder buttonBuilder : row.getButtons()) {
                     if (buttonBuilder.build() != null)
                         buttons.add(buttonBuilder.build());
                 }
                 if (buttons.size() > 0) rows.add(ActionRow.of(buttons.toArray(new Component[0])));
             }
-            List<Button> buttons = new ArrayList<>();
-            for (ButtonRow row : row1) {
-                for (ButtonBuilder buttonBuilder : row.getButtons()) {
-                    if (buttonBuilder.build() != null)
-                        buttons.add(buttonBuilder.build());
-                }
-            }
-            ActionRow row = ActionRow.of(buttons.toArray(new Component[0]));
-            message.getMessage().editMessage(message.getMessage())
-                    .setActionRows(row)
+            message.getMessage()
+                    .editMessage(message.getMessage())
+                    .setActionRows(rows)
                     .queue();
-            StaticData.actionRows.put(message.getMessage().getIdLong(), rows);
         }
     }
 
