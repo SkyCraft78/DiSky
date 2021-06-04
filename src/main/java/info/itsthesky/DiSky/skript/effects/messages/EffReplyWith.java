@@ -12,10 +12,15 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.commands.CommandEvent;
+import info.itsthesky.disky.skript.events.skript.EventButtonClick;
+import info.itsthesky.disky.skript.events.skript.EventReactSection;
+import info.itsthesky.disky.skript.events.skript.EventReplySection;
 import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
 import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
+import info.itsthesky.disky.skript.events.skript.slashcommand.EventSlashCommand;
+import info.itsthesky.disky.skript.events.util.InteractionEvent;
+import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
@@ -23,36 +28,43 @@ import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Reply with Message")
-@Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern!")
-@Examples("reply with \"Hello World :globe_with_meridians:\"")
+@Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern! Personal message only works with INTERACTION (slash commands / webhooks) and will make the message only visible for the user who done the interaction.")
+@Examples({"reply with \"Hello World :globe_with_meridians:\"",
+        "reply with personal message \"Only you can see that message :eyes:\"",
+        "reply with \"Hello World !\" and store it in {_msg}"})
 @Since("1.0")
 public class EffReplyWith extends Effect {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
-                "["+ Utils.getPrefixName() +"] reply with [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
+    private boolean ephemeral = false;
     private Variable<?> variable;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<Object>) exprs[0];
+        ephemeral = parseResult.expr.contains("reply with personal") || parseResult.expr.contains("reply with hidden");
 
         Utils.setHasDelayBefore(Kleenean.TRUE);
 
         if (!ScriptLoader.isCurrentEvent(
                 EventMessageReceive.class,
                 CommandEvent.class,
-                EventPrivateMessage.class
+                EventPrivateMessage.class,
+                EventSlashCommand.class,
+                EventReplySection.class,
+                EventReactSection.class,
+                EventButtonClick.class
         )) {
             Skript.error("The reply effect cannot be used in a " + ScriptLoader.getCurrentEventName() + " event.");
             return false;
@@ -65,7 +77,6 @@ public class EffReplyWith extends Effect {
         } else {
             variable = (Variable<?>) var;
         }
-
 
         return true;
     }
@@ -103,52 +114,40 @@ public class EffReplyWith extends Effect {
                     return;
             }
 
-            // As I said on Discord, it'd be better to have an interface for this stuff so you can cast.
-            MessageChannel lastChannel;
-            try {
-                Object classEvent = event.getClass().getDeclaredMethod("getEvent").invoke(event);
-                lastChannel = (MessageChannel) classEvent.getClass().getDeclaredMethod("getChannel").invoke(classEvent);
-            } catch (Exception reflect) {
-                try {
-                    lastChannel = (MessageChannel) event.getClass().getDeclaredMethod("getChannel").invoke(event);
-                } catch (Exception reflect2) {
-                    reflect2.printStackTrace();
-                    DiSky.getInstance().getConsoleLogger().severe("Cannot get the last channel from a message event !");
-                    return;
-                }
-            }
+            if (event instanceof MessageEvent) {
+                ((MessageEvent) event).getChannel().sendMessage(toSend.build()).queue(m -> {
+                    // Re-set local variables
+                    if (localVars != null)
+                        Variables.setLocalVariables(event, localVars);
 
+                    ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                    if (variable != null) {
+                        variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                    }
 
-            lastChannel.sendMessage(toSend.build()).queue(m -> {
-                // Re-set local variables
-                if (localVars != null)
-                    Variables.setLocalVariables(event, localVars);
-
-                ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                if (variable != null) {
-                    variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                }
-
-                if (getNext() != null) {
-                    Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                        Object timing = null;
-                        if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                            Trigger trigger = getTrigger();
-                            if (trigger != null) {
-                                timing = SkriptTimings.start(trigger.getDebugLabel());
+                    if (getNext() != null) {
+                        Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                            Object timing = null;
+                            if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                                Trigger trigger = getTrigger();
+                                if (trigger != null) {
+                                    timing = SkriptTimings.start(trigger.getDebugLabel());
+                                }
                             }
-                        }
 
-                        TriggerItem.walk(getNext(), event);
+                            TriggerItem.walk(getNext(), event);
 
-                        Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                            Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
-                        SkriptTimings.stop(timing); // Stop timing if it was even started
-                    });
-                } else {
-                    Variables.removeLocals(event);
-                }
-            });
+                            SkriptTimings.stop(timing); // Stop timing if it was even started
+                        });
+                    } else {
+                        Variables.removeLocals(event);
+                    }
+                });
+            } else if (event instanceof InteractionEvent) {
+                ((InteractionEvent) event).getInteractionEvent().reply(toSend.build()).setEphemeral(ephemeral).queue();
+            }
         });
         return null;
     }
