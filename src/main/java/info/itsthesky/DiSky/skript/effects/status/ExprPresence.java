@@ -50,8 +50,8 @@ public class ExprPresence extends SimpleExpression<Activity> {
 	@Override
 	protected Activity[] get(Event e) {
 		String input = exprInput.getSingle(e);
-		String url = exprURL.getSingle(e);
-		if (input == null || url == null) return new Activity[0];
+		String url = exprURL == null ? null : exprURL.getSingle(e);
+		if (input == null) return new Activity[0];
 		Activity activity = null;
 		switch (pattern) {
 			case 0:
@@ -64,6 +64,8 @@ public class ExprPresence extends SimpleExpression<Activity> {
 				activity = Activity.playing(input);
 				break;
 			case 3:
+				if (url == null)
+					Skript.error("[DiSky] The streaming URL cannot be null or not set!");
 				if (!Activity.isValidStreamingUrl(url))
 					Skript.error("[DiSky] The streaming URL specified for the presence is NOT valid! (Input: "+url+")");
 				activity = Activity.streaming(input, url);
