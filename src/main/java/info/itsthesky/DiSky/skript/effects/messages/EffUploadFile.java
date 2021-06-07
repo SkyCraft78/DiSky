@@ -51,10 +51,11 @@ public class EffUploadFile extends AsyncEffect {
         String pImage = "[file] %string%";
         if (DiSky.getPluginManager().isPluginEnabled("SkImage")) pImage = "[(file|image)] %string/image%";
         Skript.registerEffect(EffUploadFile.class,
-                "["+ Utils.getPrefixName() +"] upload "+pImage+" [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] upload "+pImage+" [(with name|named) %-string%] [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprFile;
+    private Expression<String> exprFileName;
     private Expression<Object> exprChannel;
     private Variable<?> variable;
     private Expression<JDA> exprBot;
@@ -64,9 +65,10 @@ public class EffUploadFile extends AsyncEffect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprFile = (Expression<Object>) exprs[0];
-        exprContent = (Expression<Object>) exprs[1];
-        exprChannel = (Expression<Object>) exprs[2];
-        exprBot = (Expression<JDA>) exprs[3];
+        exprFileName = (Expression<String>) exprs[1];
+        exprContent = (Expression<Object>) exprs[2];
+        exprChannel = (Expression<Object>) exprs[3];
+        exprBot = (Expression<JDA>) exprs[1];
 
         Expression<?> var = exprs[4];
         if (var != null && !(var instanceof Variable)) {
@@ -87,6 +89,7 @@ public class EffUploadFile extends AsyncEffect {
             Object entity = exprChannel.getSingle(e);
             Object content = exprContent == null ? null : exprContent.getSingle(e);
             Object f = exprFile.getSingle(e);
+            String fileName = exprFileName == null ? "image.png" : (exprFileName.getSingle(e) == null ? "image.png" : exprFileName.getSingle(e));
             if (entity == null) return;
 
             debug(e, true);
@@ -157,7 +160,7 @@ public class EffUploadFile extends AsyncEffect {
                 ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 
                 if (toSend == null) {
-                    channel.sendFile(is, "image.png").queue(m -> {
+                    channel.sendFile(is, fileName).queue(m -> {
                         // Re-set local variables
                         if (localVars != null)
                             Variables.setLocalVariables(event, localVars);
@@ -188,7 +191,7 @@ public class EffUploadFile extends AsyncEffect {
                         }
                     });
                 } else {
-                    channel.sendMessage(toSend.build()).addFile(is, "image.png").queue(m -> {
+                    channel.sendMessage(toSend.build()).addFile(is, fileName).queue(m -> {
                         // Re-set local variables
                         if (localVars != null)
                             Variables.setLocalVariables(event, localVars);
@@ -228,7 +231,6 @@ public class EffUploadFile extends AsyncEffect {
                 InputStream stream = getFileFromURL(url);
                 String ext = getExtensionFromUrl(url);
                 if (stream == null) return;
-
 
                 if (toSend == null) {
                     channel.sendFile(stream, "file." + ext).queue(m -> {
