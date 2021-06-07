@@ -11,6 +11,8 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.bukkit.event.Event;
@@ -41,11 +43,19 @@ public class EventPrivateMessage extends Event implements MessageEvent {
             }
         }, 0);
 
-        EventValues.registerEventValue(EventPrivateMessage.class, Message.class, new Getter<Message, EventPrivateMessage>() {
+        EventValues.registerEventValue(EventPrivateMessage.class, JDA.class, new Getter<JDA, EventPrivateMessage>() {
             @Nullable
             @Override
-            public Message get(final @NotNull EventPrivateMessage event) {
-                return event.getEvent().getMessage();
+            public JDA get(final @NotNull EventPrivateMessage event) {
+                return event.getEvent().getJDA();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventPrivateMessage.class, UpdatingMessage.class, new Getter<UpdatingMessage, EventPrivateMessage>() {
+            @Nullable
+            @Override
+            public UpdatingMessage get(final @NotNull EventPrivateMessage event) {
+                return UpdatingMessage.from(event.getEvent().getMessage());
             }
         }, 0);
 
