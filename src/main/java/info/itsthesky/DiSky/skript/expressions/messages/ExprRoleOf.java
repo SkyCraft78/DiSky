@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions;
+package info.itsthesky.disky.skript.expressions.messages;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -30,7 +30,7 @@ public class ExprRoleOf extends MultiplyPropertyExpression<Member, Object> {
     @Nullable
     @Override
     public Role[] convert(Member user) {
-        return user.getRoles().toArray(new Role[0]);
+        return user == null ? null : user.getRoles().toArray(new Role[0]);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class ExprRoleOf extends MultiplyPropertyExpression<Member, Object> {
         switch (mode) {
             case ADD:
                 for (Member member : getExpr().getArray(e)) {
-                    member.getGuild().addRoleToMember(member, (Role) delta[0]).complete();
+                    member.getGuild().addRoleToMember(member, (Role) delta[0]).queue();
                 }
                 break;
             case REMOVE:
                 for (Member member : getExpr().getArray(e)) {
-                    member.getGuild().removeRoleFromMember(member, (Role) delta[0]).complete();
+                    member.getGuild().removeRoleFromMember(member, (Role) delta[0]).queue();
                 }
                 break;
             default:
