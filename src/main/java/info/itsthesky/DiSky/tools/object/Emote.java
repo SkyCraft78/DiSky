@@ -30,7 +30,7 @@ public class Emote implements IMentionable {
             this.mention = name;
         }
         if (emote.isEmoji())
-            emoji = Emoji.ofUnicode(emote.getAsCodepoints());
+            emoji = Emoji.fromUnicode(emote.getAsCodepoints());
     }
 
     public Emote(Emoji emoji) {

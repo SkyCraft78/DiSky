@@ -79,10 +79,10 @@ public class ExprNewButton extends SimpleExpression<ButtonBuilder> {
         if (isLink)
             style = ButtonStyle.LINK;
 
-        Button button = (content == null ? Button.of(style, idOrURL, Emoji.ofUnicode(emoji)) : Button.of(style, idOrURL, content));
+        Button button = (content == null ? Button.of(style, idOrURL, Emoji.fromUnicode(emoji)) : Button.of(style, idOrURL, content));
 
         if (emoji != null && content != null)
-            button = Button.of(style, idOrURL, content).withEmoji(Emoji.ofUnicode(emoji));
+            button = Button.of(style, idOrURL, content).withEmoji(Emoji.fromUnicode(emoji));
 
         if (!isEnabled)
             button = button.asDisabled();

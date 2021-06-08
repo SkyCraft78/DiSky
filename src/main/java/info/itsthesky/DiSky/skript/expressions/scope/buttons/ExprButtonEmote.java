@@ -59,7 +59,7 @@ public class ExprButtonEmote extends SimplePropertyExpression<ButtonBuilder, Str
         String newState = (String) delta[0];
         if (mode == Changer.ChangeMode.SET) {
             for (ButtonBuilder entity : getExpr().getArray(e)) {
-                entity.setEmoji(Emoji.ofUnicode(newState));
+                entity.setEmoji(Emoji.fromUnicode(newState));
             }
         }
     }
