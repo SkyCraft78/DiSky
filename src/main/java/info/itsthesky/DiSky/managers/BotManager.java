@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class BotManager {
 
     private static final Logger logger = DiSky.getInstance().getLogger();
-    private static final HashMap<String, JDA> bots = new HashMap<>();
+    public static final HashMap<String, JDA> bots = new HashMap<>();
     public static final HashMap<JDA, String> prefixes = new HashMap<>();
     public static final List<ListenerAdapter> customListener = new ArrayList<>();
 
