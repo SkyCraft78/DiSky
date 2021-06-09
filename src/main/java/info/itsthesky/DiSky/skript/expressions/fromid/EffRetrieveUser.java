@@ -59,41 +59,37 @@ public class EffRetrieveUser extends Effect {
         if (input == null || !Utils.isNumeric(input)) return null;
         debug(e, true);
 
-        Delay.addDelayedEvent(e); // Mark this event as delayed
         Object localVars = Variables.removeLocals(e); // Back up local variables
+        Delay.addDelayedEvent(e); // Mark this event as delayed
 
         if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
             return null;
 
-        DiSkyErrorHandler.executeHandleCode(e, event -> {
-            BotManager.getFirstBot().retrieveUserById(input).queue(user -> {
-                if (localVars != null)
-                    Variables.setLocalVariables(event, localVars);
+        BotManager.getFirstBot().retrieveUserById(input).queue(user -> {
+            if (localVars != null)
+                Variables.setLocalVariables(e, localVars);
 
-                if (variable != null) {
-                    variable.change(event, new Object[] {event}, Changer.ChangeMode.SET);
-                }
+            if (variable != null)
+                variable.change(e, new Object[] {user}, Changer.ChangeMode.SET);
 
-                if (getNext() != null) {
-                    Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                        Object timing = null;
-                        if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                            Trigger trigger = getTrigger();
-                            if (trigger != null) {
-                                timing = SkriptTimings.start(trigger.getDebugLabel());
-                            }
+            if (getNext() != null) {
+                Object vars = Variables.removeLocals(e); // Back up local variables
+                Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                    Object timing = null;
+                    if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                        Trigger trigger = getTrigger();
+                        if (trigger != null) {
+                            timing = SkriptTimings.start(trigger.getDebugLabel());
                         }
-
-                        TriggerItem.walk(getNext(), event);
-
-                        Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                        SkriptTimings.stop(timing); // Stop timing if it was even started
-                    });
-                } else {
-                    Variables.removeLocals(event);
-                }
-            });
+                    }
+                    Variables.setLocalVariables(e, vars);
+                    TriggerItem.walk(getNext(), e);
+                    Variables.removeLocals(e); // Clean up local vars, we may be exiting now
+                    SkriptTimings.stop(timing); // Stop timing if it was even started
+                });
+            } else {
+                Variables.removeLocals(e);
+            }
         });
         return null;
     }
@@ -104,5 +100,5 @@ public class EffRetrieveUser extends Effect {
     }
 
     @Override
-    protected void execute(Event event) { }
+    protected void execute(Event e) { }
 }
