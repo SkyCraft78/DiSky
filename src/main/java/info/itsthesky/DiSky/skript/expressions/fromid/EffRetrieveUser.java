@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,7 @@ public class EffRetrieveUser extends Effect {
     @Override
     protected @Nullable TriggerItem walk(Event e) {
         String input = exprID.getSingle(e);
-        if (input == null || !Utils.isNumeric(input)) return null;
+        if (input == null || !Utils.isNumeric(input)) return getNext();
         debug(e, true);
 
         Object localVars = Variables.removeLocals(e); // Back up local variables
@@ -65,38 +66,45 @@ public class EffRetrieveUser extends Effect {
         if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
             return null;
 
-        BotManager.getFirstBot().retrieveUserById(input).queue(user -> {
-            if (localVars != null)
-                Variables.setLocalVariables(e, localVars);
+        BotManager.getFirstBot().retrieveUserById(input).queue(
+                user -> runConsumer(user, e, localVars),
+                ex -> runConsumer(null, e, localVars)
+        );
 
-            if (variable != null)
-                variable.change(e, new Object[] {user}, Changer.ChangeMode.SET);
-
-            if (getNext() != null) {
-                Object vars = Variables.removeLocals(e); // Back up local variables
-                Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                    Object timing = null;
-                    if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                        Trigger trigger = getTrigger();
-                        if (trigger != null) {
-                            timing = SkriptTimings.start(trigger.getDebugLabel());
-                        }
-                    }
-                    Variables.setLocalVariables(e, vars);
-                    TriggerItem.walk(getNext(), e);
-                    Variables.removeLocals(e); // Clean up local vars, we may be exiting now
-                    SkriptTimings.stop(timing); // Stop timing if it was even started
-                });
-            } else {
-                Variables.removeLocals(e);
-            }
-        });
         return null;
     }
 
     @Override
     public String toString(Event e, boolean debug) {
         return "retrieve user with id " + exprID.toString(e, debug) + " and store it in " + variable.toString(e, debug);
+    }
+
+    private void runConsumer(@Nullable final User user, final Event e, final Object localVars) {
+        if (localVars != null)
+            Variables.setLocalVariables(e, localVars);
+
+        if (variable != null && user != null) {
+            variable.change(e, new Object[] {user}, Changer.ChangeMode.SET);
+        }
+
+        if (getNext() != null) {
+            Object vars = Variables.removeLocals(e); // Back up local variables
+            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                Object timing = null;
+                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                    Trigger trigger = getTrigger();
+                    if (trigger != null) {
+                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                    }
+                }
+                Variables.setLocalVariables(e, vars);
+                TriggerItem.walk(getNext(), e);
+                Variables.removeLocals(e); // Clean up local vars, we may be exiting now
+                SkriptTimings.stop(timing); // Stop timing if it was even started
+            });
+        } else {
+            Variables.removeLocals(e);
+        }
     }
 
     @Override
