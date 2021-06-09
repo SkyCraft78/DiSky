@@ -16,6 +16,7 @@ public class RoleBuilder {
     private Color color;
     private boolean mentionable;
     private boolean separate;
+    private int position;
     private List<Permission> allow = new ArrayList<>();
     private List<Permission> deny = new ArrayList<>();
 
@@ -24,6 +25,7 @@ public class RoleBuilder {
         this.color = new Color(Role.DEFAULT_COLOR_RAW);
         this.mentionable = false;
         this.separate = false;
+        this.position = 0;
     }
 
     public RoleBuilder(Role role) {
@@ -64,6 +66,9 @@ public class RoleBuilder {
     public Color getColor() {
         return color;
     }
+    public int getPosition() {
+        return position;
+    }
     public boolean isSeparate() {
         return separate;
     }
@@ -71,6 +76,9 @@ public class RoleBuilder {
         return mentionable;
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
     public void setColor(Color color) {
         this.color = color;
     }

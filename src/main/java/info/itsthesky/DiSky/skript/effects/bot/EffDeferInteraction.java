@@ -24,7 +24,7 @@ import org.bukkit.event.Event;
 "If you're replying in one of these event, the deferring is useless and you'll get an error.",
 "Replying will automatically deferring the interaction!"})
 @Examples("defer the interaction")
-@Since("1.2")
+@Since("1.13")
 public class EffDeferInteraction extends AsyncEffect {
 
     static {

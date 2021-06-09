@@ -10,13 +10,16 @@ import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.skript.scope.category.ScopeCategory;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.CategoryBuilder;
+import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-@Name("Category Position")
-@Description("Get or set the position of a category or builder.")
+@Name("Category / Channel / Role Position")
+@Description("Get or set the position of a category, channel, role or their builder.")
 @Examples("set position of category builder to 5")
 @Since("1.4.1")
 public class ExprCategoryPosition extends SimplePropertyExpression<Object, Number> {
@@ -24,18 +27,16 @@ public class ExprCategoryPosition extends SimplePropertyExpression<Object, Numbe
     static {
         register(ExprCategoryPosition.class, Number.class,
                 "[discord] [category] position",
-                "category/categorybuilder"
+                "category/categorybuilder/role/channel"
         );
     }
 
     @Nullable
     @Override
     public Number convert(Object entity) {
-        if (entity instanceof Category) {
-            return ((Category) entity).getPosition();
-        } else if (entity instanceof CategoryBuilder) {
-            return ((CategoryBuilder) entity).getPosition();
-        }
+        if (entity instanceof Category) return ((Category) entity).getPosition();
+        if (entity instanceof GuildChannel) return ((GuildChannel) entity).getPosition();
+        if (entity instanceof Role) return ((Role) entity).getPosition();
         return null;
     }
 
@@ -70,6 +71,8 @@ public class ExprCategoryPosition extends SimplePropertyExpression<Object, Numbe
                 } else if (entity instanceof CategoryBuilder) {
                     ((CategoryBuilder) entity).setPosition(Utils.round(newState.doubleValue()));
                     ScopeCategory.lastBuilder.setPosition(Utils.round(newState.doubleValue()));
+                } else if (entity instanceof GuildChannel) {
+                    ((GuildChannel) entity).getManager().setPosition(Utils.round(newState.doubleValue())).queue();
                 }
             }
         }
