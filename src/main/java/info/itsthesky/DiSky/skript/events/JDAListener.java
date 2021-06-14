@@ -72,7 +72,8 @@ public class JDAListener extends ListenerAdapter {
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
         Event event = new EventMemberLeave(
                 e.getMember(),
-                e.getGuild()
+                e.getGuild(),
+                e.getJDA()
         );
         Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(event));
     }

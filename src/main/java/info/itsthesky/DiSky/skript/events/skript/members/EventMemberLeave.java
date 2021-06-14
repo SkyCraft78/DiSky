@@ -49,19 +49,19 @@ public class EventMemberLeave extends Event {
             }
         }, 0);
 
-        EventValues.registerEventValue(EventMemberJoin.class, Member.class, new Getter<Member, EventMemberJoin>() {
+        EventValues.registerEventValue(EventMemberLeave.class, Member.class, new Getter<Member, EventMemberLeave>() {
             @Nullable
             @Override
-            public Member get(final @NotNull EventMemberJoin event) {
-                return event.getEvent().getMember();
+            public Member get(final @NotNull EventMemberLeave event) {
+                return event.getMember();
             }
         }, 0);
 
-        EventValues.registerEventValue(EventMemberJoin.class, JDA.class, new Getter<JDA, EventMemberJoin>() {
+        EventValues.registerEventValue(EventMemberLeave.class, JDA.class, new Getter<JDA, EventMemberLeave>() {
             @Nullable
             @Override
-            public JDA get(final @NotNull EventMemberJoin event) {
-                return event.getEvent().getJDA();
+            public JDA get(final @NotNull EventMemberLeave event) {
+                return event.getJda();
             }
         }, 0);
 
@@ -77,18 +77,25 @@ public class EventMemberLeave extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
+    public JDA getJda() {
+        return jda;
+    }
+
     private final Guild guild;
     private final User user;
     private final Member member;
+    private final JDA jda;
 
     public EventMemberLeave(
             final Member member,
-            final Guild guild
+            final Guild guild,
+            final JDA jda
             ) {
         super(Utils.areEventAsync());
         this.guild = guild;
         this.user = member.getUser();
         this.member = member;
+        this.jda = jda;
     }
 
     @NotNull
