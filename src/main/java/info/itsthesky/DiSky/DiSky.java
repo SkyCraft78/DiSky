@@ -79,14 +79,6 @@ public class DiSky extends JavaPlugin {
             pluginManager.disablePlugin(this);
         }
         Utils.saveResourceAs(CONFIG);
-        File file = new File(getDataFolder(), CONFIG);
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        List<GatewayIntent> gatewayIntents = new ArrayList<>();
-        for (GatewayIntent intent : GatewayIntent.values()) {
-            if (Utils.getOrSetDefault(CONFIG, "Intents." + intent.name(), true))
-                gatewayIntents.add(intent);
-        }
-        intents = gatewayIntents.toArray(new GatewayIntent[0]);
 
         /* Skript color adapter */
         boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));

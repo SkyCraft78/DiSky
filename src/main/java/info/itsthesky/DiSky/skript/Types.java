@@ -97,6 +97,12 @@ public class Types {
 				.description("Represent a message button.")
 				.since("1.12")
 		);
+		Classes.registerClass(new ClassInfo<>(BotBuilder.class, "botbuilder")
+				.user("botbuilders?")
+				.name("Bot Builder")
+				.description("Represent a bot builder, allow intents, with a name etc...")
+				.since("1.14")
+		);
 		Classes.registerClass(new ClassInfo<>(ButtonRow.class, "buttonrow")
 				.user("buttonrows?")
 				.name("Message Buttons Row")
