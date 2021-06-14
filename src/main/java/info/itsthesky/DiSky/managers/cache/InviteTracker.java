@@ -76,11 +76,18 @@ public class InviteTracker extends ListenerAdapter {
     }
 
     private void attemptInviteCaching(final Guild guild) {
-        try {
-            for (Invite invite : guild.retrieveInvites().complete()) inviteCache.put(invite.getCode(), new CachedInvite(invite));
-        } catch (InsufficientPermissionException e) {
-            DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', need permission: " + e.getPermission().getName());
-        }
+        Utils.async(() -> {
+            DiSky.getInstance().getLogger().info("Started invite cache for guild " + guild.getName() + "...");
+            long start = System.currentTimeMillis();
+            try {
+                guild.retrieveInvites().queue(is -> {
+                    for (Invite invite : is) inviteCache.put(invite.getCode(), new CachedInvite(invite));
+                });
+            } catch (InsufficientPermissionException e) {
+                DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', need permission: " + e.getPermission().getName());
+            }
+            DiSky.getInstance().getLogger().info("Invite cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+        });
     }
 
 }

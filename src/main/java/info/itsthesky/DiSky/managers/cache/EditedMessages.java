@@ -77,18 +77,23 @@ public class EditedMessages extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent e) {
         for (Guild guild : e.getJDA().getGuilds()) {
-            for (TextChannel channel : guild.getTextChannels()) {
-                List<Message> history = null;
-                try {
-                    history = channel.getHistory().retrievePast(100).complete();
-                } catch (MissingAccessException ex) {
-                    DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message edit event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+            Utils.async(() -> {
+                DiSky.getInstance().getLogger().info("Started message edit cache for guild " + guild.getName() + "...");
+                long start = System.currentTimeMillis();
+                for (TextChannel channel : guild.getTextChannels()) {
+                    try {
+                        channel.getIterableHistory().queue(history -> {
+                            if (history == null) return;
+                            for (Message message : history) {
+                                previousMessages.put(message.getId(), new CachedMessage(message));
+                            }
+                        });
+                    } catch (MissingAccessException ex) {
+                        DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message edit event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+                    }
                 }
-                if (history == null) return;
-                for (Message message : history) {
-                    previousMessages.put(message.getId(), new CachedMessage(message));
-                }
-            }
+                DiSky.getInstance().getLogger().info("Message edit cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+            });
         }
     }
 

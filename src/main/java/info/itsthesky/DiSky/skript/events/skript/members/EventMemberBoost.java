@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import org.bukkit.event.Event;
@@ -42,6 +43,14 @@ public class EventMemberBoost extends Event {
             @Override
             public Member get(final @NotNull EventMemberBoost event) {
                 return event.getEvent().getMember();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventMemberBoost.class, JDA.class, new Getter<JDA, EventMemberBoost>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventMemberBoost event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 

@@ -14,12 +14,15 @@ import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.messages.Channel;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static info.itsthesky.disky.skript.expressions.messages.CondMessageWasPurged.lastMessageID;
 
 
 @Name("Message Delete")
@@ -85,6 +88,22 @@ public class EventMessageDelete extends Event implements MessageEvent {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventMessageDelete.class, JDA.class, new Getter<JDA, EventMessageDelete>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventMessageDelete event) {
+                return event.getEvent().getJDA();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventMessageDelete.class, Number.class, new Getter<Number, EventMessageDelete>() {
+            @Nullable
+            @Override
+            public Number get(final @NotNull EventMessageDelete event) {
+                return event.getEvent().getMessageIdLong();
+            }
+        }, 0);
+
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -95,6 +114,7 @@ public class EventMessageDelete extends Event implements MessageEvent {
             final GuildMessageDeleteEvent e
             ) {
         super(Utils.areEventAsync());
+        lastMessageID = e.getMessageIdLong();
         this.e = e;
     }
 

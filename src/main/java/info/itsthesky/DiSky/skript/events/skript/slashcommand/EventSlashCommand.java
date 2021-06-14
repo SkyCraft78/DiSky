@@ -78,6 +78,14 @@ public class EventSlashCommand extends Event implements InteractionEvent {
             }
         }, 0);
 
+        EventValues.registerEventValue(EventSlashCommand.class, String.class, new Getter<String, EventSlashCommand>() {
+            @Nullable
+            @Override
+            public String get(final @NotNull EventSlashCommand event) {
+                return event.getEvent().getName();
+            }
+        }, 0);
+
 
     }
 

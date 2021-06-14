@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -53,6 +54,14 @@ public class EventMemberLeave extends Event {
             @Override
             public Member get(final @NotNull EventMemberJoin event) {
                 return event.getEvent().getMember();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventMemberJoin.class, JDA.class, new Getter<JDA, EventMemberJoin>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventMemberJoin event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 

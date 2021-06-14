@@ -1,9 +1,7 @@
 package info.itsthesky.disky.skript;
 
 import ch.njol.skript.classes.ClassInfo;
-import ch.njol.skript.classes.EnumSerializer;
 import ch.njol.skript.classes.Parser;
-import ch.njol.skript.classes.Serializer;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.yggdrasil.Fields;
@@ -36,40 +34,6 @@ public class Types {
 				.name("Category")
 				.description("Represent a category in a guild, which is already created.")
 				.since("1.4.2")
-				.serializer(new Serializer<Category>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull Category category) {
-						final Fields f = new Fields();
-						f.putObject("guildID", category.getGuild().getId());
-						f.putObject("categoryID", category.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull Category category, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull Category deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String guildID = fields.getObject("guildID", String.class);
-						final String categoryID = fields.getObject("categoryID", String.class);
-						if (guildID == null || categoryID == null)
-							throw new StreamCorruptedException();
-						Guild guild = BotManager.getFirstBot().getGuildById(guildID);
-						return guild.getCategoryById(categoryID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<Category>() {
 					@Override
 					public @NotNull Category parse(final @NotNull String s, final @NotNull ParseContext context) {
@@ -145,7 +109,6 @@ public class Types {
 				.description("Use in button builder, a specific style of a button.")
 				.usage("primary, success, secondary and danger")
 				.since("1.12")
-				.serializer(new EnumSerializer<>(ButtonStyle.class))
 				.parser(new Parser<ButtonStyle>() {
 
 					@Override
@@ -405,40 +368,6 @@ public class Types {
 				.name("Text Channel")
 				.description("Represent a Discord text channel (where file and message can be sent)")
 				.since("1.0")
-				.serializer(new Serializer<TextChannel>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull TextChannel channel) {
-						final Fields f = new Fields();
-						f.putObject("guildID", channel.getGuild().getId());
-						f.putObject("channelID", channel.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull TextChannel category, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull TextChannel deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String guildID = fields.getObject("guildID", String.class);
-						final String channelID = fields.getObject("channelID", String.class);
-						if (guildID == null || channelID == null)
-							throw new StreamCorruptedException();
-						Guild guild = BotManager.getFirstBot().getGuildById(guildID);
-						return guild.getTextChannelById(channelID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<TextChannel>() {
 
 					@Override
@@ -476,37 +405,6 @@ public class Types {
 				.name("Discord User")
 				.description("Represent a discord user, which is not into a guild.")
 				.since("1.0")
-				.serializer(new Serializer<User>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull User user) {
-						final Fields f = new Fields();
-						f.putObject("userID", user.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull User user, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull User deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String userID = fields.getObject("userID", String.class);
-						if (userID == null)
-							throw new StreamCorruptedException();
-						return BotManager.getFirstBot().getUserById(userID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<User>() {
 
 					@Override
@@ -542,40 +440,6 @@ public class Types {
 				.name("Discord Role")
 				.description("Represent a discord role, within a guild.")
 				.since("1.0")
-				.serializer(new Serializer<Role>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull Role role) {
-						final Fields f = new Fields();
-						f.putObject("guildID", role.getGuild().getId());
-						f.putObject("roleID", role.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull Role role, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull Role deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String guildID = fields.getObject("guildID", String.class);
-						final String roleID = fields.getObject("roleID", String.class);
-						if (guildID == null || roleID == null)
-							throw new StreamCorruptedException();
-						Guild guild = BotManager.getFirstBot().getGuildById(guildID);
-						return guild.getRoleById(roleID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<Role>() {
 
 					@Override
@@ -612,40 +476,6 @@ public class Types {
 				.name("Discord Member")
 				.description("Represent a discord user which is in any guild.")
 				.since("1.0")
-				.serializer(new Serializer<Member>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull Member member) {
-						final Fields f = new Fields();
-						f.putObject("guildID", member.getGuild().getId());
-						f.putObject("userID", member.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull Member member, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull Member deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String userID = fields.getObject("userID", String.class);
-						final String guildID = fields.getObject("guildID", String.class);
-						if (userID == null || guildID == null)
-							throw new StreamCorruptedException();
-						final Guild guild = BotManager.getFirstBot().getGuildById(guildID);
-						return guild.getMemberById(userID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<Member>() {
 
 					@Override
@@ -683,45 +513,6 @@ public class Types {
 				.name("Discord Message")
 				.description("Represent a discord message, with ID, author, reactions, etc...")
 				.since("1.0")
-				.serializer(new Serializer<UpdatingMessage>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull UpdatingMessage message) {
-						final Fields f = new Fields();
-						f.putObject("channelID", message.getMessage().getChannel().getId());
-						f.putObject("messageID", message.getID());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull UpdatingMessage member, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull UpdatingMessage deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String channelID = fields.getObject("channelID", String.class);
-						final String messageID = fields.getObject("messageID", String.class);
-						if (channelID == null || messageID == null)
-							throw new StreamCorruptedException();
-						UpdatingMessage message = UpdatingMessage.from(messageID);
-						if (message == null) {
-							final TextChannel channel = BotManager.getFirstBot().getTextChannelById(channelID);
-							return UpdatingMessage.from(channel.getHistory().getMessageById(messageID));
-						} else {
-							return message;
-						}
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<UpdatingMessage>() {
 
 					@Override
@@ -766,37 +557,6 @@ public class Types {
 				.name("Guild Channel")
 				.description("Represent a Guild discord channel. Can be both text OR voice. Action specific of a voice channel (like user limit), used on text channel will throw an error.")
 				.since("1.8")
-				.serializer(new Serializer<GuildChannel>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull GuildChannel channel) {
-						final Fields f = new Fields();
-						f.putObject("channelID", channel.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull GuildChannel channel, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull GuildChannel deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String channelID = fields.getObject("channelID", String.class);
-						if (channelID == null)
-							throw new StreamCorruptedException();
-						return BotManager.getFirstBot().getGuildChannelById(channelID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<GuildChannel>() {
 
 					@Override
@@ -867,37 +627,6 @@ public class Types {
 				.name("Discord Guild (Server)")
 				.description("Represent a discord guild")
 				.since("1.0")
-				.serializer(new Serializer<Guild>() {
-					@Override
-					public @NotNull Fields serialize(@NotNull Guild guild) {
-						final Fields f = new Fields();
-						f.putObject("guildID", guild.getId());
-						return f;
-					}
-
-					@Override
-					public void deserialize(@NotNull Guild guild, @NotNull Fields fields) {
-						assert false;
-					}
-
-					@Override
-					public boolean mustSyncDeserialization() {
-						return false;
-					}
-
-					@Override
-					protected @NotNull Guild deserialize(@NotNull Fields fields) throws StreamCorruptedException {
-						final String guildID = fields.getObject("guildID", String.class);
-						if (guildID == null)
-							throw new StreamCorruptedException();
-						return BotManager.getFirstBot().getGuildById(guildID);
-					}
-
-					@Override
-					protected boolean canBeInstantiated() {
-						return false;
-					}
-				})
 				.parser(new Parser<Guild>() {
 
 					@Override
@@ -1198,7 +927,6 @@ public class Types {
 		Classes.registerClass(new ClassInfo<>(Permission.class, "permission")
 				.user("permissions?")
 				.name("Discord Permission")
-				.serializer(new EnumSerializer<>(Permission.class))
 				.description("Permission used for a role, channel, member, etc...")
 				.usage("create instant invite, kick members, ban members, administrator, manage channel, manage server, message add reaction, view audit logs, view channel, message read, message write, message tts, message manage, message embed links, message attach files, message history, message mention everyone, message ext emoji, voice connect, voice speak, voice mute others, voice deaf others, voice move others, voice use vad, nickname change, nickname manage, manage roles, manage permissions, manage webhooks, manage emotes, unknown")
 				.since("1.4")

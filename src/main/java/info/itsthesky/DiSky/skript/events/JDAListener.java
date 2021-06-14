@@ -58,12 +58,9 @@ public class JDAListener extends ListenerAdapter {
             /* Message receive */
             event.add(new EventMessageReceive(e));
         } else {
-            if (e.getAuthor().isBot()) return;
             event.add(new EventPrivateMessage(e));
         }
-        event.forEach((event1) -> {
-            Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(event1));
-        });
+        event.forEach((ev) -> Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(ev)));
     }
 
     @Override

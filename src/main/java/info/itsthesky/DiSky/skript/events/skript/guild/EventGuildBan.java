@@ -9,6 +9,7 @@ import ch.njol.skript.lang.util.SimpleEvent;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.Utils;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
@@ -43,6 +44,14 @@ public class EventGuildBan extends Event {
             @Override
             public Guild get(final @NotNull EventGuildBan event) {
                 return event.getEvent().getGuild();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventGuildBan.class, JDA.class, new Getter<JDA, EventGuildBan>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventGuildBan event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 

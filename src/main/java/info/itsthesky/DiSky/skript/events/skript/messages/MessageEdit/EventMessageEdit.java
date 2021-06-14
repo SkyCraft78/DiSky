@@ -12,6 +12,7 @@ import info.itsthesky.disky.skript.effects.messages.EffReplyWith;
 import info.itsthesky.disky.skript.events.util.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.messages.Channel;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import org.bukkit.event.Event;
@@ -63,11 +64,11 @@ public class EventMessageEdit extends Event implements MessageEvent {
             }
         }, 0);
 
-        EventValues.registerEventValue(EventMessageEdit.class, Channel.class, new Getter<Channel, EventMessageEdit>() {
+        EventValues.registerEventValue(EventMessageEdit.class, GuildChannel.class, new Getter<GuildChannel, EventMessageEdit>() {
             @Nullable
             @Override
-            public Channel get(final @NotNull EventMessageEdit event) {
-                return new Channel(event.getEvent().getChannel());
+            public GuildChannel get(final @NotNull EventMessageEdit event) {
+                return event.getEvent().getChannel();
             }
         }, 0);
 
@@ -76,6 +77,14 @@ public class EventMessageEdit extends Event implements MessageEvent {
             @Override
             public TextChannel get(final @NotNull EventMessageEdit event) {
                 return event.getEvent().getChannel();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EventMessageEdit.class, JDA.class, new Getter<JDA, EventMessageEdit>() {
+            @Nullable
+            @Override
+            public JDA get(final @NotNull EventMessageEdit event) {
+                return event.getEvent().getJDA();
             }
         }, 0);
 

@@ -21,6 +21,7 @@ import org.bukkit.event.Event;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 
 @Name("Purge Amount of Message")
@@ -37,6 +38,8 @@ import java.util.List;
         "\t\treply with \"**✅ Purged %arg-1% messages!**\"")
 @Since("1.5.2")
 public class EffPurgeMessages extends AsyncEffect {
+
+    public static final HashMap<String, Boolean> PURGED_MESSAGES = new HashMap<>();
 
     static {
         Skript.registerEffect(EffPurgeMessages.class,
@@ -78,7 +81,8 @@ public class EffPurgeMessages extends AsyncEffect {
             if (messages.isEmpty()) {
                 return;
             }
-            channel.deleteMessages(messages).complete();
+            for (Message message : messages) PURGED_MESSAGES.put(message.getId(), true);
+            channel.deleteMessages(messages).queue();
         });
     }
 
