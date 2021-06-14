@@ -14,26 +14,7 @@ SlashCommand:
   # If false, single command builders can't be registered, needs a list of commands.
   AllowSingle: false
 
-# Intents managing when DiSky login a new Discord bot.
-# Keep in mind if you disable some which are enabled by default,
-# Some features of DiSky won't work!
-Intents:
-  # Default
-  GUILD_MEMBERS: true
-  GUILD_BANS: true
-  GUILD_EMOJIS: true
-  GUILD_WEBHOOKS: true
-  GUILD_INVITES: true
-  GUILD_VOICE_STATES: true
-  GUILD_MESSAGE_REACTIONS: true
-  GUILD_MESSAGE_TYPING: true
-  DIRECT_MESSAGES: true
-  GUILD_PRESENCES: true
-  GUILD_MESSAGES: true
-  # Plus
-  GUILD_INTEGRATIONS: false
-  DIRECT_MESSAGE_REACTIONS: false
-  DIRECT_MESSAGE_TYPING: false
+# Intents managing is now directly with the make bot scope!
 
 # This is for handling Discord & DiSky errors.
 # It will enable the print stack (advanced debug)
@@ -47,3 +28,6 @@ HandleErrors:
 # It's mainly to avoid token leakers like with the
 # OP / Permissions commands ('!')
 TokenExpression: true
+
+# Enable the info of cache for invites, deleted message & edited messages
+InfoCache: true

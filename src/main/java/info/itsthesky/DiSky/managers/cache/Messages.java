@@ -59,7 +59,7 @@ public class Messages extends ListenerAdapter {
     public void onReady(ReadyEvent e) {
         for (Guild guild : e.getJDA().getGuilds()) {
             Utils.async(() -> {
-                DiSky.getInstance().getLogger().info("Started message delete cache for guild " + guild.getName() + "...");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Started message delete cache for guild " + guild.getName() + "...");
                 long start = System.currentTimeMillis();
                 for (TextChannel channel : guild.getTextChannels()) {
                     try {
@@ -72,7 +72,7 @@ public class Messages extends ListenerAdapter {
                         DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message delete event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
                     }
                 }
-                DiSky.getInstance().getLogger().info("Message delete cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Message delete cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
             });
         }
     }

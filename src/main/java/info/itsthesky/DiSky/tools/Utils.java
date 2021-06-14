@@ -48,6 +48,7 @@ public class Utils extends ListenerAdapter {
     public static final Field VARIABLE_NAME;
     public static Field HAS_DELAY_BEFORE;
     public static final boolean USE_2_6;
+    public static final boolean INFO_CACHE = getOrSetDefault("config.yml", "InfoCache", true);
     public static boolean variableNameGetterExists = Skript.methodExists(Variable.class, "getName");
 
     static {
