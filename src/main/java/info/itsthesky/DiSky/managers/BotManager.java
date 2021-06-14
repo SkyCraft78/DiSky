@@ -7,12 +7,14 @@ import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
 import info.itsthesky.disky.skript.events.JDAListener;
 import info.itsthesky.disky.skript.events.skript.bot.EventBotConnect;
+import info.itsthesky.disky.tools.object.BotBuilder;
 import info.itsthesky.disky.tools.object.MessageUpdater;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -55,8 +57,9 @@ public class BotManager {
      * Load the JDA instance linked to it via the token.
      * @param name The bot name (= id)
      * @param token The token to connect to
+     * @param builder The {@link BotBuilder} related to use as bot base
      */
-    public static void addBot(final String name, final String token) {
+    public static void addBot(final String name, final String token, final BotBuilder builder) {
         if (bots.containsKey(name)) {
             logger.warning("The bot named '"+name+"' is already loaded on the server! Shut it down or change the name.");
             return;
@@ -64,7 +67,7 @@ public class BotManager {
 
         JDA jda;
         try {
-            jda = JDABuilder.createDefault(token)
+            JDABuilder builder1 = JDABuilder.createDefault(token)
                     .addEventListeners(new JDAListener())
                     .addEventListeners(new Messages())
                     .addEventListeners(new EditedMessages())
@@ -74,15 +77,15 @@ public class BotManager {
                     .addEventListeners(new WaiterListener())
                     .addEventListeners(new MessageUpdater())
                     .addEventListeners(customListener.toArray(new Object[0]))
-                    .enableIntents(Arrays.asList(DiSky.intents))
-                    .enableCache(CacheFlag.ACTIVITY)
-                    .enableCache(CacheFlag.VOICE_STATE)
-                    .enableCache(CacheFlag.CLIENT_STATUS)
-                    .enableCache(CacheFlag.ACTIVITY)
-                    .enableCache(CacheFlag.ONLINE_STATUS)
                     .setChunkingFilter(ChunkingFilter.NONE)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
-                    .build();
+                    .setMemberCachePolicy(MemberCachePolicy.ALL);
+            builder.getIntents().forEach(((intent, enabled) -> {
+                if (enabled) builder1.enableIntents(intent);
+            }));
+            builder.getCache().forEach(((flag, enabled) -> {
+                if (enabled) builder1.enableCache(flag);
+            }));
+            jda = builder1.build();
         } catch (LoginException e) {
             e.printStackTrace();
             logger.severe("Can't load the bot named '"+name+"', see error above for more information.");

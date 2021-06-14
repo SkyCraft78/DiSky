@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.BotBuilder;
 import org.bukkit.event.Event;
 
 @Name("Register new Discord Bot")
@@ -23,18 +24,20 @@ public class EffRegisterBot extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffRegisterBot.class,
-                "["+ Utils.getPrefixName() +"] register [new] [discord] bot with [the] [token] %string% and with [the] (name|id) %string%",
-                "["+ Utils.getPrefixName() +"] login to [token] %string% with [the] (name|id) %string%");
+                "["+ Utils.getPrefixName() +"] register [new] [discord] bot with [the] [token] %string% [(with|using) [(builder|base)] %-botbuilder%] and with [the] (name|id) %string%",
+                "["+ Utils.getPrefixName() +"] login to [token] %string% [(with|using) [(builder|base)] %-botbuilder%] with [the] (name|id) %string%");
     }
 
     private Expression<String> exprName;
     private Expression<String> exprToken;
+    private Expression<BotBuilder> exprBuilder;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprToken = (Expression<String>) exprs[0];
-        exprName = (Expression<String>) exprs[1];
+        exprBuilder = (Expression<BotBuilder>) exprs[1];
+        exprName = (Expression<String>) exprs[2];
         return true;
     }
 
@@ -42,8 +45,10 @@ public class EffRegisterBot extends AsyncEffect {
     protected void execute(Event e) {
         String name = exprName.getSingle(e);
         String token = exprToken.getSingle(e);
+        BotBuilder builder = exprBuilder == null ? null : (exprBuilder.getSingle(e) == null ? null : exprBuilder.getSingle(e));
         if (name == null || token == null) return;
-        BotManager.addBot(name, token);
+        if (builder == null) builder = new BotBuilder();
+        BotManager.addBot(name, token, builder);
     }
 
     @Override

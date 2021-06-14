@@ -17,6 +17,8 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -271,9 +273,9 @@ public class Types {
 				})
 		);
 		Classes.registerClass(new ClassInfo<>(Badge.class, "badge")
-				.user("bots?")
-				.name("Discord Bot")
-				.description("Represent a loaded Discord Bot")
+				.user("badges?")
+				.name("Discord Badge")
+				.description("Represent a discord badge")
 				.since("1.0")
 				.parser(new Parser<Badge>() {
 
@@ -953,6 +955,64 @@ public class Types {
 					@Override
 					public @NotNull String toVariableNameString(@NotNull Permission perm) {
 						return perm.getName().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+					}
+
+					@Override
+					public @NotNull String getVariableNamePattern() {
+						return ".+";
+					}
+				})
+		);
+		Classes.registerClass(new ClassInfo<>(GatewayIntent.class, "intent")
+				.user("intents?")
+				.name("Gateway Intents")
+				.description("Gateway intent used in the bot builder scope.")
+				.usage("guild members, guild bans, guild emojis, guild webhooks, guild invites, guild voice states, guild presences, guild messages, guild message reactions, guild message typing, direct messages, direct message reactions, direct message typing")
+				.since("1.14")
+				.parser(new Parser<GatewayIntent>() {
+					@Override
+					public @NotNull GatewayIntent parse(@NotNull String input, @NotNull ParseContext context) {
+						for (GatewayIntent intent : GatewayIntent.values()) if (intent.name().equalsIgnoreCase(input.toUpperCase(Locale.ROOT).replace(" ", "_"))) return intent;
+						return null;
+					}
+
+					@Override
+					public @NotNull String toString(@NotNull GatewayIntent intent, int flags) {
+						return intent.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+					}
+
+					@Override
+					public @NotNull String toVariableNameString(@NotNull GatewayIntent intent) {
+						return intent.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+					}
+
+					@Override
+					public @NotNull String getVariableNamePattern() {
+						return ".+";
+					}
+				})
+		);
+		Classes.registerClass(new ClassInfo<>(CacheFlag.class, "cache")
+				.user("caches?")
+				.name("Cache")
+				.description("Cache used in the bot builder scope. They determine which entity will be stored as cache.")
+				.usage("activity, voice state, emote, client status, member overrides, role tags, online status")
+				.since("1.14")
+				.parser(new Parser<CacheFlag>() {
+					@Override
+					public @NotNull CacheFlag parse(@NotNull String input, @NotNull ParseContext context) {
+						for (CacheFlag flag : CacheFlag.values()) if (flag.name().equalsIgnoreCase(input.toUpperCase(Locale.ROOT).replace(" ", "_"))) return flag;
+						return null;
+					}
+
+					@Override
+					public @NotNull String toString(@NotNull CacheFlag flag, int flags) {
+						return flag.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+					}
+
+					@Override
+					public @NotNull String toVariableNameString(@NotNull CacheFlag flag) {
+						return flag.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
