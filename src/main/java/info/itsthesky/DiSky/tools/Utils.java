@@ -2,6 +2,7 @@ package info.itsthesky.disky.tools;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
+import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.lang.VariableString;
 import ch.njol.skript.lang.parser.ParserInstance;
@@ -93,6 +94,10 @@ public class Utils extends ListenerAdapter {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
+        return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
     }
 
     public static void setHasDelayBefore(Kleenean hasDelayBefore) {

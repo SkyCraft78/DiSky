@@ -5,8 +5,8 @@ import info.itsthesky.disky.managers.cache.EditedMessages;
 import info.itsthesky.disky.managers.cache.InviteTracker;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
-import info.itsthesky.disky.skript.events.JDAListener;
-import info.itsthesky.disky.skript.events.skript.bot.EventBotConnect;
+import info.itsthesky.disky.oldevents.JDAListener;
+import info.itsthesky.disky.oldevents.skript.bot.EventBotConnect;
 import info.itsthesky.disky.tools.object.BotBuilder;
 import info.itsthesky.disky.tools.object.MessageUpdater;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
@@ -14,10 +14,8 @@ import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -68,9 +66,9 @@ public class BotManager {
         JDA jda;
         try {
             JDABuilder builder1 = JDABuilder.createDefault(token)
-                    .addEventListeners(new JDAListener())
+                    //.addEventListeners(new JDAListener())
                     .addEventListeners(new Messages())
-                    .addEventListeners(new EditedMessages())
+                    //.addEventListeners(new EditedMessages())
                     .addEventListeners(new Utils())
                     .addEventListeners(new CommandListener())
                     .addEventListeners(new InviteTracker())
@@ -94,7 +92,7 @@ public class BotManager {
 
         bots.put(name, jda);
         logger.info("The bot named '"+name+"' seems to be loaded correctly!");
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotConnect(jda)));
+        //Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotConnect(jda)));
     }
 
     /**

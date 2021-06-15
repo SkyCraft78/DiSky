@@ -12,16 +12,15 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandFactory;
-import info.itsthesky.disky.skript.events.skript.EventButtonClick;
-import info.itsthesky.disky.skript.events.skript.EventReplySection;
-import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
-import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
-import info.itsthesky.disky.skript.events.skript.slashcommand.EventSlashCommand;
-import info.itsthesky.disky.skript.events.util.InteractionEvent;
-import info.itsthesky.disky.skript.events.util.MessageEvent;
+import info.itsthesky.disky.oldevents.skript.EventButtonClick;
+import info.itsthesky.disky.oldevents.skript.EventReplySection;
+import info.itsthesky.disky.oldevents.skript.messages.EventMessageReceive;
+import info.itsthesky.disky.oldevents.skript.messages.EventPrivateMessage;
+import info.itsthesky.disky.oldevents.skript.slashcommand.EventSlashCommand;
+import info.itsthesky.disky.tools.InteractionEvent;
+import info.itsthesky.disky.oldevents.util.MessageEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
@@ -36,15 +35,12 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-
-import static info.itsthesky.disky.skript.effects.messages.EffReplyWith.*;
 
 @Name("Reply and Wait")
 @Description("Reply in a message, and wait until a user send another message after that. Can specify if the bot will detect it one time online or multiple.")

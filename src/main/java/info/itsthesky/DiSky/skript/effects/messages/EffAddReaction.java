@@ -50,19 +50,17 @@ public class EffAddReaction extends AsyncEffect {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             UpdatingMessage message = exprMessage.getSingle(e);
             Emote[] emotes = exprEmote.getAll(e);
+            JDA bot = Utils.verifyVar(e, exprBot);
             if (message == null || emotes.length == 0) return;
-            if (exprBot != null) {
-                JDA msgJDA = message.getMessage().getJDA();
-                JDA botJDA = exprBot.getSingle(e);
-                if (botJDA == null) return;
-                if (msgJDA != botJDA) return;
-            }
+            Message message1 = message.getMessage();
+            if (bot != null)
+                message1 = bot.getTextChannelById(message.getMessage().getId()).getHistory().getMessageById(message1.getId());
 
             for (Emote emote : emotes) {
                 if (emote.isEmote()) {
-                    message.getMessage().addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+                    message1.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
                 } else {
-                    message.getMessage().addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+                    message1.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
                 }
             }
         });

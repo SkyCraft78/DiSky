@@ -7,14 +7,12 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.events.skript.EventButtonClick;
-import info.itsthesky.disky.skript.events.skript.EventButtonsSection;
-import info.itsthesky.disky.skript.events.skript.EventReactSection;
-import info.itsthesky.disky.skript.events.skript.EventReplySection;
+import info.itsthesky.disky.oldevents.skript.EventButtonsSection;
+import info.itsthesky.disky.oldevents.skript.EventReactSection;
+import info.itsthesky.disky.oldevents.skript.EventReplySection;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

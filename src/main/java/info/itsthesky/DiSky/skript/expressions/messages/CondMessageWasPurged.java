@@ -8,14 +8,11 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
-import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.effects.grab.EffPurgeMessages;
-import info.itsthesky.disky.skript.events.skript.messages.EventMessageDelete;
+import info.itsthesky.disky.oldevents.skript.messages.EventMessageDelete;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.object.UpdatingMessage;
 import org.bukkit.event.Event;
 
 @Name("Is Deleted message Purged")

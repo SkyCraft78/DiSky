@@ -1,6 +1,6 @@
 package info.itsthesky.disky.skript.commands;
 
-import info.itsthesky.disky.skript.events.util.MessageEvent;
+import info.itsthesky.disky.oldevents.util.MessageEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Guild;

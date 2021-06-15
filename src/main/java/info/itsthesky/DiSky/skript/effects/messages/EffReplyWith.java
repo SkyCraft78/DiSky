@@ -1,6 +1,5 @@
 package info.itsthesky.disky.skript.effects.messages;
 
-import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -12,22 +11,16 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.commands.CommandEvent;
-import info.itsthesky.disky.skript.events.skript.EventButtonClick;
-import info.itsthesky.disky.skript.events.skript.EventReactSection;
-import info.itsthesky.disky.skript.events.skript.EventReplySection;
-import info.itsthesky.disky.skript.events.skript.messages.EventMessageReceive;
-import info.itsthesky.disky.skript.events.skript.messages.EventPrivateMessage;
-import info.itsthesky.disky.skript.events.skript.slashcommand.EventSlashCommand;
-import info.itsthesky.disky.skript.events.util.InteractionEvent;
-import info.itsthesky.disky.skript.events.util.MessageEvent;
+import info.itsthesky.disky.tools.InteractionEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -42,10 +35,11 @@ public class EffReplyWith extends Effect {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
-                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [with [row[s] %-buttonrows] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
+    private Expression<ButtonRow> exprRow;
     private boolean ephemeral = false;
     private Variable<?> variable;
 
@@ -53,24 +47,14 @@ public class EffReplyWith extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<Object>) exprs[0];
+        exprRow = (Expression<ButtonRow>) exprs[1];
         ephemeral = parseResult.expr.contains("reply with personal") || parseResult.expr.contains("reply with hidden");
 
         Utils.setHasDelayBefore(Kleenean.TRUE);
 
-        if (!ScriptLoader.isCurrentEvent(
-                EventMessageReceive.class,
-                CommandEvent.class,
-                EventPrivateMessage.class,
-                EventSlashCommand.class,
-                EventReplySection.class,
-                EventReactSection.class,
-                EventButtonClick.class
-        )) {
-            Skript.error("The reply effect cannot be used in a " + ScriptLoader.getCurrentEventName() + " event.");
-            return false;
-        }
+        // TODO: 15/06/2021 Need to check for every message-based event, and warn the user the reply effect will not work :')
 
-        Expression<?> var = exprs[1];
+        Expression<?> var = exprs[2];
         if (var != null && !(var instanceof Variable)) {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
@@ -84,6 +68,7 @@ public class EffReplyWith extends Effect {
     @Override
     protected @Nullable TriggerItem walk(Event e) {
         Object content = exprMessage.getSingle(e);
+        ButtonRow[] rows = exprRow == null ? new ButtonRow[0] : exprRow.getAll(e);
         if (content == null) return null;
         debug(e, true);
 
@@ -114,40 +99,52 @@ public class EffReplyWith extends Effect {
                     return;
             }
 
-            if (event instanceof MessageEvent) {
-                ((MessageEvent) event).getChannel().sendMessage(toSend.build()).queue(m -> {
-                    // Re-set local variables
-                    if (localVars != null)
-                        Variables.setLocalVariables(event, localVars);
-
-                    ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                    if (variable != null) {
-                        variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                    }
-
-                    if (getNext() != null) {
-                        Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                            Object timing = null;
-                            if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                Trigger trigger = getTrigger();
-                                if (trigger != null) {
-                                    timing = SkriptTimings.start(trigger.getDebugLabel());
-                                }
-                            }
-
-                            TriggerItem.walk(getNext(), event);
-
-                            Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                            SkriptTimings.stop(timing); // Stop timing if it was even started
-                        });
-                    } else {
-                        Variables.removeLocals(event);
-                    }
-                });
-            } else if (event instanceof InteractionEvent) {
+            if (event instanceof InteractionEvent) {
                 ((InteractionEvent) event).getInteractionEvent().reply(toSend.build()).setEphemeral(ephemeral).queue();
+                return;
             }
+
+            MessageChannel channel;
+            try {
+                Class<?> eClazz = event.getClass();
+                Object jdaEvent = eClazz.getDeclaredMethod("getJDAEvent").invoke(event);
+                channel = (MessageChannel) jdaEvent.getClass().getDeclaredMethod("getChannel").invoke(jdaEvent);
+                if (channel == null) channel = (MessageChannel) jdaEvent.getClass().getDeclaredMethod("getTextChannel").invoke(jdaEvent);
+            } catch (Exception exception) {
+                DiSkyErrorHandler.logException(new IllegalStateException("Cannot cast the event in a reply effect. This ("+event.getEventName()+") doesn't support a reply effect!"));
+                return;
+            }
+            if (channel == null) return;
+            channel.sendMessage(toSend.build()).queue(m -> {
+                // Re-set local variables
+                if (localVars != null)
+                    Variables.setLocalVariables(event, localVars);
+
+                ExprLastMessage.lastMessage = UpdatingMessage.from(m);
+                if (variable != null) {
+                    variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
+                }
+
+                if (getNext() != null) {
+                    Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                        Object timing = null;
+                        if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                            Trigger trigger = getTrigger();
+                            if (trigger != null) {
+                                timing = SkriptTimings.start(trigger.getDebugLabel());
+                            }
+                        }
+
+                        TriggerItem.walk(getNext(), event);
+
+                        Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+
+                        SkriptTimings.stop(timing); // Stop timing if it was even started
+                    });
+                } else {
+                    Variables.removeLocals(event);
+                }
+            });
         });
         return null;
     }

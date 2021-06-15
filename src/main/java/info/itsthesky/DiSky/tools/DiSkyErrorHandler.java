@@ -1,7 +1,7 @@
 package info.itsthesky.disky.tools;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.events.skript.EventDiSkyException;
+import info.itsthesky.disky.oldevents.skript.EventDiSkyException;
 import info.itsthesky.disky.skript.expressions.ExprLastDiSkyError;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;

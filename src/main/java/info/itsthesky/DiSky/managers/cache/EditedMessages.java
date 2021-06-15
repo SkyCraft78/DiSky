@@ -1,9 +1,9 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.EventMessageEdit;
-import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.ExprNewContent;
-import info.itsthesky.disky.skript.events.skript.messages.MessageEdit.ExprOldContent;
+import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.EventMessageEdit;
+import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.ExprNewContent;
+import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.ExprOldContent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.exceptions.MissingAccessException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**

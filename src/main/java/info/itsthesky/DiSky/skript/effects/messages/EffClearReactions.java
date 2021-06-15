@@ -24,7 +24,7 @@ public class EffClearReactions extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffClearReactions.class,
-                "["+ Utils.getPrefixName() +"] (clear|remove|delete) [all] reactions from %message%");
+                "["+ Utils.getPrefixName() +"] (clear|remove|delete) [all] reactions from %message% [with %-bot%]");
     }
 
     private Expression<UpdatingMessage> exprMessage;
