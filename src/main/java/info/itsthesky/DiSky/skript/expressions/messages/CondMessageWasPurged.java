@@ -11,7 +11,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.effects.grab.EffPurgeMessages;
-import info.itsthesky.disky.oldevents.skript.messages.EventMessageDelete;
+import info.itsthesky.disky.skript.events.MessageDelete;
 import info.itsthesky.disky.tools.Utils;
 import org.bukkit.event.Event;
 
@@ -24,20 +24,29 @@ public class CondMessageWasPurged extends Condition {
 	public static Long lastMessageID;
 	static {
 		Skript.registerCondition(CondMessageWasPurged.class,
-				"["+ Utils.getPrefixName() +"] [the] message (is|was) purged"
+				"["+ Utils.getPrefixName() +"] [the] message (is|was) purged",
+				"["+ Utils.getPrefixName() +"] [the] message (is not|isn't|was|wasn't) purged"
 		);
 	}
 
+	private boolean negate;
+
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		return ScriptLoader.isCurrentEvent(EventMessageDelete.class);
+		negate = matchedPattern == 1;
+		return ScriptLoader.isCurrentEvent(MessageDelete.EvtMessageDelete.class);
 	}
 
 	@Override
 	public boolean check(Event event) {
 		if (lastMessageID == null) return false;
-		return EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString()) != null &&
-				EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString());
+		if (negate) {
+			return EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString()) != null &&
+					EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString());
+		} else {
+			return !(EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString()) != null &&
+					EffPurgeMessages.PURGED_MESSAGES.get(lastMessageID.toString()));
+		}
 	}
 
 	@Override

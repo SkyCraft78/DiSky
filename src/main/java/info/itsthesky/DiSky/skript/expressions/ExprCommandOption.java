@@ -10,7 +10,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.oldevents.skript.slashcommand.EventSlashCommand;
+import info.itsthesky.disky.skript.events.SlashCommand;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.Role;
@@ -47,7 +47,7 @@ public class ExprCommandOption extends SimpleExpression<Object> {
     protected Object[] get(Event e) {
         String id = exprID.getSingle(e);
         if (id == null) return new Object[0];
-        if (e instanceof EventSlashCommand) {
+        if (e instanceof SlashCommand.EvtSlashCommand) {
             OptionMapping option = StaticData.lastSlashCommandEvent.getOption(id);
             if (option == null) return new Object[0];
             switch (option.getType()) {

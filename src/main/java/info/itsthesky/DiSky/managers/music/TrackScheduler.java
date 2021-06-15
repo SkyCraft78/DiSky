@@ -5,8 +5,6 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.oldevents.skript.audio.EventTrackEnd;
-import info.itsthesky.disky.oldevents.skript.audio.EventTrackStart;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -93,22 +91,10 @@ public class TrackScheduler extends AudioEventAdapter {
         if (isRepeated)
             player.startTrack(track.makeClone(), false);
        VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
-       Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackEnd(
-               track,
-               guild,
-               bot,
-               channel
-       )));
     }
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventTrackStart(
-                track,
-                guild,
-                bot,
-                channel
-        )));
     }
 }

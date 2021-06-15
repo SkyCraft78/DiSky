@@ -10,7 +10,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.commands.CommandFactory;
-import info.itsthesky.disky.oldevents.skript.EventReactSection;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.StaticData;
@@ -45,14 +44,14 @@ public class SectionReact extends EffectSection {
 		Skript.registerCondition(SectionReact.class,
 				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using %-bot%] [to run]"
 		);
-		ExprEventValues.eventValues.put(EventReactSection.class, Arrays.asList(
-				valueMessage,
-				valueMember,
-				valueUser,
-				valueGuild,
-				valueBot,
-				valueEmote
-		));
+		//ExprEventValues.eventValues.put(EventReactSection.class, Arrays.asList(
+		//		valueMessage,
+		//		valueMember,
+		//		valueUser,
+		//		valueGuild,
+		//		valueBot,
+		//		valueEmote
+		//));
 	}
 
 	private Expression<Emote> exprReact;
@@ -68,7 +67,7 @@ public class SectionReact extends EffectSection {
 		if (checkIfCondition()) return false;
 		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
 
-		if (hasSection()) loadSection("react effect", false, EventReactSection.class);
+		//if (hasSection()) loadSection("react effect", false, EventReactSection.class);
 		return true;
 	}
 

@@ -1,10 +1,11 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.oldevents.skript.bot.EventBotJoin;
-import info.itsthesky.disky.oldevents.skript.members.EventMemberJoin;
+import info.itsthesky.disky.skript.events.BotJoin;
+import info.itsthesky.disky.skript.events.MemberJoin;
 import info.itsthesky.disky.tools.Utils;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
@@ -52,7 +53,8 @@ public class InviteTracker extends ListenerAdapter {
             cachedInvite.incrementUses();
             inv[0] = invite;
         });
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventMemberJoin(event, inv[0])));
+        MemberJoin.usedInvite = inv[0];
+        BotJoin.usedInvite = inv[0];
     }
 
     @Override
@@ -63,7 +65,6 @@ public class InviteTracker extends ListenerAdapter {
     @Override
     public void onGuildJoin(final GuildJoinEvent event)
     {
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventBotJoin(event)));
         final Guild guild = event.getGuild();
         attemptInviteCaching(guild);
     }

@@ -15,15 +15,23 @@ import info.itsthesky.disky.tools.InteractionEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Name("Reply with Message")
 @Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern! Personal message only works with INTERACTION (slash commands / webhooks) and will make the message only visible for the user who done the interaction.")
@@ -35,7 +43,7 @@ public class EffReplyWith extends Effect {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
-                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [with [row[s] %-buttonrows] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [with [row[s]] %-buttonrows%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
@@ -47,20 +55,29 @@ public class EffReplyWith extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<Object>) exprs[0];
-        exprRow = (Expression<ButtonRow>) exprs[1];
+        if (exprs.length == 2) {
+            Expression<?> var = exprs[1];
+            if (var != null && !(var instanceof Variable)) {
+                Skript.error("Cannot store the message in a non-variable expression");
+                return false;
+            } else {
+                variable = (Variable<?>) var;
+            }
+        } else {
+            exprRow = (Expression<ButtonRow>) exprs[1];
+            Expression<?> var = exprs[2];
+            if (var != null && !(var instanceof Variable)) {
+                Skript.error("Cannot store the message in a non-variable expression");
+                return false;
+            } else {
+                variable = (Variable<?>) var;
+            }
+        }
         ephemeral = parseResult.expr.contains("reply with personal") || parseResult.expr.contains("reply with hidden");
 
         Utils.setHasDelayBefore(Kleenean.TRUE);
 
         // TODO: 15/06/2021 Need to check for every message-based event, and warn the user the reply effect will not work :')
-
-        Expression<?> var = exprs[2];
-        if (var != null && !(var instanceof Variable)) {
-            Skript.error("Cannot store the message in a non-variable expression");
-            return false;
-        } else {
-            variable = (Variable<?>) var;
-        }
 
         return true;
     }
@@ -115,7 +132,22 @@ public class EffReplyWith extends Effect {
                 return;
             }
             if (channel == null) return;
-            channel.sendMessage(toSend.build()).queue(m -> {
+            MessageAction action = channel
+                    .sendMessage(toSend.build());
+            if (rows != null || rows.length == 0) {
+                List<ActionRow> rows1 = new ArrayList<>();
+                for (ButtonRow row : rows) {
+                    List<Button> buttons = new ArrayList<>();
+
+                    for (ButtonBuilder buttonBuilder : row.getButtons()) {
+                        if (buttonBuilder.build() != null)
+                            buttons.add(buttonBuilder.build());
+                    }
+                    if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
+                }
+                action = action.setActionRows(rows1);
+            }
+            action.queue(m -> {
                 // Re-set local variables
                 if (localVars != null)
                     Variables.setLocalVariables(event, localVars);

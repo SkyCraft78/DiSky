@@ -7,9 +7,6 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.oldevents.skript.EventButtonsSection;
-import info.itsthesky.disky.oldevents.skript.EventReactSection;
-import info.itsthesky.disky.oldevents.skript.EventReplySection;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,10 +28,12 @@ public class ExprEventValues extends SimpleExpression<Object> {
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
-        if (!ScriptLoader.isCurrentEvent(EventReactSection.class) &&
-                !ScriptLoader.isCurrentEvent(EventReplySection.class) &&
-                !ScriptLoader.isCurrentEvent(EventButtonsSection.class))
-            return false;
+        //if (!ScriptLoader.isCurrentEvent(EventReactSection.class) &&
+        //        !ScriptLoader.isCurrentEvent(EventReplySection.class) &&
+        //        !ScriptLoader.isCurrentEvent(EventButtonsSection.class))
+        //    return false;
+        if (1 == 1)
+            return 1 == 3;
 
         String cInfo = parser.expr.replaceAll("event-", "");
 

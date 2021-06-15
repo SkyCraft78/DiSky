@@ -1,7 +1,6 @@
 package info.itsthesky.disky.tools;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.oldevents.skript.EventDiSkyException;
 import info.itsthesky.disky.skript.expressions.ExprLastDiSkyError;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -24,7 +23,7 @@ public class DiSkyErrorHandler {
 
     public static void logException(Throwable ex) {
         ExprLastDiSkyError.lastError = ex.getMessage();
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventDiSkyException(ex.getMessage())));
+        //Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventDiSkyException(ex.getMessage())));
         if (ex instanceof InsufficientPermissionException) {
 
             InsufficientPermissionException exception = (InsufficientPermissionException) ex;

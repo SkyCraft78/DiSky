@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 
 public class MessageDelete extends DiSkyEvent<GuildMessageDeleteEvent> {
 
+    public static String content;
+    public static Long id;
+
     static {
         DiSkyEvent.register("Inner Event Name", MessageDelete.class, EvtMessageDelete.class,
                 "message delete")
@@ -19,24 +22,38 @@ public class MessageDelete extends DiSkyEvent<GuildMessageDeleteEvent> {
                 .setExample("Event Example");
 
 
-       EventValues.registerEventValue(EvtMessageDelete.class, TextChannel.class, new Getter<TextChannel, EvtMessageDelete>() {
+        EventValues.registerEventValue(EvtMessageDelete.class, TextChannel.class, new Getter<TextChannel, EvtMessageDelete>() {
             @Override
             public TextChannel get(EvtMessageDelete event) {
                 return event.getJDAEvent().getChannel();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtMessageDelete.class, Guild.class, new Getter<Guild, EvtMessageDelete>() {
+        EventValues.registerEventValue(EvtMessageDelete.class, Guild.class, new Getter<Guild, EvtMessageDelete>() {
             @Override
             public Guild get(EvtMessageDelete event) {
                 return event.getJDAEvent().getGuild();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtMessageDelete.class, JDA.class, new Getter<JDA, EvtMessageDelete>() {
+        EventValues.registerEventValue(EvtMessageDelete.class, JDA.class, new Getter<JDA, EvtMessageDelete>() {
             @Override
             public JDA get(EvtMessageDelete event) {
                 return event.getJDAEvent().getJDA();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtMessageDelete.class, String.class, new Getter<String, EvtMessageDelete>() {
+            @Override
+            public String get(EvtMessageDelete event) {
+                return content;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtMessageDelete.class, Number.class, new Getter<Number, EvtMessageDelete>() {
+            @Override
+            public Number get(EvtMessageDelete event) {
+                return id;
             }
         }, 0);
 

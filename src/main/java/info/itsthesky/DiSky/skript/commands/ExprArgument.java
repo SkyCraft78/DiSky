@@ -15,8 +15,6 @@ import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.util.Utils;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
-import info.itsthesky.disky.oldevents.skript.EventButtonsSection;
-import info.itsthesky.disky.oldevents.skript.EventReactSection;
 import info.itsthesky.disky.tools.StaticData;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -45,10 +43,7 @@ public class ExprArgument extends SimpleExpression<Object> {
 
     @Override
     public boolean init(final Expression<?>[] exprs, final int matchedPattern, final Kleenean isDelayed, final ParseResult parser) {
-        if (!ScriptLoader.isCurrentEvent(CommandEvent.class) &&
-                !ScriptLoader.isCurrentEvent(EventReactSection.class) &&
-                        !ScriptLoader.isCurrentEvent(EventButtonsSection.class)
-        )
+        if (!ScriptLoader.isCurrentEvent(CommandEvent.class))
             return false;
 
         List<Argument<?>> currentArguments = CommandFactory.getInstance().currentArguments;

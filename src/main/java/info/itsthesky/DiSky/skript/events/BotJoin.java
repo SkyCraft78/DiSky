@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 
 public class BotJoin extends DiSkyEvent<GuildJoinEvent> {
 
+    public static Invite usedInvite;
+
     static {
         DiSkyEvent.register("Inner Event Name", BotJoin.class, EvtBotJoin.class,
                 "bot join [guild]")
@@ -29,6 +31,13 @@ public class BotJoin extends DiSkyEvent<GuildJoinEvent> {
             @Override
             public JDA get(EvtBotJoin event) {
                 return event.getJDAEvent().getJDA();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtBotJoin.class, Invite.class, new Getter<Invite, EvtBotJoin>() {
+            @Override
+            public Invite get(EvtBotJoin event) {
+                return usedInvite;
             }
         }, 0);
 

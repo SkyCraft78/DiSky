@@ -1,12 +1,14 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.MessageDelete;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.MissingAccessException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -26,6 +28,7 @@ public class Messages extends ListenerAdapter {
     public static void cacheMessage(Message message) {
         cachedMessages.add(new CachedMessage(message));
     }
+
     public static CachedMessage retrieveMessage(String id) {
         AtomicReference<CachedMessage> finalMessage = new AtomicReference<>();
         cachedMessages.forEach((cm) -> {
@@ -53,6 +56,12 @@ public class Messages extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    @Override
+    public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
+        MessageDelete.content = retrieveMessage(event.getMessageId()).getContent();
+        MessageDelete.id = event.getMessageIdLong();
     }
 
     @Override

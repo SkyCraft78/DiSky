@@ -9,8 +9,8 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.oldevents.skript.EventButtonClick;
-import info.itsthesky.disky.oldevents.skript.slashcommand.EventSlashCommand;
+import info.itsthesky.disky.skript.events.ButtonClick;
+import info.itsthesky.disky.skript.events.SlashCommand;
 import info.itsthesky.disky.tools.InteractionEvent;
 import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
@@ -35,7 +35,7 @@ public class EffDeferInteraction extends AsyncEffect {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        if (!ScriptLoader.isCurrentEvent(EventButtonClick.class, EventSlashCommand.class)) {
+        if (!ScriptLoader.isCurrentEvent(ButtonClick.EvtButtonClick.class, SlashCommand.EvtSlashCommand.class)) {
             Skript.error("Cannot defer an interaction in a non-interaction event! (slash command / button)");
             return false;
         }

@@ -1,9 +1,7 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.EventMessageEdit;
-import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.ExprNewContent;
-import info.itsthesky.disky.oldevents.skript.messages.MessageEdit.ExprOldContent;
+import info.itsthesky.disky.skript.events.MessageEdit;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -102,9 +100,8 @@ public class EditedMessages extends ListenerAdapter {
             previousMessages.put(e.getMessageId(), new CachedMessage(e.getMessage()));
         }
         newMessages.put(e.getMessageId(), new CachedMessage(e.getMessage()));
-        ExprNewContent.newContent = retrieveNewMessage(e.getMessageId()).getContent();
-        ExprOldContent.oldContent = retrieveOldMessage(e.getMessageId()).getContent();
-        Utils.sync(() -> DiSky.getInstance().getServer().getPluginManager().callEvent(new EventMessageEdit(e)));
+        MessageEdit.oldContent = retrieveOldMessage(e.getMessageId()).getContent();
+        MessageEdit.newContent = retrieveNewMessage(e.getMessageId()).getContent();
     }
 
 }

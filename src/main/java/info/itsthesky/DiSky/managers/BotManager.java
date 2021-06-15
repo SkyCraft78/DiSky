@@ -1,16 +1,13 @@
 package info.itsthesky.disky.managers;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.managers.cache.EditedMessages;
 import info.itsthesky.disky.managers.cache.InviteTracker;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
-import info.itsthesky.disky.oldevents.JDAListener;
-import info.itsthesky.disky.oldevents.skript.bot.EventBotConnect;
+import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.BotBuilder;
 import info.itsthesky.disky.tools.object.MessageUpdater;
 import info.itsthesky.disky.tools.waiter.WaiterListener;
-import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

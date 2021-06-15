@@ -14,13 +14,7 @@ import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandFactory;
-import info.itsthesky.disky.oldevents.skript.EventButtonClick;
-import info.itsthesky.disky.oldevents.skript.EventReplySection;
-import info.itsthesky.disky.oldevents.skript.messages.EventMessageReceive;
-import info.itsthesky.disky.oldevents.skript.messages.EventPrivateMessage;
-import info.itsthesky.disky.oldevents.skript.slashcommand.EventSlashCommand;
 import info.itsthesky.disky.tools.InteractionEvent;
-import info.itsthesky.disky.oldevents.util.MessageEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
@@ -58,13 +52,13 @@ public class SectionReply extends EffectSection {
 		Skript.registerCondition(SectionReply.class,
 				"["+ Utils.getPrefixName() +"] reply with [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%] [and wait [the] answer from %-member%] [to run [one time]]"
 		);
-		ExprEventValues.eventValues.put(EventReplySection.class, Arrays.asList(
-				valueMessage,
-				valueMember,
-				valueUser,
-				valueGuild,
-				valueBot
-		));
+		//ExprEventValues.eventValues.put(EventReplySection.class, Arrays.asList(
+		//		valueMessage,
+		//		valueMember,
+		//		valueUser,
+		//		valueGuild,
+		//		valueBot
+		//));
 	}
 
 	private Expression<Object> exprMessage;
@@ -80,17 +74,6 @@ public class SectionReply extends EffectSection {
 
 		Utils.setHasDelayBefore(Kleenean.TRUE);
 
-		if (!ScriptLoader.isCurrentEvent(
-				EventMessageReceive.class,
-				CommandEvent.class,
-				EventPrivateMessage.class,
-				EventSlashCommand.class,
-				EventButtonClick.class
-		)) {
-			Skript.error("The reply section cannot be used in a " + ScriptLoader.getCurrentEventName() + " event.");
-			return false;
-		}
-
 		Expression<?> var = exprs[1];
 		if (var != null && !(var instanceof Variable)) {
 			Skript.error("Cannot store the message in a non-variable expression");
@@ -100,7 +83,7 @@ public class SectionReply extends EffectSection {
 		}
 		if (checkIfCondition()) return false;
 		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
-		if (hasSection()) loadSection("reply section", false, EventReplySection.class);
+		//if (hasSection()) loadSection("reply section", false, EventReplySection.class);
 		if (parseResult.expr.contains("to run one time")) oneTime = true;
 		return true;
 	}
@@ -146,71 +129,7 @@ public class SectionReply extends EffectSection {
 			}
 
 			Member waiter = exprWaiter == null ? null : exprWaiter.getSingle(e);
-
-			if (event instanceof MessageEvent) {
-				((MessageEvent) event).getChannel().sendMessage(toSend.build()).queue(m -> {
-					// Re-set local variables
-					if (localVars != null)
-						Variables.setLocalVariables(event, localVars);
-
-					ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-					if (variable != null) {
-						variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-					}
-
-					if (getNext() != null) {
-						Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-							Object timing = null;
-							if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-								Trigger trigger = getTrigger();
-								if (trigger != null) {
-									timing = SkriptTimings.start(trigger.getDebugLabel());
-								}
-							}
-
-							TriggerItem.walk(getNext(), event);
-
-							Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-							SkriptTimings.stop(timing); // Stop timing if it was even started
-						});
-					} else {
-						Variables.removeLocals(event);
-					}
-					final boolean[] alreadyExecuted = {false};
-					final TextChannel cha = m.getTextChannel();
-					WaiterListener.events.add(
-							new WaiterListener.WaitingEvent<>(
-									GuildMessageReceivedEvent.class,
-
-									ev -> ev.getChannel().equals(cha)
-											&& !m.getJDA().getSelfUser().getId().equals(ev.getMember().getId())
-											&& (waiter == null || waiter.getId().equals(ev.getMember().getId())),
-
-									ev -> {
-										if (VariablesMaps.map.get(e) != null) Variables.setLocalVariables(e, VariablesMaps.map.get(e));
-
-										valueMessage.setObject(UpdatingMessage.from(ev.getMessage()));
-										valueGuild.setObject(ev.getGuild());
-										valueMember.setObject(ev.getMember());
-										valueUser.setObject(ev.getMember().getUser());
-										valueBot.setObject(ev.getJDA());
-										if (oneTime){
-											if (alreadyExecuted[0])
-												return;
-										}
-
-										alreadyExecuted[0] = true;
-										runSection(e);
-										try {
-											if (((Cancellable) e).isCancelled()) ev.getMessage().delete().queue(null, DiSkyErrorHandler::logException);
-										} catch(ClassCastException ignored) { }
-									}
-							));
-				});
-			} else if (event instanceof InteractionEvent) {
-				((InteractionEvent) event).getInteractionEvent().reply(toSend.build()).queue();
-			}
+			// TODO: 15/06/2021 Rework every section :'(
 		});
 		return null;
 	}

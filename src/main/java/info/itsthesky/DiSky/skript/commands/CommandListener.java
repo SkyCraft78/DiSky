@@ -3,7 +3,6 @@ package info.itsthesky.disky.skript.commands;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.localization.Language;
 import info.itsthesky.disky.managers.BotManager;
-import info.itsthesky.disky.oldevents.skript.EventDiSkyCommand;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -91,7 +90,7 @@ public class CommandListener extends ListenerAdapter {
                                 if (!event.isCancelled()) {
                                     command.execute(event);
                                 }
-                                Bukkit.getPluginManager().callEvent(new EventDiSkyCommand(e, command));
+                                //Bukkit.getPluginManager().callEvent(new EventDiSkyCommand(e, command));
 
                             });
 

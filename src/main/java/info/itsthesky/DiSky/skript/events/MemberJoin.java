@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.managers.cache.CachedInvite;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -10,6 +11,8 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 
 public class MemberJoin extends DiSkyEvent<GuildMemberJoinEvent> {
+
+    public static Invite usedInvite;
 
     static {
         DiSkyEvent.register("Inner Event Name", MemberJoin.class, EvtMemberJoin.class,
@@ -26,7 +29,14 @@ public class MemberJoin extends DiSkyEvent<GuildMemberJoinEvent> {
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtMemberJoin.class, User.class, new Getter<User, EvtMemberJoin>() {
+        EventValues.registerEventValue(EvtMemberJoin.class, Invite.class, new Getter<Invite, EvtMemberJoin>() {
+            @Override
+            public Invite get(EvtMemberJoin event) {
+                return usedInvite;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtMemberJoin.class, User.class, new Getter<User, EvtMemberJoin>() {
             @Override
             public User get(EvtMemberJoin event) {
                 return event.getJDAEvent().getUser();
