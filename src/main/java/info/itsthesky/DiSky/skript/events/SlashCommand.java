@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 
 import java.util.List;
 
-public class SlashCommand extends DiSkyEvent<SlashCommandEvent> implements InteractionEvent {
+public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", SlashCommand.class, EvtSlashCommand.class,
@@ -103,19 +103,16 @@ public class SlashCommand extends DiSkyEvent<SlashCommandEvent> implements Inter
 
     }
 
-    @Override
-    public GenericInteractionCreateEvent getInteractionEvent() {
-        try {
-            return getJDAClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+    public static class EvtSlashCommand extends SimpleDiSkyEvent<SlashCommandEvent> implements InteractionEvent {
+        private final SlashCommandEvent event;
+        public EvtSlashCommand(SlashCommand event) {
+            this.event = getJDAEvent();
+            StaticData.lastSlashCommandEvent = this.event;
         }
-        return null;
-    }
 
-    public static class EvtSlashCommand extends SimpleDiSkyEvent<SlashCommandEvent> {
-        public EvtSlashCommand(SlashCommand event) throws IllegalAccessException, InstantiationException {
-            StaticData.lastSlashCommandEvent = event.getJDAClass().newInstance();
+        @Override
+        public GenericInteractionCreateEvent getInteractionEvent() {
+            return this.event;
         }
     }
 

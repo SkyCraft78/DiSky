@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -70,8 +71,13 @@ public class GuildMessage extends DiSkyEvent<GuildMessageReceivedEvent> {
 
     }
 
-    public static class EvtGuildMessage extends SimpleDiSkyEvent<GuildMessageReceivedEvent> {
+    public static class EvtGuildMessage extends SimpleDiSkyEvent<GuildMessageReceivedEvent> implements MessageEvent {
         public EvtGuildMessage(GuildMessage event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

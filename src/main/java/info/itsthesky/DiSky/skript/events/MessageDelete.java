@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -59,8 +60,13 @@ public class MessageDelete extends DiSkyEvent<GuildMessageDeleteEvent> {
 
     }
 
-    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> {
+    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> implements MessageEvent {
         public EvtMessageDelete(MessageDelete event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

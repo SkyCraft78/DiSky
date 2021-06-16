@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -47,8 +48,13 @@ public class PrivateReactionAdd extends DiSkyEvent<PrivateMessageReactionAddEven
 
     }
 
-    public static class EvtPrivateReactionAdd extends SimpleDiSkyEvent<PrivateMessageReactionAddEvent> {
+    public static class EvtPrivateReactionAdd extends SimpleDiSkyEvent<PrivateMessageReactionAddEvent> implements MessageEvent {
         public EvtPrivateReactionAdd(PrivateReactionAdd event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }
