@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -44,6 +45,13 @@ public class MessageEdit extends DiSkyEvent<GuildMessageUpdateEvent> {
         EventValues.registerEventValue(EvtMessageEdit.class, String.class, new Getter<String, EvtMessageEdit>() {
             @Override
             public String get(EvtMessageEdit event) {
+                return newContent;
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtMessageEdit.class, String.class, new Getter<String, EvtMessageEdit>() {
+            @Override
+            public String get(EvtMessageEdit event) {
                 return oldContent;
             }
         }, -1);
@@ -78,8 +86,13 @@ public class MessageEdit extends DiSkyEvent<GuildMessageUpdateEvent> {
 
     }
 
-    public static class EvtMessageEdit extends SimpleDiSkyEvent<GuildMessageUpdateEvent> {
+    public static class EvtMessageEdit extends SimpleDiSkyEvent<GuildMessageUpdateEvent> implements MessageEvent {
         public EvtMessageEdit(MessageEdit event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

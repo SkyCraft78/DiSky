@@ -47,12 +47,33 @@ public class MemberNickChange extends DiSkyEvent<GuildMemberUpdateNicknameEvent>
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtMemberNickChange.class, JDA.class, new Getter<JDA, EvtMemberNickChange>() {
+        EventValues.registerEventValue(EvtMemberNickChange.class, JDA.class, new Getter<JDA, EvtMemberNickChange>() {
             @Override
             public JDA get(EvtMemberNickChange event) {
                 return event.getJDAEvent().getJDA();
             }
         }, 0);
+
+        EventValues.registerEventValue(EvtMemberNickChange.class, String.class, new Getter<String, EvtMemberNickChange>() {
+            @Override
+            public String get(EvtMemberNickChange event) {
+                return event.getJDAEvent().getNewNickname();
+            }
+        }, 1);
+
+        EventValues.registerEventValue(EvtMemberNickChange.class, String.class, new Getter<String, EvtMemberNickChange>() {
+            @Override
+            public String get(EvtMemberNickChange event) {
+                return event.getJDAEvent().getNewNickname();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtMemberNickChange.class, String.class, new Getter<String, EvtMemberNickChange>() {
+            @Override
+            public String get(EvtMemberNickChange event) {
+                return event.getJDAEvent().getOldNickname();
+            }
+        }, -1);
 
     }
 

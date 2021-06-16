@@ -1,40 +1,27 @@
 package info.itsthesky.disky.skript.sections;
 
-import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandFactory;
-import info.itsthesky.disky.tools.InteractionEvent;
-import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import info.itsthesky.disky.tools.waiter.EventValue;
-import info.itsthesky.disky.tools.waiter.ExprEventValues;
-import info.itsthesky.disky.tools.waiter.WaiterListener;
+import info.itsthesky.disky.tools.events.EventValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 
 @Name("Reply and Wait")
 @Description("Reply in a message, and wait until a user send another message after that. Can specify if the bot will detect it one time online or multiple.")
@@ -49,9 +36,9 @@ public class SectionReply extends EffectSection {
 	private static final EventValue<JDA> valueBot = new EventValue<>(JDA.class, "bot");
 
 	static {
-		Skript.registerCondition(SectionReply.class,
-				"["+ Utils.getPrefixName() +"] reply with [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%] [and wait [the] answer from %-member%] [to run [one time]]"
-		);
+		//Skript.registerCondition(SectionReply.class,
+		//		"["+ Utils.getPrefixName() +"] reply with [the] [message] %string/message/messagebuilder/embed% [and store it in %-object%] [and wait [the] answer from %-member%] [to run [one time]]"
+		//);
 		//ExprEventValues.eventValues.put(EventReplySection.class, Arrays.asList(
 		//		valueMessage,
 		//		valueMember,

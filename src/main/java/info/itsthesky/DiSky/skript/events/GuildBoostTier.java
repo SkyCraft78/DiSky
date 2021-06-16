@@ -28,12 +28,26 @@ public class GuildBoostTier extends DiSkyEvent<GuildUpdateBoostTierEvent> {
             }
         }, 1);
 
-       EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
+        EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
             @Override
             public String get(EvtGuildBoostTier event) {
                 return event.getJDAEvent().getOldBoostTier().name().toLowerCase(Locale.ROOT).replace("_", "");
             }
         }, -1);
+
+        EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
+            @Override
+            public String get(EvtGuildBoostTier event) {
+                return event.getJDAEvent().getOldBoostTier().name().toLowerCase(Locale.ROOT).replace("_", "");
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
+            @Override
+            public String get(EvtGuildBoostTier event) {
+                return event.getJDAEvent().getOldBoostTier().name().toLowerCase(Locale.ROOT).replace("_", "");
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtGuildBoostTier.class, Guild.class, new Getter<Guild, EvtGuildBoostTier>() {
             @Override

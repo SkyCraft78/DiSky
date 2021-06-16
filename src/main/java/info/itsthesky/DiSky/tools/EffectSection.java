@@ -156,7 +156,8 @@ public abstract class EffectSection extends Condition {
      * @param setNext - Set the next trigger of this loading section, to actual next of this effect.
      * @param events  - The classes that extends {@link Event}.
      */
-    public void loadSection(String name, boolean setNext, Class<? extends Event>... events) {
+    @SafeVarargs
+    public final void loadSection(String name, boolean setNext, Class<? extends Event>... events) {
         if (section != null && name != null && events != null && events.length > 0) {
             String previousName = ScriptLoader.getCurrentEventName();
             Class<? extends Event>[] previousEvents = ScriptLoader.getCurrentEvents();

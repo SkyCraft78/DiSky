@@ -33,6 +33,13 @@ public class GuildBanner extends DiSkyEvent<GuildUpdateBannerEvent> {
             }
         }, -1);
 
+        EventValues.registerEventValue(EvtGuildBanner.class, String.class, new Getter<String, EvtGuildBanner>() {
+            @Override
+            public String get(EvtGuildBanner event) {
+                return event.getJDAEvent().getOldBannerUrl();
+            }
+        }, 0);
+
        EventValues.registerEventValue(EvtGuildBanner.class, Guild.class, new Getter<Guild, EvtGuildBanner>() {
             @Override
             public Guild get(EvtGuildBanner event) {

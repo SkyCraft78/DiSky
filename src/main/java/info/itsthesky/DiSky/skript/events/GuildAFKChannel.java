@@ -26,12 +26,19 @@ public class GuildAFKChannel extends DiSkyEvent<GuildUpdateAfkChannelEvent> {
             }
         }, -1);
 
-       EventValues.registerEventValue(EvtGuildAFKChannel.class, VoiceChannel.class, new Getter<VoiceChannel, EvtGuildAFKChannel>() {
+        EventValues.registerEventValue(EvtGuildAFKChannel.class, VoiceChannel.class, new Getter<VoiceChannel, EvtGuildAFKChannel>() {
             @Override
             public VoiceChannel get(EvtGuildAFKChannel event) {
                 return event.getJDAEvent().getNewAfkChannel();
             }
         }, 1);
+
+        EventValues.registerEventValue(EvtGuildAFKChannel.class, VoiceChannel.class, new Getter<VoiceChannel, EvtGuildAFKChannel>() {
+            @Override
+            public VoiceChannel get(EvtGuildAFKChannel event) {
+                return event.getJDAEvent().getNewAfkChannel();
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtGuildAFKChannel.class, Guild.class, new Getter<Guild, EvtGuildAFKChannel>() {
             @Override

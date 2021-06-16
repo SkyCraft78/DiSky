@@ -2,8 +2,10 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -24,10 +26,10 @@ public class PrivateReceive extends DiSkyEvent<PrivateMessageReceivedEvent> {
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtPrivateReceive.class, Message.class, new Getter<Message, EvtPrivateReceive>() {
+       EventValues.registerEventValue(EvtPrivateReceive.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtPrivateReceive>() {
             @Override
-            public Message get(EvtPrivateReceive event) {
-                return event.getJDAEvent().getMessage();
+            public UpdatingMessage get(EvtPrivateReceive event) {
+                return UpdatingMessage.from(event.getJDAEvent().getMessage());
             }
         }, 0);
 
@@ -54,8 +56,13 @@ public class PrivateReceive extends DiSkyEvent<PrivateMessageReceivedEvent> {
 
     }
 
-    public static class EvtPrivateReceive extends SimpleDiSkyEvent<PrivateMessageReceivedEvent> {
+    public static class EvtPrivateReceive extends SimpleDiSkyEvent<PrivateMessageReceivedEvent> implements MessageEvent {
         public EvtPrivateReceive(PrivateReceive event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

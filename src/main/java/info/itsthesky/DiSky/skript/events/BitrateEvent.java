@@ -17,42 +17,42 @@ public class BitrateEvent extends DiSkyEvent<VoiceChannelUpdateBitrateEvent> {
                 .setDesc("Event description")
                 .setExample("Event Example");
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
             @Override
             public Object get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getEntity();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
             @Override
             public Object get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getOldValue();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, Object.class, new Getter<Object, EvtBitrateEvent>() {
             @Override
             public Object get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getNewValue();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, Guild.class, new Getter<Guild, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, Guild.class, new Getter<Guild, EvtBitrateEvent>() {
             @Override
             public Guild get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getGuild();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, VoiceChannel.class, new Getter<VoiceChannel, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, VoiceChannel.class, new Getter<VoiceChannel, EvtBitrateEvent>() {
             @Override
             public VoiceChannel get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getChannel();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtBitrateEvent.class, JDA.class, new Getter<JDA, EvtBitrateEvent>() {
+        EventValues.registerEventValue(EvtBitrateEvent.class, JDA.class, new Getter<JDA, EvtBitrateEvent>() {
             @Override
             public JDA get(EvtBitrateEvent event) {
                 return event.getJDAEvent().getJDA();

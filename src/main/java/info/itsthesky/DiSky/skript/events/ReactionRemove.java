@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -40,17 +41,17 @@ public class ReactionRemove extends DiSkyEvent<GuildMessageReactionRemoveEvent> 
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtReactionRemove.class, MessageReaction.class, new Getter<MessageReaction, EvtReactionRemove>() {
-            @Override
-            public MessageReaction get(EvtReactionRemove event) {
-                return event.getJDAEvent().getReaction();
-            }
-        }, 0);
-
        EventValues.registerEventValue(EvtReactionRemove.class, TextChannel.class, new Getter<TextChannel, EvtReactionRemove>() {
             @Override
             public TextChannel get(EvtReactionRemove event) {
                 return event.getJDAEvent().getChannel();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtReactionRemove.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtReactionRemove>() {
+            @Override
+            public UpdatingMessage get(EvtReactionRemove event) {
+                return UpdatingMessage.from(event.getJDAEvent().getMessageId());
             }
         }, 0);
 
@@ -70,8 +71,13 @@ public class ReactionRemove extends DiSkyEvent<GuildMessageReactionRemoveEvent> 
 
     }
 
-    public static class EvtReactionRemove extends SimpleDiSkyEvent<GuildMessageReactionRemoveEvent> {
+    public static class EvtReactionRemove extends SimpleDiSkyEvent<GuildMessageReactionRemoveEvent> implements MessageEvent {
         public EvtReactionRemove(ReactionRemove event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

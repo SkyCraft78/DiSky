@@ -26,12 +26,19 @@ public class GuildOwner extends DiSkyEvent<GuildUpdateOwnerEvent> {
             }
         }, -1);
 
-       EventValues.registerEventValue(EvtGuildOwner.class, Member.class, new Getter<Member, EvtGuildOwner>() {
+        EventValues.registerEventValue(EvtGuildOwner.class, Member.class, new Getter<Member, EvtGuildOwner>() {
             @Override
             public Member get(EvtGuildOwner event) {
                 return event.getJDAEvent().getNewOwner();
             }
         }, 1);
+
+        EventValues.registerEventValue(EvtGuildOwner.class, Member.class, new Getter<Member, EvtGuildOwner>() {
+            @Override
+            public Member get(EvtGuildOwner event) {
+                return event.getJDAEvent().getNewOwner();
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtGuildOwner.class, Guild.class, new Getter<Guild, EvtGuildOwner>() {
             @Override

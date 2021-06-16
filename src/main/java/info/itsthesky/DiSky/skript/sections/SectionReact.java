@@ -1,134 +1,135 @@
 package info.itsthesky.disky.skript.sections;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
-import ch.njol.skript.doc.Name;
-import ch.njol.skript.doc.Since;
+import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.Trigger;
+import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.registrations.EventValues;
+import ch.njol.skript.timings.SkriptTimings;
+import ch.njol.skript.util.Getter;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.commands.CommandFactory;
+import info.itsthesky.disky.skript.events.BitrateEvent;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.EffectSection;
-import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.events.BukkitEvent;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import info.itsthesky.disky.tools.waiter.EventValue;
-import info.itsthesky.disky.tools.waiter.ExprEventValues;
-import info.itsthesky.disky.tools.waiter.WaiterListener;
+import info.itsthesky.disky.tools.section.DiSkySection;
+import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import org.bukkit.event.Cancellable;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+public class SectionReact extends DiSkySection {
 
-@Name("React to Message")
-@Description("React to a message with an emote like the 'add reaction' effect. However, this section will be fired when someone react to this emote too.")
-@Examples("react to event-message with reaction \"smile\"")
-@Since("1.8")
-public class SectionReact extends EffectSection {
+    private Expression<Emote> exprReact;
+    private Expression<UpdatingMessage> exprMessage;
+    private Expression<JDA> exprBot;
 
-	private static final EventValue<Message> valueMessage = new EventValue<>(Message.class, "message");
-	private static final EventValue<Member> valueMember = new EventValue<>(Member.class, "member");
-	private static final EventValue<User> valueUser = new EventValue<>(User.class, "user");
-	private static final EventValue<Guild> valueGuild = new EventValue<>(Guild.class, "guild");
-	private static final EventValue<JDA> valueBot = new EventValue<>(JDA.class, "bot");
-	private static final EventValue<Emote> valueEmote = new EventValue<>(Emote.class, "emote");
+    static {
+        //register("react to [the] [message] %message% with [emote] %emote% [using %-bot%] [to run]");
+    }
 
-	static {
-		Skript.registerCondition(SectionReact.class,
-				"["+ Utils.getPrefixName() +"] react to [the] [message] %message% with [emote] %emote% [using %-bot%] [to run]"
-		);
-		//ExprEventValues.eventValues.put(EventReactSection.class, Arrays.asList(
-		//		valueMessage,
-		//		valueMember,
-		//		valueUser,
-		//		valueGuild,
-		//		valueBot,
-		//		valueEmote
-		//));
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean init(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
+        exprMessage = (Expression<UpdatingMessage>) exprs[0];
+        exprReact = (Expression<Emote>) exprs[1];
+        exprBot = (Expression<JDA>) exprs[2];
+        return init("react section", SectionReactEvent.class);
+    }
 
-	private Expression<Emote> exprReact;
-	private Expression<UpdatingMessage> exprMessage;
-	private Expression<JDA> exprName;
+    @Nullable
+    @Override
+    protected TriggerItem walk(Event e) {
+        debug(e, true);
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
-		exprMessage = (Expression<UpdatingMessage>) exprs[0];
-		exprReact = (Expression<Emote>) exprs[1];
-		if (exprs.length != 2) exprName = (Expression<JDA>) exprs[2];
-		if (checkIfCondition()) return false;
-		StaticData.lastArguments = CommandFactory.getInstance().currentArguments;
+        Delay.addDelayedEvent(e); // Mark this event as delayed
+        Object localVars = Variables.removeLocals(e); // Back up local variables
+        System.out.println("test 2");
 
-		//if (hasSection()) loadSection("react effect", false, EventReactSection.class);
-		return true;
-	}
+        if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
+            return null;
+        System.out.println("test 1");
 
-	@Override
-	public void execute(Event event) {
-		DiSkyErrorHandler.executeHandleCode(event, e -> {
-			UpdatingMessage message = exprMessage.getSingle(event);
-			Emote emote = exprReact.getSingle(event);
-			if (message == null || emote == null) return;
-			if (exprName != null) {
-				JDA msgJDA = message.getMessage().getJDA();
-				JDA botJDA = exprName.getSingle(event);
-				if (botJDA == null) return;
-				if (msgJDA != botJDA) return;
-			}
+        if (getNext() != null) {
+            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
+                Object timing = null;
+                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
+                    Trigger trigger = getTrigger();
+                    if (trigger != null) {
+                        timing = SkriptTimings.start(trigger.getDebugLabel());
+                    }
+                }
 
-			Object map = Variables.removeLocals(event);
-			VariablesMaps.map.put(event, map);
-			Variables.setLocalVariables(event, map);
+                DiSkyErrorHandler.executeHandleCode(e, event -> {
+                    Emote emote = exprReact.getSingle(e);
+                    UpdatingMessage tempMessage = exprMessage.getSingle(e);
+                    JDA bot = Utils.verifyVar(e, exprBot);
+                    System.out.println("debug 1");
+                    if (tempMessage == null || emote == null) return;
+                    Message message = tempMessage.getMessage();
 
-			if (emote.isEmote()) {
-				message.getMessage().addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
-			} else {
-				message.getMessage().addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
-			}
+                    if (bot != null)
+                        message = bot.getTextChannelById(message.getId()).getHistory().getMessageById(message.getId());
 
-			JDA botJDA = message.getMessage().getJDA();
+                    System.out.println("debug 2");
+                    if (emote.isEmote()) {
+                        message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+                    } else {
+                        message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+                    }
+                    System.out.println("debug 3");
 
-			final Long msgID = message.getMessage().getIdLong();
-			final TextChannel channel = message.getMessage().getTextChannel();
-			WaiterListener.events.add(
-					new WaiterListener.WaitingEvent<>(
-							GuildMessageReactionAddEvent.class,
+                    Message finalMessage = message;
+                    System.out.println("debug 4");
+                    WaiterListener.events.add(new WaiterListener.WaitingEvent<>(
+                            GuildMessageReactionAddEvent.class,
+                            ev -> new Emote(ev.getReaction().getReactionEmote()).equals(emote)
+                                    && finalMessage.getId().equals(ev.getMessageId()),
+                            ev -> {
+                                System.out.println("debug 5");
+                                runSection(e);
+                            }
+                    ));
+                });
 
-							ev -> msgID.equals(ev.getMessageIdLong())
-									&& ev.getChannel().equals(channel)
-									&& !botJDA.getSelfUser().getId().equals(ev.getUser().getId())
-									&& Utils.areEmojiSimilar(ev.getReactionEmote(), emote),
+                Variables.removeLocals(e); // Clean up local vars, we may be exiting now
+                SkriptTimings.stop(timing); // Stop timing if it was even started
+            });
+        } else {
+            Variables.removeLocals(e);
+        }
+        return null;
+    }
 
-							ev -> {
-								if (VariablesMaps.map.get(event) != null) Variables.setLocalVariables(event, VariablesMaps.map.get(event));
+    @Override
+    public String toString(@Nullable Event e, boolean debug) {
+        return "react to message" + exprMessage.toString(e, debug) + " with reaction " + exprReact.toString(e, debug);
+    }
 
-								valueMessage.setObject(ev.getChannel().retrieveMessageById(ev.getMessageIdLong()).complete());
-								valueGuild.setObject(ev.getGuild());
-								valueMember.setObject(ev.getMember());
-								valueUser.setObject(ev.getUser());
-								valueBot.setObject(ev.getJDA());
-								valueEmote.setObject(new Emote(ev.getReactionEmote()));
+    public static class SectionReactEvent extends BukkitEvent {
 
-								runSection(event);
+        static {
+            EventValues.registerEventValue(SectionReactEvent.class, Member.class, new Getter<Member, SectionReactEvent>() {
+                @Override
+                public Member get(SectionReactEvent event) {
+                    return event.JDAEvent.getMember();
+                }
+            }, 0);
+        }
 
-								try {
-									if (((Cancellable) event).isCancelled()) ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
-								} catch(ClassCastException ignored) { }
-							}
-					));
-		});
-	}
+        private final GuildMessageReactionAddEvent JDAEvent;
 
-	@Override
-	public String toString(Event e, boolean debug) {
-		return "react to message" + exprMessage.toString(e, debug) + " with reaction " + exprReact.toString(e, debug);
-	}
+        public SectionReactEvent(GuildMessageReactionAddEvent event) {
+            this.JDAEvent = event;
+        }
+    }
 }

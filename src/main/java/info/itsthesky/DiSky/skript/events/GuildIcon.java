@@ -36,6 +36,13 @@ public class GuildIcon extends DiSkyEvent<GuildUpdateIconEvent> {
         EventValues.registerEventValue(EvtGuildIcon.class, String.class, new Getter<String, EvtGuildIcon>() {
             @Override
             public String get(EvtGuildIcon event) {
+                return event.getJDAEvent().getNewIconUrl();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtGuildIcon.class, String.class, new Getter<String, EvtGuildIcon>() {
+            @Override
+            public String get(EvtGuildIcon event) {
                 return event.getJDAEvent().getOldIconUrl();
             }
         }, -1);

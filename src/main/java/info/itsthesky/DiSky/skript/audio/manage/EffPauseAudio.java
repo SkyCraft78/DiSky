@@ -10,8 +10,10 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.music.AudioUtils;
+import info.itsthesky.disky.skript.events.TrackEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 @Name("Pause Guild Audio")
@@ -42,6 +44,7 @@ public class EffPauseAudio extends Effect {
         Guild guild = exprGuild.getSingle(e);
         if (guild == null) return;
         AudioUtils.getGuildAudioPlayer(guild).getPlayer().setPaused(true);
+        Utils.sync(() -> Bukkit.getPluginManager().callEvent(new TrackEvent(TrackEvent.TrackState.PAUSE, guild.getJDA(), guild, AudioUtils.getGuildAudioPlayer(guild).getScheduler().getQueue().peek())));
     }
 
     @Override

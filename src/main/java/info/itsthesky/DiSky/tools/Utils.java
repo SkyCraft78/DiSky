@@ -23,6 +23,8 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,11 +33,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -114,6 +116,23 @@ public class Utils extends ListenerAdapter {
 
     public static Color toJavaColor(org.bukkit.Color bukkitColor) {
         return new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
+    }
+
+    public static String getLatestVersion() {
+        DataArray json = DataArray.fromJson(getTextFromURL("https://api.github.com/repos/SkyCraft78/DiSky/tags"));
+        return json.getObject(1).getString("name");
+    }
+
+    public static String getTextFromURL(String url) {
+        String output = "null";
+        try {
+            output = new Scanner(new URL(url).openStream(), "UTF-8").useDelimiter("\\A").next();
+        } catch (MalformedURLException e) {
+            System.out.println("Malformed URL: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("I/O Error: " + e.getMessage());
+        }
+        return output;
     }
 
     @Nullable

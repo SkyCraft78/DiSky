@@ -5,10 +5,12 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.skript.events.TrackEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,11 +92,11 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!shouldFiredEnd) return;
         if (isRepeated)
             player.startTrack(track.makeClone(), false);
-       VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
+       Utils.sync(() -> Bukkit.getPluginManager().callEvent(new TrackEvent(TrackEvent.TrackState.END, bot, guild, track)));
     }
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        VoiceChannel channel = guild.getAudioManager().getConnectedChannel();
+        Utils.sync(() -> Bukkit.getPluginManager().callEvent(new TrackEvent(TrackEvent.TrackState.START, bot, guild, track)));
     }
 }

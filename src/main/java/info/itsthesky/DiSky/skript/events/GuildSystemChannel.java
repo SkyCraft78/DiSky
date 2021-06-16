@@ -19,12 +19,19 @@ public class GuildSystemChannel extends DiSkyEvent<GuildUpdateSystemChannelEvent
                 .setExample("Event Example");
 
 
-       EventValues.registerEventValue(EvtGuildSystemChannel.class, TextChannel.class, new Getter<TextChannel, EvtGuildSystemChannel>() {
+        EventValues.registerEventValue(EvtGuildSystemChannel.class, TextChannel.class, new Getter<TextChannel, EvtGuildSystemChannel>() {
             @Override
             public TextChannel get(EvtGuildSystemChannel event) {
                 return event.getJDAEvent().getNewSystemChannel();
             }
         }, 1);
+
+        EventValues.registerEventValue(EvtGuildSystemChannel.class, TextChannel.class, new Getter<TextChannel, EvtGuildSystemChannel>() {
+            @Override
+            public TextChannel get(EvtGuildSystemChannel event) {
+                return event.getJDAEvent().getNewSystemChannel();
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtGuildSystemChannel.class, TextChannel.class, new Getter<TextChannel, EvtGuildSystemChannel>() {
             @Override

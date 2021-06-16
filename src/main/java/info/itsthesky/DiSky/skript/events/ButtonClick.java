@@ -5,6 +5,7 @@ import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.InteractionEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -12,7 +13,7 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
-public class ButtonClick extends DiSkyEvent<ButtonClickEvent> implements InteractionEvent {
+public class ButtonClick extends DiSkyEvent<ButtonClickEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", ButtonClick.class, EvtButtonClick.class,
@@ -28,31 +29,10 @@ public class ButtonClick extends DiSkyEvent<ButtonClickEvent> implements Interac
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtButtonClick.class, AbstractChannel.class, new Getter<AbstractChannel, EvtButtonClick>() {
+       EventValues.registerEventValue(EvtButtonClick.class, ButtonBuilder.class, new Getter<ButtonBuilder, EvtButtonClick>() {
             @Override
-            public AbstractChannel get(EvtButtonClick event) {
-                return event.getJDAEvent().getChannel();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtButtonClick.class, MessageChannel.class, new Getter<MessageChannel, EvtButtonClick>() {
-            @Override
-            public MessageChannel get(EvtButtonClick event) {
-                return event.getJDAEvent().getChannel();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtButtonClick.class, Button.class, new Getter<Button, EvtButtonClick>() {
-            @Override
-            public Button get(EvtButtonClick event) {
-                return event.getJDAEvent().getButton();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtButtonClick.class, String.class, new Getter<String, EvtButtonClick>() {
-            @Override
-            public String get(EvtButtonClick event) {
-                return event.getJDAEvent().getComponentId();
+            public ButtonBuilder get(EvtButtonClick event) {
+                return ButtonBuilder.fromButton(event.getJDAEvent().getButton());
             }
         }, 0);
 
@@ -93,18 +73,13 @@ public class ButtonClick extends DiSkyEvent<ButtonClickEvent> implements Interac
 
     }
 
-    @Override
-    public GenericInteractionCreateEvent getInteractionEvent() {
-        try {
-            return getJDAClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static class EvtButtonClick extends SimpleDiSkyEvent<ButtonClickEvent> {
+    public static class EvtButtonClick extends SimpleDiSkyEvent<ButtonClickEvent> implements InteractionEvent {
         public EvtButtonClick(ButtonClick event) { }
+
+        @Override
+        public GenericInteractionCreateEvent getInteractionEvent() {
+            return getJDAEvent();
+        }
     }
 
 }

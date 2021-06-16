@@ -2,6 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
@@ -13,7 +14,7 @@ public class ReactionAdd extends DiSkyEvent<GuildMessageReactionAddEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", ReactionAdd.class, EvtReactionAdd.class,
-                "on reaction add[ed]")
+                "reaction add[ed]")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
@@ -67,17 +68,29 @@ public class ReactionAdd extends DiSkyEvent<GuildMessageReactionAddEvent> {
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtReactionAdd.class, JDA.class, new Getter<JDA, EvtReactionAdd>() {
+        EventValues.registerEventValue(EvtReactionAdd.class, JDA.class, new Getter<JDA, EvtReactionAdd>() {
             @Override
             public JDA get(EvtReactionAdd event) {
                 return event.getJDAEvent().getJDA();
             }
         }, 0);
 
+        EventValues.registerEventValue(EvtReactionAdd.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtReactionAdd>() {
+            @Override
+            public UpdatingMessage get(EvtReactionAdd event) {
+                return UpdatingMessage.from(event.getJDAEvent().getMessageId());
+            }
+        }, 0);
+
     }
 
-    public static class EvtReactionAdd extends SimpleDiSkyEvent<GuildMessageReactionAddEvent> {
+    public static class EvtReactionAdd extends SimpleDiSkyEvent<GuildMessageReactionAddEvent> implements MessageEvent {
         public EvtReactionAdd(ReactionAdd event) { }
+
+        @Override
+        public MessageChannel getMessageChannel() {
+            return getJDAEvent().getChannel();
+        }
     }
 
 }

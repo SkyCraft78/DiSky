@@ -7,7 +7,7 @@ import info.itsthesky.disky.skript.commands.CommandListener;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.BotBuilder;
 import info.itsthesky.disky.tools.object.MessageUpdater;
-import info.itsthesky.disky.tools.waiter.WaiterListener;
+import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

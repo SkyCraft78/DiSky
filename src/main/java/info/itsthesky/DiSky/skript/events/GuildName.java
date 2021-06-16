@@ -19,19 +19,33 @@ public class GuildName extends DiSkyEvent<GuildUpdateNameEvent> {
                 .setExample("Event Example");
 
 
-       EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
+        EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
             @Override
             public String get(EvtGuildName event) {
                 return event.getJDAEvent().getNewValue();
             }
         }, 1);
 
-       EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
+        EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
+            @Override
+            public String get(EvtGuildName event) {
+                return event.getJDAEvent().getNewValue();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
             @Override
             public String get(EvtGuildName event) {
                 return event.getJDAEvent().getOldName();
             }
         }, -1);
+
+        EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {
+            @Override
+            public String get(EvtGuildName event) {
+                return event.getJDAEvent().getOldName();
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtGuildName.class, Guild.class, new Getter<Guild, EvtGuildName>() {
             @Override

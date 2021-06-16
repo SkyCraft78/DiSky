@@ -13,6 +13,7 @@ import info.itsthesky.disky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +43,8 @@ public class DiSky extends JavaPlugin {
         logger = getLogger();
         pluginManager = getServer().getPluginManager();
 
+        log("===== Starting DiSky v" + getDescription().getVersion() + " ... =====");
+
         /* JDA Check */
         try {
             Class.forName("net.dv8tion.jda.api.JDAInfo");
@@ -53,10 +56,10 @@ public class DiSky extends JavaPlugin {
             e.printStackTrace();
         }
         if (!customVersion.equalsIgnoreCase(JDAInfo.VERSION)) {
-            getLogger().severe("DiSky found another JDA version installed on the Server!");
-            getLogger().severe("Search over your plugins if none of them are already using the JDA.");
-            getLogger().severe("Version found: " + customVersion + " Version needed: " + JDAInfo.VERSION);
-            getLogger().severe("Plugins such as DiscordSRV or Vixio can be the cause of that problem!");
+            error("DiSky found another JDA version installed on the Server!");
+            error("Search over your plugins if none of them are already using the JDA.");
+            error("Version found: " + customVersion + " Version needed: " + JDAInfo.VERSION);
+            error("Plugins such as DiscordSRV or Vixio can be the cause of that problem!");
             pluginManager.disablePlugin(this);
             return;
         }
@@ -64,18 +67,18 @@ public class DiSky extends JavaPlugin {
         RestAction.setDefaultFailure(DiSkyErrorHandler::logException);
 
         /* Skript loading */
-        getServer().getConsoleSender().sendMessage(Utils.colored("&bDiSky &9is loading ..."));
+        log("Skript detection ...");
         if ((pluginManager.getPlugin("Skript") != null) && Skript.isAcceptRegistrations()) {
-            getServer().getConsoleSender().sendMessage(Utils.colored("&aSkript found! &6Starting registration ..."));
+            success("Skript found! Starting registration ...");
             SkriptAddon addon = Skript.registerAddon(this);
             try {
                 addon.loadClasses("info.itsthesky.disky.skript");
             } catch (IOException e) {
-                Skript.error("Wait, this is anormal. Please report this error on GitHub.");
                 e.printStackTrace();
+                error("Wait, this is anormal. Please report the error above on the DiSky GitHub!.");
             }
         } else {
-            Skript.error("Skript isn't installed or doesn't accept registrations.");
+            error("Cannot hook into Skript (Skript is not loaded or doesn't accept registration)");
             pluginManager.disablePlugin(this);
         }
         Utils.saveResourceAs(CONFIG);
@@ -83,7 +86,7 @@ public class DiSky extends JavaPlugin {
         /* Skript color adapter */
         boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
         SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
-        if (!usesSkript24) logger.info("You're using an old version of Skript. Enable Color and Date adapter!");
+        if (!usesSkript24) warn("You're using an old version of Skript. Enable Color and Date adapter!");
 
         /* Metrics */
         int pluginId = 10911;
@@ -92,11 +95,22 @@ public class DiSky extends JavaPlugin {
         /* Audio system */
         AudioUtils.initializeAudio();
 
-        getServer().getConsoleSender().sendMessage(Utils.colored("&aYou're using the &2JDA&a version &2" + JDAInfo.VERSION));
+        boolean containAlphaOrBeta =
+                getDescription().getVersion().contains("alpha")  ||
+                        getDescription().getVersion().contains("beta");
+        String latestVersion = Utils.getLatestVersion();
+        String currentVersion = getDescription().getVersion();
+        if (!containAlphaOrBeta && !currentVersion.equals(latestVersion))
+            warn("You are not on the latest released version of DiSky! You're on " + currentVersion + " but latest is " + latestVersion);
 
-        getServer().getConsoleSender().sendMessage(Utils.colored("&bDiSky &9seems to be loaded correctly!"));
-        getServer().getConsoleSender().sendMessage(Utils.colored("&9Join our &bDiscord &9for new update and support:"));
-        getServer().getConsoleSender().sendMessage(Utils.colored("&bhttps://discord.gg/whWuXwaVwM"));
+        if (containAlphaOrBeta)
+            warn("You're using an alpha (or beta) version of DiSky. If you have bugs, report them to the discord!");
+
+        log("JDA Version detected & used: &9" + JDAInfo.VERSION);
+        log("DiSky Version: &9" + getDescription().getVersion());
+        log("Discord: &9" + "https://discord.gg/whWuXwaVwM");
+        log("GitHub: &9" + "https://github.com/SkyCraft78/DiSky/");
+        log("===== DiSky seems to be started correctly! =====");
     }
 
     @Override
@@ -113,6 +127,22 @@ public class DiSky extends JavaPlugin {
         if (SKRIPT_ADAPTER == null)
             SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
         return SKRIPT_ADAPTER;
+    }
+
+    public static void log(String message) {
+        Bukkit.getServer().getConsoleSender().sendMessage(Utils.colored("&3[DiSky] &b" + message));
+    }
+
+    public static void error(String message) {
+        Bukkit.getServer().getConsoleSender().sendMessage(Utils.colored("&4[DiSky] &c" + message));
+    }
+
+    public static void success(String message) {
+        Bukkit.getServer().getConsoleSender().sendMessage(Utils.colored("&3[DiSky] &a" + message));
+    }
+
+    public static void warn(String message) {
+        Bukkit.getServer().getConsoleSender().sendMessage(Utils.colored("&6[DiSky] &e" + message));
     }
 
     @NotNull

@@ -11,9 +11,11 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.tools.InteractionEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
+import info.itsthesky.disky.tools.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
@@ -22,10 +24,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -117,20 +121,29 @@ public class EffReplyWith extends Effect {
             }
 
             if (event instanceof InteractionEvent) {
-                ((InteractionEvent) event).getInteractionEvent().reply(toSend.build()).setEphemeral(ephemeral).queue();
+                GenericInteractionCreateEvent ev = ((InteractionEvent) event).getInteractionEvent();
+                ReplyAction action = ev.reply(toSend.build());
+                if (rows != null || rows.length == 0) {
+                    List<ActionRow> rows1 = new ArrayList<>();
+                    for (ButtonRow row : rows) {
+                        List<Button> buttons = new ArrayList<>();
+
+                        for (ButtonBuilder buttonBuilder : row.getButtons()) {
+                            if (buttonBuilder.build() != null)
+                                buttons.add(buttonBuilder.build());
+                        }
+                        if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
+                    }
+                    action = action.addActionRows(rows1);
+                }
+                action.setEphemeral(ephemeral).queue();
                 return;
             }
 
-            MessageChannel channel;
-            try {
-                Class<?> eClazz = event.getClass();
-                Object jdaEvent = eClazz.getDeclaredMethod("getJDAEvent").invoke(event);
-                channel = (MessageChannel) jdaEvent.getClass().getDeclaredMethod("getChannel").invoke(jdaEvent);
-                if (channel == null) channel = (MessageChannel) jdaEvent.getClass().getDeclaredMethod("getTextChannel").invoke(jdaEvent);
-            } catch (Exception exception) {
-                DiSkyErrorHandler.logException(new IllegalStateException("Cannot cast the event in a reply effect. This ("+event.getEventName()+") doesn't support a reply effect!"));
-                return;
-            }
+            MessageChannel channel = null;
+            if (e instanceof MessageEvent)
+                channel = ((MessageEvent) e).getMessageChannel();
+
             if (channel == null) return;
             MessageAction action = channel
                     .sendMessage(toSend.build());

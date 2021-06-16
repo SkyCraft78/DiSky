@@ -1,5 +1,6 @@
 package info.itsthesky.disky.skript.commands;
 
+import info.itsthesky.disky.tools.MessageEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Guild;
@@ -13,7 +14,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandEvent extends Event implements Cancellable {
+public class CommandEvent extends Event implements Cancellable, MessageEvent {
 
     public static CommandEvent lastEvent;
 

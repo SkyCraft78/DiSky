@@ -1,4 +1,4 @@
-package info.itsthesky.disky.tools.waiter;
+package info.itsthesky.disky.tools.events;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;

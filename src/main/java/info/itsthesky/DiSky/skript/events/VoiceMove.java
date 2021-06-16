@@ -19,12 +19,19 @@ public class VoiceMove extends DiSkyEvent<GuildVoiceMoveEvent> {
                 .setExample("Event Example");
 
 
-       EventValues.registerEventValue(EvtVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EvtVoiceMove>() {
+        EventValues.registerEventValue(EvtVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EvtVoiceMove>() {
             @Override
             public VoiceChannel get(EvtVoiceMove event) {
                 return event.getJDAEvent().getNewValue();
             }
         }, 1);
+
+        EventValues.registerEventValue(EvtVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EvtVoiceMove>() {
+            @Override
+            public VoiceChannel get(EvtVoiceMove event) {
+                return event.getJDAEvent().getNewValue();
+            }
+        }, 0);
 
        EventValues.registerEventValue(EvtVoiceMove.class, VoiceChannel.class, new Getter<VoiceChannel, EvtVoiceMove>() {
             @Override

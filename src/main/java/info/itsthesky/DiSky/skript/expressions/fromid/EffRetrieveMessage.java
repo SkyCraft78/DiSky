@@ -21,13 +21,13 @@ import org.jetbrains.annotations.Nullable;
 
 @Name("Retrieve Message")
 @Description("Retrieve a message from its ID, and store it in a variable.")
-@Examples("retrieve message with id \"388744165443371009\" from event-channel and store it in {_user}")
+@Examples("retrieve message with id \"388744165443371009\" from event-channel and store it in {_msg}")
 @Since("1.14")
 public class EffRetrieveMessage extends Effect {
 
     static {
         Skript.registerEffect(EffRetrieveMessage.class,
-                "["+ Utils.getPrefixName() +"] retrieve [the] message with [the] id %string% from [the] [channel] %channel/textchannel% and store (it|the user) in %-object%");
+                "["+ Utils.getPrefixName() +"] retrieve [the] message with [the] id %string% from [the] [channel] %channel/textchannel% and store (it|the message) in %-object%");
     }
 
     private Expression<String> exprID;
