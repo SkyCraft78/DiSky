@@ -17,7 +17,7 @@ public class VoiceChannelBuilder {
     }
 
     public VoiceChannel build(Guild guild) {
-        if (this.bitrate != null && bitrate < 8000 || bitrate > guild.getMaxBitrate()) {
+        if (this.bitrate != null && bitrate < 8000 || bitrate != null && bitrate > guild.getMaxBitrate()) {
             DiSky.getInstance().getLogger().severe("You're trying to set a voice channel bitrate to " + bitrate +". However, this value can't be smaller than 8000 or greater than " + guild.getMaxBitrate() + " !");
             this.bitrate = null;
         }
