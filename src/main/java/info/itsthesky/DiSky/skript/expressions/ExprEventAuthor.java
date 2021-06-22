@@ -11,6 +11,7 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
@@ -21,6 +22,10 @@ import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 @Name("Event Author")
 @Description("The user author in a log-related event, like the user who removed a role from another member.")
@@ -36,7 +41,7 @@ public class ExprEventAuthor extends SimpleExpression<User> {
 
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-		if (!(ScriptLoader.getCurrentEvents()[0].getSuperclass() == LogEvent.class)) {
+		if (!(Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(LogEvent.class))) {
 			Skript.error("Cannot use the event author in a no log-related event!");
 			return false;
 		}
