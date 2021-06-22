@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -69,8 +70,13 @@ public class InviteCreate extends DiSkyEvent<GuildInviteCreateEvent> {
 
     }
 
-    public static class EvtInviteCreate extends SimpleDiSkyEvent<GuildInviteCreateEvent> {
+    public static class EvtInviteCreate extends SimpleDiSkyEvent<GuildInviteCreateEvent> implements LogEvent {
         public EvtInviteCreate(InviteCreate event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }

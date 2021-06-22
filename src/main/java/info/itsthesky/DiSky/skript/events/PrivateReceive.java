@@ -2,7 +2,7 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.disky.tools.MessageEvent;
+import info.itsthesky.disky.tools.events.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;

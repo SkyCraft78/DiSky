@@ -45,6 +45,8 @@ public class CategoryPermission extends DiSkyEvent<CategoryUpdatePermissionsEven
 
     public static class EvtCategoryPermission extends SimpleDiSkyEvent<CategoryUpdatePermissionsEvent> {
         public EvtCategoryPermission(CategoryPermission event) { }
+
+
     }
 
 }

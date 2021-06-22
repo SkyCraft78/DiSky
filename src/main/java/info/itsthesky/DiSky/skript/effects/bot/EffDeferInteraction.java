@@ -11,7 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.events.ButtonClick;
 import info.itsthesky.disky.skript.events.SlashCommand;
-import info.itsthesky.disky.tools.InteractionEvent;
+import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;

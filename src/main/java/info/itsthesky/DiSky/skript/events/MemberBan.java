@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -13,7 +14,7 @@ public class MemberBan extends DiSkyEvent<GuildBanEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", MemberBan.class, EvtMemberBan.class,
-                "")
+                "[discord] [guild] (member|user) ban")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
@@ -42,8 +43,13 @@ public class MemberBan extends DiSkyEvent<GuildBanEvent> {
 
     }
 
-    public static class EvtMemberBan extends SimpleDiSkyEvent<GuildBanEvent> {
+    public static class EvtMemberBan extends SimpleDiSkyEvent<GuildBanEvent> implements LogEvent {
         public EvtMemberBan(MemberBan event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }

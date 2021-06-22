@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -58,8 +59,13 @@ public class MemberRoleAdd extends DiSkyEvent<GuildMemberRoleAddEvent> {
 
     }
 
-    public static class EvtMemberRoleAdd extends SimpleDiSkyEvent<GuildMemberRoleAddEvent> {
+    public static class EvtMemberRoleAdd extends SimpleDiSkyEvent<GuildMemberRoleAddEvent> implements LogEvent {
         public EvtMemberRoleAdd(MemberRoleAdd event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }

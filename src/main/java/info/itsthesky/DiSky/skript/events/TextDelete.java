@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -39,8 +40,13 @@ public class TextDelete extends DiSkyEvent<TextChannelDeleteEvent> {
         }, 0);
     }
 
-    public static class EvtTextDelete extends SimpleDiSkyEvent<TextChannelDeleteEvent> {
+    public static class EvtTextDelete extends SimpleDiSkyEvent<TextChannelDeleteEvent> implements LogEvent {
         public EvtTextDelete(TextDelete event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }

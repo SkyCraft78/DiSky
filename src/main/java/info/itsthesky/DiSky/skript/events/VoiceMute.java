@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -42,8 +43,13 @@ public class VoiceMute extends DiSkyEvent<GuildVoiceMuteEvent> {
 
     }
 
-    public static class EvtVoiceMute extends SimpleDiSkyEvent<GuildVoiceMuteEvent> {
+    public static class EvtVoiceMute extends SimpleDiSkyEvent<GuildVoiceMuteEvent> implements LogEvent {
         public EvtVoiceMute(VoiceMute event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }

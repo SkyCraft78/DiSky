@@ -2,11 +2,11 @@ package info.itsthesky.disky.skript.events;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
-import info.itsthesky.disky.tools.MessageEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
+import info.itsthesky.disky.tools.events.MessageEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
-import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 
@@ -60,8 +60,13 @@ public class MessageDelete extends DiSkyEvent<GuildMessageDeleteEvent> {
 
     }
 
-    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> implements MessageEvent {
+    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> implements MessageEvent, LogEvent {
         public EvtMessageDelete(MessageDelete event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
 
         @Override
         public MessageChannel getMessageChannel() {

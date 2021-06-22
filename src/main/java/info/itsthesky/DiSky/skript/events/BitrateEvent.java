@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.events;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -61,8 +62,13 @@ public class BitrateEvent extends DiSkyEvent<VoiceChannelUpdateBitrateEvent> {
 
     }
 
-    public static class EvtBitrateEvent extends SimpleDiSkyEvent<VoiceChannelUpdateBitrateEvent> {
+    public static class EvtBitrateEvent extends SimpleDiSkyEvent<VoiceChannelUpdateBitrateEvent> implements LogEvent {
         public EvtBitrateEvent(BitrateEvent event) { }
+
+        @Override
+        public User getActionAuthor() {
+            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
+        }
     }
 
 }
