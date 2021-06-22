@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 public class ExprBotPrefix extends SimplePropertyExpression<Object, String> {
 
     static {
-        register(ExprBotPrefix.class, String.class,
-                "[bot] [default] prefix",
-                "string/bot"
-        );
+        //register(ExprBotPrefix.class, String.class,
+        //        "[bot] [default] prefix",
+        //        "string/bot"
+        //);
     }
 
     @Nullable

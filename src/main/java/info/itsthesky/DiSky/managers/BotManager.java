@@ -118,9 +118,7 @@ public class BotManager {
      * @return The instance of the first bot, else null
      */
     public static JDA getFirstBot() {
-        AtomicReference<JDA> r = new AtomicReference<>();
-        bots.forEach((name, jda) -> r.set(jda));
-        return r.get();
+        return Arrays.asList(bots.values().toArray(new JDA[0])).get(0);
     }
 
     /**
@@ -155,10 +153,14 @@ public class BotManager {
      * @param target The bot's JDA instance
      * @return The name of bot via the JDA
      */
-    public static String getNameByJDA(final JDA target) {
-        AtomicReference<String> f = new AtomicReference<>();
-        bots.forEach((name, jda) -> f.set(name));
-        return f.get();
+    public static @Nullable String getNameByJDA(final JDA target) {
+        if (!bots.containsValue(target)) return null;
+        for (Map.Entry<String, JDA> entry : bots.entrySet()) {
+            String id = entry.getKey();
+            JDA jda = entry.getValue();
+            if (jda.equals(target)) return id;
+        }
+        return null;
     }
 
     /**
