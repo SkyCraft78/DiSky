@@ -1,5 +1,6 @@
 package info.itsthesky.disky.skript.effects.messages;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -14,6 +15,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
+import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
@@ -34,6 +36,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Name("Reply with Message")
@@ -80,7 +83,10 @@ public class EffReplyWith extends Effect {
 
         Utils.setHasDelayBefore(Kleenean.TRUE);
 
-        // TODO: 15/06/2021 Need to check for every message-based event, and warn the user the reply effect will not work :')
+        if (!(Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(MessageEvent.class))) {
+            Skript.error("The reply effect cannot be used in a non channel-related event!");
+            return false;
+        }
 
         return true;
     }
