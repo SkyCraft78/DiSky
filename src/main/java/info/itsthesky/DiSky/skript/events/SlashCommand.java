@@ -17,7 +17,7 @@ public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", SlashCommand.class, EvtSlashCommand.class,
-                "pattern")
+                "slash command")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
