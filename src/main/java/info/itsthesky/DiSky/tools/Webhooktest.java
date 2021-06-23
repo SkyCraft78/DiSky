@@ -9,7 +9,7 @@ import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 public class Webhooktest {
 
     public Webhooktest() {
-        WebhookClientBuilder builder = new WebhookClientBuilder("https://discord.com/api/webhooks/819639477223424080/IBJ9RNmIJTKselmtjnVzEgWiPdFzcEAwYvrA8ofBxyqn9uAKQRUOwE-7u0cQlrOg_SCa"); // or id, token
+        WebhookClientBuilder builder = new WebhookClientBuilder(""); // or id, token
         builder.setThreadFactory((job) -> {
             Thread thread = new Thread(job);
             thread.setName("Hello");

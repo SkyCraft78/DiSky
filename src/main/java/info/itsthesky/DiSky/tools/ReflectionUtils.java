@@ -15,9 +15,7 @@ public class ReflectionUtils {
     public static Method getMethod(Class<?> clz, String method, Class<?>... parameters) {
         try {
             return clz.getDeclaredMethod(method, parameters);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) { }
         return null;
     }
 
@@ -66,18 +64,15 @@ public class ReflectionUtils {
      * @param from The class of the field
      * @param obj The instance of the class - you can use null if the field is static
      * @param field The field name
-     * @return True if the field was successfully set
      */
-    public static <T> boolean setField(Class<T> from, Object obj, String field, Object newValue) {
+    public static <T> void setField(Class<T> from, Object obj, String field, Object newValue) {
         try {
             Field f = from.getDeclaredField(field);
             f.setAccessible(true);
             f.set(obj, newValue);
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     /**

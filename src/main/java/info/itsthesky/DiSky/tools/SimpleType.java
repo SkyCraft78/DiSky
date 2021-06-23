@@ -12,10 +12,10 @@ import javax.annotation.Nullable;
 
 public abstract class SimpleType<T> extends ClassInfo<T> implements Changer<T> {
 
-    private String variableName;
-    private String name;
-    private String pattern;
-    private Class<T> clz;
+    private final String variableName;
+    private final String name;
+    private final String pattern;
+    private final Class<T> clz;
 
     public SimpleType(Class<T> clz, String name) {
         this(clz, name, name, ".+");
