@@ -10,24 +10,27 @@ import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
-import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.AsyncEffect;
-import ch.njol.skript.lang.Effect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.ButtonBuilder;
+import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.objecthunter.exp4j.ExpressionBuilder;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.Component;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Name("Send discord Message")
 @Description("Send a message in a specific channel, with a specific bot. Use that syntax only for non-textchannel event.")
@@ -42,11 +45,12 @@ public class EffSendMessage extends Effect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
-                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with [the] %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with row[s] %-buttonrows%] [with [the] %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
     private Expression<Object> exprChannel;
+    private Expression<ButtonRow> exprRow;
     private Variable<?> variable;
     private Expression<JDA> exprBot;
 
@@ -56,8 +60,9 @@ public class EffSendMessage extends Effect {
         Utils.setHasDelayBefore(Kleenean.TRUE);
         exprMessage = (Expression<Object>) exprs[0];
         exprChannel = (Expression<Object>) exprs[1];
-        exprBot = (Expression<JDA>) exprs[2];
-        Expression<?> var = exprs[3];
+        exprRow = (Expression<ButtonRow>) exprs[2];
+        exprBot = (Expression<JDA>) exprs[3];
+        Expression<?> var = exprs[4];
         if (var != null && !(var instanceof Variable)) {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
@@ -71,6 +76,7 @@ public class EffSendMessage extends Effect {
     protected @Nullable TriggerItem walk(Event e) {
         Object entity = exprChannel.getSingle(e);
         Object content = exprMessage.getSingle(e);
+        ButtonRow[] rows = exprRow == null ? new ButtonRow[0] : exprRow.getAll(e);
         if (entity == null || content == null) return null;
         debug(e, true);
 
@@ -134,7 +140,23 @@ public class EffSendMessage extends Effect {
                 if (!Utils.areJDASimilar(channel.getJDA(), bot)) return;
             }
 
-            channel.sendMessage(toSend.build()).queue(m -> {
+            MessageAction action = channel.sendMessage(toSend.build());
+
+            if (rows != null || rows.length == 0) {
+                List<ActionRow> rows1 = new ArrayList<>();
+                for (ButtonRow row : rows) {
+                    List<Button> buttons = new ArrayList<>();
+
+                    for (ButtonBuilder buttonBuilder : row.getButtons()) {
+                        if (buttonBuilder.build() != null)
+                            buttons.add(buttonBuilder.build());
+                    }
+                    if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
+                }
+                action = action.setActionRows(rows1);
+            }
+
+            action.queue(m -> {
                 // Re-set local variables
                 if (localVars != null)
                     Variables.setLocalVariables(event, localVars);
