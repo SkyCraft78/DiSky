@@ -83,7 +83,10 @@ public class EffReplyWith extends Effect {
 
         Utils.setHasDelayBefore(Kleenean.TRUE);
 
-        if (!(Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(MessageEvent.class))) {
+        if (
+                !(Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(MessageEvent.class)) &&
+                        !(Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class))
+        ) {
             Skript.error("The reply effect cannot be used in a non channel-related event!");
             return false;
         }
