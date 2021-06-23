@@ -41,7 +41,7 @@ public class Types {
 					public @NotNull Category parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getCategoryById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getCategoryById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -313,12 +313,12 @@ public class Types {
 
 					@Override
 					public @NotNull String toString(@NotNull WebhookMessageBuilder o, int flags) {
-						return Objects.requireNonNull(o.build().getUsername());
+						return o.build().getUsername();
 					}
 
 					@Override
 					public @NotNull String toVariableNameString(@NotNull WebhookMessageBuilder o) {
-						return Objects.requireNonNull(o.build().getUsername());
+						return o.build().getUsername();
 					}
 
 					@Override
@@ -396,7 +396,7 @@ public class Types {
 					public @NotNull TextChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getTextChannelById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getTextChannelById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -431,7 +431,7 @@ public class Types {
 					@Override
 					public @NotNull User parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -467,7 +467,7 @@ public class Types {
 					@Override
 					public @NotNull Role parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getRoleById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getRoleById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -504,7 +504,7 @@ public class Types {
 					public @NotNull Member parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, true, true) == null ? null : lastEvent.getGuild().getMemberById(Utils.parseLong(s, true, true))));
+							return (Utils.parseLong(s, true, true) == null ? null : lastEvent.getGuild().getMemberById(Utils.parseLong(s, true, true)));
 						}
 						return null;
 					}
@@ -585,7 +585,7 @@ public class Types {
 					public @NotNull GuildChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getGuildChannelById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getGuild().getGuildChannelById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -655,7 +655,7 @@ public class Types {
 					public @NotNull Guild parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getGuildById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getGuildById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}
@@ -779,12 +779,12 @@ public class Types {
 
 					@Override
 					public @NotNull String toString(@NotNull MessageBuilder o, int flags) {
-						return o.toString();
+						return o.getStringBuilder().toString();
 					}
 
 					@Override
 					public @NotNull String toVariableNameString(@NotNull MessageBuilder o) {
-						return o.toString();
+						return o.getStringBuilder().toString();
 					}
 
 					@Override
@@ -1029,7 +1029,7 @@ public class Types {
 					public @NotNull VoiceChannel parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
 							CommandEvent lastEvent = CommandEvent.lastEvent;
-							return (Objects.requireNonNull(Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getVoiceChannelById(Utils.parseLong(s, false, true))));
+							return (Utils.parseLong(s, false, true) == null ? null : lastEvent.getBot().getVoiceChannelById(Utils.parseLong(s, false, true)));
 						}
 						return null;
 					}

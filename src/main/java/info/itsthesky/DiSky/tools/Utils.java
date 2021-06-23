@@ -339,6 +339,10 @@ public class Utils extends ListenerAdapter {
         }
     }
 
+    @Nullable
+    public static Long parseLong(@NotNull String s, boolean manageDiscordValue) {
+        return parseLong(s, false, manageDiscordValue);
+    }
 
     @Nullable
     public static Long parseLong(@NotNull String s, boolean shouldPrintError, boolean manageDiscordValue) {
@@ -355,7 +359,7 @@ public class Utils extends ListenerAdapter {
         try {
             id = Long.parseLong(s);
         } catch (NumberFormatException e) {
-            if (shouldPrintError) e.printStackTrace();
+            //if (shouldPrintError) e.printStackTrace();
             return null;
         }
         return id;
