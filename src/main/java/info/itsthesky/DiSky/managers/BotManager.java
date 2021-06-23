@@ -5,7 +5,6 @@ import info.itsthesky.disky.managers.cache.InviteTracker;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.object.BotBuilder;
 import info.itsthesky.disky.tools.object.MessageUpdater;
 import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
@@ -19,6 +18,7 @@ import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
@@ -52,36 +52,27 @@ public class BotManager {
      * Load the JDA instance linked to it via the token.
      * @param name The bot name (= id)
      * @param token The token to connect to
-     * @param builder The {@link BotBuilder} related to use as bot base
      */
-    public static void addBot(final String name, final String token, final BotBuilder builder) {
+    public static void addBot(final String name, final String token, JDABuilder builder) {
         if (bots.containsKey(name)) {
             logger.warning("The bot named '"+name+"' is already loaded on the server! Shut it down or change the name.");
             return;
         }
 
         JDA jda;
+        builder.setToken(token)
+                //.addEventListeners(new JDAListener())
+                .addEventListeners(new Messages())
+                //.addEventListeners(new EditedMessages())
+                .addEventListeners(new Utils())
+                .addEventListeners(new CommandListener())
+                .addEventListeners(new InviteTracker())
+                .addEventListeners(new WaiterListener())
+                .addEventListeners(new MessageUpdater())
+                .addEventListeners(customListener.toArray(new Object[0]));
         try {
-            JDABuilder builder1 = JDABuilder.createDefault(token)
-                    //.addEventListeners(new JDAListener())
-                    .addEventListeners(new Messages())
-                    //.addEventListeners(new EditedMessages())
-                    .addEventListeners(new Utils())
-                    .addEventListeners(new CommandListener())
-                    .addEventListeners(new InviteTracker())
-                    .addEventListeners(new WaiterListener())
-                    .addEventListeners(new MessageUpdater())
-                    .addEventListeners(customListener.toArray(new Object[0]))
-                    .setChunkingFilter(ChunkingFilter.NONE)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL);
-            builder.getIntents().forEach(((intent, enabled) -> {
-                if (enabled) builder1.enableIntents(intent);
-            }));
-            builder.getCache().forEach(((flag, enabled) -> {
-                if (enabled) builder1.enableCache(flag);
-            }));
-            jda = builder1.build();
-        } catch (LoginException e) {
+            jda = builder.build().awaitReady();
+        } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
             logger.severe("Can't load the bot named '"+name+"', see error above for more information.");
             return;
@@ -111,6 +102,16 @@ public class BotManager {
             logger.warning("The bot '"+name+"' has been disconnected!");
         });
         bots.clear();
+    }
+
+    public static <E> E search(Function<JDA, E> getter) {
+        E entity = null;
+        for (JDA bot : getBotsJDA())
+            if (getter.apply(bot) != null) {
+                entity = getter.apply(bot);
+                return entity;
+            }
+        return entity;
     }
 
     /**

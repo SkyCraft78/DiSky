@@ -1,18 +1,22 @@
 package info.itsthesky.disky.skript.effects.bot;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
+import ch.njol.skript.events.bukkit.SkriptStartEvent;
+import ch.njol.skript.log.ErrorQuality;
+import info.itsthesky.disky.skript.scope.bot.ScopeBotBuilder;
 import info.itsthesky.disky.tools.AsyncEffect;
-import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.object.BotBuilder;
+import net.dv8tion.jda.api.JDABuilder;
 import org.bukkit.event.Event;
 
 @Name("Register new Discord Bot")
@@ -24,20 +28,24 @@ public class EffRegisterBot extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffRegisterBot.class,
-                "["+ Utils.getPrefixName() +"] register [new] [discord] bot with [the] [token] %string% [(with|using) [(builder|base)] %-botbuilder%] and with [the] (name|id) %string%",
-                "["+ Utils.getPrefixName() +"] login to [token] %string% [(with|using) [(builder|base)] %-botbuilder%] with [the] (name|id) %string%");
+                "["+ Utils.getPrefixName() +"] register [new] [discord] bot with [the] [token] %string% and with [the] (name|id) %string%",
+                "["+ Utils.getPrefixName() +"] login to [token] %string% with [the] (name|id) %string%");
     }
 
     private Expression<String> exprName;
     private Expression<String> exprToken;
-    private Expression<BotBuilder> exprBuilder;
+    private boolean scope;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        if (ScriptLoader.isCurrentEvent(SkriptStartEvent.class)) {
+            Skript.error("We don't recommend using the login effect in a " + ScriptLoader.getCurrentEventName() + " event. Use 'on load:' instead!", ErrorQuality.SEMANTIC_ERROR);
+            return false;
+        }
+        scope = EffectSection.isCurrentSection(ScopeBotBuilder.class);
         exprToken = (Expression<String>) exprs[0];
-        exprBuilder = (Expression<BotBuilder>) exprs[1];
-        exprName = (Expression<String>) exprs[2];
+        exprName = (Expression<String>) exprs[1];
         return true;
     }
 
@@ -45,10 +53,8 @@ public class EffRegisterBot extends AsyncEffect {
     protected void execute(Event e) {
         String name = exprName.getSingle(e);
         String token = exprToken.getSingle(e);
-        BotBuilder builder = exprBuilder == null ? null : (exprBuilder.getSingle(e) == null ? null : exprBuilder.getSingle(e));
         if (name == null || token == null) return;
-        if (builder == null) builder = new BotBuilder();
-        BotManager.addBot(name, token, builder);
+        BotManager.addBot(name, token, (scope ? ScopeBotBuilder.lastBuilder : JDABuilder.createDefault(token)));
     }
 
     @Override

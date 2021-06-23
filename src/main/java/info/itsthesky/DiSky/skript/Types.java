@@ -99,12 +99,6 @@ public class Types {
 				.description("Represent a message button.")
 				.since("1.12")
 		);
-		Classes.registerClass(new ClassInfo<>(BotBuilder.class, "botbuilder")
-				.user("botbuilders?")
-				.name("Bot Builder")
-				.description("Represent a bot builder, allow intents, with a name etc...")
-				.since("1.14")
-		);
 		Classes.registerClass(new ClassInfo<>(ButtonRow.class, "buttonrow")
 				.user("buttonrows?")
 				.name("Message Buttons Row")
@@ -984,35 +978,6 @@ public class Types {
 					@Override
 					public @NotNull String toVariableNameString(@NotNull GatewayIntent intent) {
 						return intent.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
-					}
-
-					@Override
-					public @NotNull String getVariableNamePattern() {
-						return ".+";
-					}
-				})
-		);
-		Classes.registerClass(new ClassInfo<>(CacheFlag.class, "cache")
-				.user("caches?")
-				.name("Cache")
-				.description("Cache used in the bot builder scope. They determine which entity will be stored as cache.")
-				.usage("activity, voice state, emote, client status, member overrides, role tags, online status")
-				.since("1.14")
-				.parser(new Parser<CacheFlag>() {
-					@Override
-					public @NotNull CacheFlag parse(@NotNull String input, @NotNull ParseContext context) {
-						for (CacheFlag flag : CacheFlag.values()) if (flag.name().equalsIgnoreCase(input.toUpperCase(Locale.ROOT).replace(" ", "_"))) return flag;
-						return null;
-					}
-
-					@Override
-					public @NotNull String toString(@NotNull CacheFlag flag, int flags) {
-						return flag.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
-					}
-
-					@Override
-					public @NotNull String toVariableNameString(@NotNull CacheFlag flag) {
-						return flag.name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
 					}
 
 					@Override
