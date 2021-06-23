@@ -15,6 +15,7 @@ public class DiSkyErrorHandler {
     private final static Logger logger = DiSky.getInstance().getLogger();
 
     public static void executeHandleCode(Event e, Consumer<Event> consumer) {
+        ExprLastDiSkyError.lastError = null;
         try {
             consumer.accept(e);
         } catch (Exception ex) {
