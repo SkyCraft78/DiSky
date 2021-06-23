@@ -60,13 +60,8 @@ public class MessageDelete extends DiSkyEvent<GuildMessageDeleteEvent> {
 
     }
 
-    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> implements MessageEvent, LogEvent {
+    public static class EvtMessageDelete extends SimpleDiSkyEvent<GuildMessageDeleteEvent> implements MessageEvent {
         public EvtMessageDelete(MessageDelete event) { }
-
-        @Override
-        public User getActionAuthor() {
-            return getJDAEvent().getGuild().retrieveAuditLogs().complete().get(0).getUser();
-        }
 
         @Override
         public MessageChannel getMessageChannel() {

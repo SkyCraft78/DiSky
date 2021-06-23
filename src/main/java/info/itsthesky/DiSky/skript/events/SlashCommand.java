@@ -51,13 +51,6 @@ public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, List.class, new Getter<List, EvtSlashCommand>() {
-            @Override
-            public List get(EvtSlashCommand event) {
-                return event.getJDAEvent().getOptions();
-            }
-        }, 0);
-
        EventValues.registerEventValue(EvtSlashCommand.class, AbstractChannel.class, new Getter<AbstractChannel, EvtSlashCommand>() {
             @Override
             public AbstractChannel get(EvtSlashCommand event) {
