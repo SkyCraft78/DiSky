@@ -13,6 +13,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.bukkit.event.Event;
 
@@ -40,10 +41,9 @@ public class ExprFIDVoice extends SimpleExpression<VoiceChannel> {
 	@Override
 	protected VoiceChannel[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new VoiceChannel[0];
+		if (id == null) return new VoiceChannel[0];
 		if (!Utils.isNumeric(id)) return new VoiceChannel[0];
-		return new VoiceChannel[] {bot.getVoiceChannelById(Long.parseLong(id))};
+		return new VoiceChannel[] {BotManager.search(bot -> bot.getVoiceChannelById(id))};
 	}
 
 	@Override

@@ -40,10 +40,9 @@ public class ExprFIDText extends SimpleExpression<TextChannel> {
 	@Override
 	protected TextChannel[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new TextChannel[0];
+		if (id == null) return new TextChannel[0];
 		if (!Utils.isNumeric(id)) return new TextChannel[0];
-		return new TextChannel[] {bot.getTextChannelById(Long.parseLong(id))};
+		return new TextChannel[] {BotManager.search(bot -> bot.getTextChannelById(id))};
 	}
 
 	@Override

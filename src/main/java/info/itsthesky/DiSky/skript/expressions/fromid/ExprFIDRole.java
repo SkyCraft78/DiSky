@@ -40,10 +40,9 @@ public class ExprFIDRole extends SimpleExpression<Role> {
 	@Override
 	protected Role[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new Role[0];
+		if (id == null) return new Role[0];
 		if (!Utils.isNumeric(id)) return new Role[0];
-		return new Role[] {bot.getRoleById(Long.parseLong(id))};
+		return new Role[] {BotManager.search(bot -> bot.getRoleById(id))};
 	}
 
 	@Override

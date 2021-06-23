@@ -18,7 +18,7 @@ import org.bukkit.event.Event;
 
 @Name("Category from ID")
 @Description("Return a category from its id.")
-@Examples("set {_cat} to category with id \"731885527762075648\"")
+@Examples("set {_cha} to category with id \"731885527762075648\"")
 @Since("1.11")
 public class ExprFIDCategory extends SimpleExpression<Category> {
 
@@ -40,10 +40,9 @@ public class ExprFIDCategory extends SimpleExpression<Category> {
 	@Override
 	protected Category[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new Category[0];
+		if (id == null) return new Category[0];
 		if (!Utils.isNumeric(id)) return new Category[0];
-		return new Category[] {bot.getCategoryById(Long.parseLong(id))};
+		return new Category[] {BotManager.search(bot -> bot.getCategoryById(id))};
 	}
 
 	@Override

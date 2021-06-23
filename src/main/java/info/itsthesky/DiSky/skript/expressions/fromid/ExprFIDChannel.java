@@ -13,6 +13,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import org.bukkit.event.Event;
 
@@ -42,10 +43,9 @@ public class ExprFIDChannel extends SimpleExpression<GuildChannel> {
 	@Override
 	protected GuildChannel[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new GuildChannel[0];
+		if (id == null) return new GuildChannel[0];
 		if (!Utils.isNumeric(id)) return new GuildChannel[0];
-		return new GuildChannel[] {bot.getGuildChannelById(Long.parseLong(id))};
+		return new GuildChannel[] {BotManager.search(bot -> bot.getGuildChannelById(id))};
 	}
 
 	@Override

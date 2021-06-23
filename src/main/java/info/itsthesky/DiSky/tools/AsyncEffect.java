@@ -1,14 +1,14 @@
 package info.itsthesky.disky.tools;
 
-import ch.njol.skript.lang.TriggerSection;
+import ch.njol.skript.ScriptLoader;
+import ch.njol.skript.events.bukkit.SkriptStartEvent;
+import ch.njol.skript.lang.*;
+import ch.njol.util.Kleenean;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.effects.Delay;
-import ch.njol.skript.lang.Effect;
-import ch.njol.skript.lang.Trigger;
-import ch.njol.skript.lang.TriggerItem;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
  * @author SkriptLang team
  */
 public abstract class AsyncEffect extends Effect {
-
-	private final boolean isAsync = false;
 
 	@Override
 	@Nullable

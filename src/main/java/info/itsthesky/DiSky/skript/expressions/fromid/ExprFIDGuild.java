@@ -42,10 +42,9 @@ public class ExprFIDGuild extends SimpleExpression<Guild> {
 	@Override
 	protected Guild[] get(Event e) {
 		String id = exprID.getSingle(e);
-		JDA bot = BotManager.getFirstBot();
-		if (bot == null || id == null) return new Guild[0];
+		if (id == null) return new Guild[0];
 		if (!Utils.isNumeric(id)) return new Guild[0];
-		return new Guild[] {bot.getGuildById(Long.parseLong(id))};
+		return new Guild[] {BotManager.search(bot -> bot.getGuildById(id))};
 	}
 
 	@Override
