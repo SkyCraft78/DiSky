@@ -11,6 +11,7 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
@@ -81,7 +82,10 @@ public class EffSendMessage extends Effect {
         debug(e, true);
 
         Delay.addDelayedEvent(e); // Mark this event as delayed
-        Object localVars = Variables.removeLocals(e); // Back up local variables
+        Object _localVars = null;
+        if (DiSky.SkriptUtils.MANAGE_LOCALES)
+            _localVars = Variables.removeLocals(e); // Back up local variables
+        Object localVars = _localVars;
 
         if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
             return null;
@@ -158,7 +162,7 @@ public class EffSendMessage extends Effect {
 
             action.queue(m -> {
                 // Re-set local variables
-                if (localVars != null)
+                if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                     Variables.setLocalVariables(event, localVars);
 
                 ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -178,12 +182,14 @@ public class EffSendMessage extends Effect {
 
                         TriggerItem.walk(getNext(), event);
 
-                        Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                            Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                         SkriptTimings.stop(timing); // Stop timing if it was even started
                     });
                 } else {
-                    Variables.removeLocals(event);
+                    if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                        Variables.removeLocals(event);
                 }
             });
         });

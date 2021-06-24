@@ -9,6 +9,7 @@ import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.ReflectionUtils;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -68,15 +69,6 @@ public class ExprColorOf extends SimplePropertyExpression<Object, Object> {
 
         Color finalColor = null;
 
-        /*
-         else if (delta[0] instanceof ch.njol.skript.util.Color) {
-
-                ch.njol.skript.util.Color tempSkript = (ch.njol.skript.util.Color) delta[0];
-                finalColor = new Color(tempSkript.asBukkitColor().getRed(), tempSkript.asBukkitColor().getGreen(), tempSkript.asBukkitColor().getBlue());
-
-            }
-         */
-
         try {
             if (delta[0] instanceof org.bukkit.Color) {
 
@@ -89,8 +81,18 @@ public class ExprColorOf extends SimplePropertyExpression<Object, Object> {
             } else {
 
                 Object c = (DiSky.getSkriptAdapter().colorFromName(delta[0].toString()));
-                if (c instanceof SkriptColor) finalColor = Utils.toJavaColor(((SkriptColor) c).asBukkitColor());
-                if (c instanceof ch.njol.skript.util.Color) finalColor = Utils.toJavaColor(((ch.njol.skript.util.Color) delta[0]).asBukkitColor());
+                if (c.getClass().getName().equals(DiSky.getSkriptAdapter().getColorClass().getName())) finalColor = Color.getColor(DiSky.getSkriptAdapter().getColorName(c));
+                if (c instanceof ch.njol.skript.util.Color){
+                    if (DiSky.SkriptUtils.SKRIPT_VERSION.equals(DiSky.SkriptUtils.SkriptAdapterVersion.SKRIPT_DEV)) {
+                        // Need reflection for getting the right method :oof:
+                        // Check: https://github.com/SkriptLang/Skript/blob/7301bab6fe12b37c864f83b2bb9dfc0e505f3559/src/main/java/ch/njol/skript/util/Color.java#L164
+                        ch.njol.skript.util.Color tColor = ((ch.njol.skript.util.Color) delta[0]);
+                        org.bukkit.Color bukkitColor = ReflectionUtils.invokeMethod(tColor.getClass(), "getBukkitColor", tColor);
+                        finalColor = Utils.toJavaColor(bukkitColor);
+                    } else {
+                        finalColor = Utils.toJavaColor(((ch.njol.skript.util.Color) delta[0]).asBukkitColor());
+                    }
+                }
 
             }
         } catch (IncompatibleClassChangeError ex) {

@@ -8,6 +8,7 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.log.*;
 import ch.njol.util.Kleenean;
 import ch.njol.util.StringUtils;
+import info.itsthesky.disky.DiSky;
 import org.bukkit.event.Event;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public abstract class EffectSection extends Condition {
         //Stop the current one
         logger.stop();
         //Using reflection to access the iterator of handlers
-        HandlerList handler = ReflectionUtils.getField(SkriptLogger.class, null, "handlers");
+        HandlerList handler = DiSky.getSkriptAdapter().getHandlers();
         if (handler == null)
             return;
         Iterator<LogHandler> it = handler.iterator();

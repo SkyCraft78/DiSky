@@ -21,12 +21,13 @@ import java.util.regex.Pattern;
 /**
  * @author ItsTheSky
  */
+@Deprecated
 public class ExprUpdatedValue extends SimpleExpression<Object> {
     static {
-        Skript.registerExpression(ExprUpdatedValue.class, Object.class, ExpressionType.SIMPLE,
-                "[the] new <.+>",
-                "[the] old <.+>"
-        );
+        //Skript.registerExpression(ExprUpdatedValue.class, Object.class, ExpressionType.SIMPLE,
+        //        "[the] new <.+>",
+        //        "[the] old <.+>"
+        //);
     }
 
     public static HashMap<Class<? extends Event>, UpdatedValue<?>> maps = new HashMap<>();

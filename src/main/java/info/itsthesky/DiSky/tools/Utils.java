@@ -48,54 +48,10 @@ public class Utils extends ListenerAdapter {
     private static final Number defaultNumber = 0;
     private static final Boolean defaultBoolean = false;
     private static final Object defaultObject = "";
-    public static final Field VARIABLE_NAME;
-    public static Field HAS_DELAY_BEFORE;
-    public static final boolean USE_2_6;
     public static final boolean INFO_CACHE = getOrSetDefault("config.yml", "InfoCache", true);
-    public static boolean variableNameGetterExists = Skript.methodExists(Variable.class, "getName");
-
-    static {
-        boolean _USE_2_6;
-
-        if (!variableNameGetterExists) {
-
-            Field _VARIABLE_NAME = null;
-            try {
-                _VARIABLE_NAME = Variable.class.getDeclaredField("name");
-                _VARIABLE_NAME.setAccessible(true);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-                Skript.error("Skript's 'variable name' method could not be resolved.");
-            }
-            VARIABLE_NAME = _VARIABLE_NAME;
-
-        } else {
-            VARIABLE_NAME = null;
-        }
-
-        try {
-            //noinspection JavaReflectionMemberAccess
-            Field _FIELD = ScriptLoader.class.getDeclaredField("hasDelayBefore");
-            _FIELD.setAccessible(true);
-            HAS_DELAY_BEFORE = _FIELD;
-            _USE_2_6 = true;
-        } catch (NoSuchFieldException ignored) {
-            _USE_2_6 = false;
-        }
-
-        USE_2_6 = _USE_2_6;
-    }
 
     public static Kleenean getHasDelayBefore() {
-        try {
-            if (HAS_DELAY_BEFORE != null) {
-                return (Kleenean) HAS_DELAY_BEFORE.get(null);
-            } else {
-                return ParserInstance.get().getHasDelayBefore();
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return DiSky.getSkriptAdapter().getHasDelayBefore();
     }
 
     public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
@@ -103,15 +59,7 @@ public class Utils extends ListenerAdapter {
     }
 
     public static void setHasDelayBefore(Kleenean hasDelayBefore) {
-        try {
-            if (HAS_DELAY_BEFORE != null) {
-                HAS_DELAY_BEFORE.set(null, hasDelayBefore);
-            } else {
-                ParserInstance.get().setHasDelayBefore(hasDelayBefore);
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        DiSky.getSkriptAdapter().setHasDelayBefore(hasDelayBefore);
     }
 
     public static Color toJavaColor(org.bukkit.Color bukkitColor) {
@@ -179,16 +127,7 @@ public class Utils extends ListenerAdapter {
     }
 
     public static VariableString getVariableName(Variable<?> var) {
-        if (variableNameGetterExists) {
-            return var.getName();
-        } else {
-            try {
-                return (VariableString) VARIABLE_NAME.get(var);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return DiSky.getSkriptAdapter().getVariableName(var);
     }
 
     public static boolean containURL(String input) {

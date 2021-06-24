@@ -23,6 +23,10 @@ dependencies {
         exclude group: 'com.sk89q.worldguard', module: 'worldguard-legacy'
         exclude group: 'net.milkbowl.vault', module: 'Vault'
     }
+    implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.5.3') {
+        exclude group: 'com.sk89q.worldguard', module: 'worldguard-legacy'
+        exclude group: 'net.milkbowl.vault', module: 'Vault'
+    }
     implementation 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
     implementation 'org.jetbrains:annotations:20.1.0'
 

@@ -1,5 +1,7 @@
 package info.itsthesky.disky.tools;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -75,6 +77,33 @@ public class ReflectionUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T getFieldValue(Field field, @Nullable Object arg) {
+        try {
+            return (T) field.get(arg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static <T> T getFieldValue(Field field) {
+        return getFieldValue(field, null);
+    }
+
+    public static void setFieldValue(Field field, Object target, Object value) {
+        try {
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setFieldValue(Field field, Object value) {
+        setFieldValue(field, null, value);
+    }
+
     /**
      * @param from The class of the field
      * @param obj The instance of the class - you can use null if the field is static
@@ -91,6 +120,16 @@ public class ReflectionUtils {
             e.printStackTrace();
         }
         return null;
+    }
 
+    public static Field getField(Class<?> from, String field) {
+        try {
+            Field f = from.getDeclaredField(field);
+            f.setAccessible(true);
+            return f;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

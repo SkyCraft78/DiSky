@@ -7,22 +7,21 @@ import info.itsthesky.disky.managers.music.AudioUtils;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Metrics;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.versions.V2_3;
-import info.itsthesky.disky.tools.versions.V2_4;
+import info.itsthesky.disky.tools.versions.VSkript22;
+import info.itsthesky.disky.tools.versions.VSkript23;
+import info.itsthesky.disky.tools.versions.VSkript26;
 import info.itsthesky.disky.tools.versions.VersionAdapter;
 import net.dv8tion.jda.api.JDAInfo;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class DiSky extends JavaPlugin {
@@ -32,8 +31,7 @@ public class DiSky extends JavaPlugin {
     private static DiSky instance;
     private Logger logger;
     private static PluginManager pluginManager;
-    private static VersionAdapter SKRIPT_ADAPTER;
-    public static GatewayIntent[] intents = new GatewayIntent[0];
+    public static VersionAdapter SKRIPT_ADAPTER;
 
     @Override
     public void onEnable() {
@@ -83,14 +81,44 @@ public class DiSky extends JavaPlugin {
         }
         Utils.saveResourceAs(CONFIG);
 
-        /* Skript color adapter */
-        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
-        SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
-        if (!usesSkript24) warn("You're using an old version of Skript. Enable Color and Date adapter!");
+        SKRIPT_ADAPTER = SkriptUtils.SKRIPT_VERSION.getAdapter();
+        switch (SkriptUtils.SKRIPT_VERSION) {
+            case UNKNOWN:
+                error("Cannot found your Skript version, defaulting to 2.3 for the adapter.");
+                break;
+            case SKRIPT_STABLE:
+                success("Found Skript 2.3 ~ 2.5! Enabling scope adapter!");
+                break;
+            case SKRIPT_DEV:
+                warn("Found an old version of Skript (2.2 or less)! Enabling color and date adapter!");
+                break;
+            case SKRIPT_17:
+                warn("Found the 2.6 Skript version! Enabling delayed task adapter!");
+                break;
+        }
 
         /* Metrics */
         int pluginId = 10911;
         Metrics metrics = new Metrics(this, pluginId);
+        // Author: Olyno
+        metrics.addCustomChart(new Metrics.SimplePie("skript_version", () ->
+                Bukkit.getServer().getPluginManager().getPlugin("Skript").getDescription().getVersion()));
+        metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+            Map<String, Map<String, Integer>> map = new HashMap<>();
+            String javaVersion = System.getProperty("java.version");
+            Map<String, Integer> entry = new HashMap<>();
+            entry.put(javaVersion, 1);
+            if (javaVersion.startsWith("1.7")) {
+                map.put("Java 1.7", entry);
+            } else if (javaVersion.startsWith("1.8")) {
+                map.put("Java 1.8", entry);
+            } else if (javaVersion.startsWith("1.9")) {
+                map.put("Java 1.9", entry);
+            } else {
+                map.put("Other", entry);
+            }
+            return map;
+        }));
 
         /* Audio system */
         AudioUtils.initializeAudio();
@@ -107,6 +135,7 @@ public class DiSky extends JavaPlugin {
             warn("You're using an alpha (or beta) version of DiSky. If you have bugs, report them to the discord!");
 
         log("JDA Version detected & used: &9" + JDAInfo.VERSION);
+        log("Skript Version: &9" + Skript.getVersion());
         log("DiSky Version: &9" + getDescription().getVersion());
         log("Discord: &9" + "https://discord.gg/whWuXwaVwM");
         log("GitHub: &9" + "https://github.com/SkyCraft78/DiSky/");
@@ -123,9 +152,6 @@ public class DiSky extends JavaPlugin {
     public static PluginManager getPluginManager() { return pluginManager; }
 
     public static VersionAdapter getSkriptAdapter() {
-        boolean usesSkript24 = (Skript.getVersion().getMajor() >= 3 || (Skript.getVersion().getMajor() == 2 && Skript.getVersion().getMinor() >= 4));
-        if (SKRIPT_ADAPTER == null)
-            SKRIPT_ADAPTER = usesSkript24 ? new V2_4() : new V2_3();
         return SKRIPT_ADAPTER;
     }
 
@@ -148,5 +174,59 @@ public class DiSky extends JavaPlugin {
     @NotNull
     public Logger getConsoleLogger() {
         return logger;
+    }
+
+    public final static class SkriptUtils {
+
+        public static final SkriptAdapterVersion SKRIPT_VERSION;
+        public static final boolean MANAGE_LOCALES;
+
+        static {
+            if (Skript.getVersion().getMinor() < 3) {
+                SKRIPT_VERSION = SkriptAdapterVersion.SKRIPT_DEV;
+            } else if (Skript.getVersion().getMinor() >= 3 && Skript.getVersion().getMinor() < 6) {
+                SKRIPT_VERSION = SkriptAdapterVersion.SKRIPT_STABLE;
+            } else if (Skript.getVersion().getMinor() >= 6) {
+                SKRIPT_VERSION = SkriptAdapterVersion.SKRIPT_17;
+            } else {
+                SKRIPT_VERSION = SkriptAdapterVersion.UNKNOWN;
+            }
+
+            MANAGE_LOCALES = !SKRIPT_VERSION.equals(SkriptAdapterVersion.SKRIPT_DEV);
+        }
+
+        public enum SkriptAdapterVersion {
+            /**
+             * The weird and old version of Skript, aka every 2.2 (included) and less Skript version, which doesn't need any variables managin,g custom colors and more.
+             */
+            SKRIPT_DEV,
+            /**
+             * The best Skript version, include every of them from 2.3 to 2.5 (included), which make DiSky work as good as it can :p
+             */
+            SKRIPT_STABLE,
+            /**
+             * The new and unstable Skript version of Skript, which works on 1.17 with Java 16, aka 2.6 and more...
+             */
+            SKRIPT_17,
+            /**
+             * Cannot identify which version of Skript is loaded, so assume it's SKRIPT_STABLE.
+             */
+            UNKNOWN,
+            ;
+            public @NotNull VersionAdapter getAdapter() {
+                if (this == null) return null;
+                switch (this) {
+                    case SKRIPT_DEV:
+                        return new VSkript22();
+                    case UNKNOWN:
+                    case SKRIPT_STABLE:
+                        return new VSkript23();
+                    case SKRIPT_17:
+                        return new VSkript26();
+                    default:
+                        return null;
+                }
+            }
+        }
     }
 }
