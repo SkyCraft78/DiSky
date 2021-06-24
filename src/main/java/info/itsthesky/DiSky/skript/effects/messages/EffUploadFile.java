@@ -95,7 +95,10 @@ public class EffUploadFile extends AsyncEffect {
             debug(e, true);
 
             Delay.addDelayedEvent(e); // Mark this event as delayed
-            Object localVars = Variables.removeLocals(e); // Back up local variables
+            Object _localVars = null;
+            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                _localVars = Variables.removeLocals(e); // Back up local variables
+            Object localVars = _localVars;
 
             if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
                 return;
@@ -162,7 +165,7 @@ public class EffUploadFile extends AsyncEffect {
                 if (toSend == null) {
                     channel.sendFile(is, fileName).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -182,18 +185,20 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 } else {
                     channel.sendMessage(toSend.build()).addFile(is, fileName).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -213,18 +218,21 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 }
                 return;
             }
 
+            if (f == null) return;
             String url = f.toString();
             if (Utils.containURL(url)) {
 
@@ -235,7 +243,7 @@ public class EffUploadFile extends AsyncEffect {
                 if (toSend == null) {
                     channel.sendFile(stream, "file." + ext).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -255,18 +263,20 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 } else {
                     channel.sendMessage(toSend.build()).addFile(stream, "file." + ext).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -286,12 +296,14 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 }
@@ -304,7 +316,7 @@ public class EffUploadFile extends AsyncEffect {
                 if (toSend == null) {
                     channel.sendFile(file).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -324,18 +336,20 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 } else {
                     channel.sendMessage(toSend.build()).addFile(file).queue(m -> {
                         // Re-set local variables
-                        if (localVars != null)
+                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
                             Variables.setLocalVariables(event, localVars);
 
                         ExprLastMessage.lastMessage = UpdatingMessage.from(m);
@@ -355,12 +369,14 @@ public class EffUploadFile extends AsyncEffect {
 
                                 TriggerItem.walk(getNext(), event);
 
-                                Variables.removeLocals(event); // Clean up local vars, we may be exiting now
+                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
 
                                 SkriptTimings.stop(timing); // Stop timing if it was even started
                             });
                         } else {
-                            Variables.removeLocals(event);
+                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
+                                Variables.removeLocals(event);
                         }
                     });
                 }
