@@ -1,11 +1,8 @@
 package info.itsthesky.disky.tools;
 
-import ch.njol.skript.ScriptLoader;
-import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.lang.VariableString;
-import ch.njol.skript.lang.parser.ParserInstance;
 import ch.njol.skript.util.Date;
 import ch.njol.skript.util.Timespan;
 import ch.njol.skript.variables.Variables;
@@ -16,7 +13,6 @@ import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.Emote;
-import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -24,7 +20,6 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.utils.data.DataArray;
-import net.dv8tion.jda.api.utils.data.DataObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,13 +28,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Utils extends ListenerAdapter {
@@ -317,9 +314,7 @@ public class Utils extends ListenerAdapter {
     }
 
     public static TextChannel checkChannel(Object original) {
-        if (original instanceof Channel) {
-            return ((Channel) original).getTextChannel();
-        } else if (original instanceof TextChannel) {
+        if (original instanceof TextChannel) {
             return (TextChannel) original;
         } else {
             return null;

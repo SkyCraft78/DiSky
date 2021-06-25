@@ -12,6 +12,8 @@ import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.InviteBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
@@ -28,15 +30,14 @@ public class EffCreateInvite extends Effect {
     }
 
     private Expression<InviteBuilder> exprBuilder;
-    private Expression<Object> exprObject;
+    private Expression<GuildChannel> exprChannel;
     private Expression<Object> exprVar;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprBuilder = (Expression<InviteBuilder>) exprs[0];
-        exprObject = (Expression<Object>) exprs[1];
-        if (exprs.length == 2) return true;
+        exprChannel = (Expression<GuildChannel>) exprs[1];
         exprVar = (Expression<Object>) exprs[2];
         return true;
     }
@@ -44,11 +45,11 @@ public class EffCreateInvite extends Effect {
     @Override
     protected void execute(Event e) {
         InviteBuilder builder = exprBuilder.getSingle(e);
-        Object entity = exprObject.getSingle(e);
-        if (builder == null || entity == null) return;
-        TextChannel channel = Utils.checkChannel(entity);
+        GuildChannel channel = exprChannel.getSingle(e);
+        if (builder == null || channel == null) return;
+        if (!channel.getType().equals(ChannelType.TEXT)) return;
         if (channel == null) return;
-        Invite invite = builder.build(channel);
+        Invite invite = builder.build((TextChannel) channel);
         if (exprVar == null) return;
         if (!(exprVar instanceof Variable)) return;
         Variable variable = (Variable) exprVar;
@@ -60,7 +61,7 @@ public class EffCreateInvite extends Effect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "create invite using builder " + exprBuilder.toString(e, debug) + " in channel " + exprObject.toString(e, debug);
+        return "create invite using builder " + exprBuilder.toString(e, debug) + " in channel " + exprChannel.toString(e, debug);
     }
 
 }

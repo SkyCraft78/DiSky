@@ -16,7 +16,7 @@ public class InviteBuilder {
     public Invite build(TextChannel channel) {
         return channel
                 .createInvite()
-                .setMaxAge(maxAge.intValue())
+                .setMaxAge(maxAge == null ? null : maxAge.intValue())
                 .setMaxUses(maxUse)
                 .setTemporary(temp)
                 .complete();

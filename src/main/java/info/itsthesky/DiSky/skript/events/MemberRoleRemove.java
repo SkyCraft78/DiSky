@@ -22,10 +22,10 @@ public class MemberRoleRemove extends DiSkyEvent<GuildMemberRoleRemoveEvent> {
                 .setExample("Event Example");
 
 
-       EventValues.registerEventValue(EvtMemberRoleRemove.class, List.class, new Getter<List, EvtMemberRoleRemove>() {
+       EventValues.registerEventValue(EvtMemberRoleRemove.class, Role[].class, new Getter<Role[], EvtMemberRoleRemove>() {
             @Override
-            public List get(EvtMemberRoleRemove event) {
-                return event.getJDAEvent().getRoles();
+            public Role[] get(EvtMemberRoleRemove event) {
+                return event.getJDAEvent().getRoles().toArray(new Role[0]);
             }
         }, 0);
 

@@ -22,71 +22,42 @@ public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
                 .setDesc("Event description")
                 .setExample("Event Example");
 
-
-       EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
             @Override
             public String get(EvtSlashCommand event) {
                 return event.getJDAEvent().getName();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, GuildChannel.class, new Getter<GuildChannel, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, GuildChannel.class, new Getter<GuildChannel, EvtSlashCommand>() {
             @Override
             public GuildChannel get(EvtSlashCommand event) {
                 return (GuildChannel) event.getJDAEvent().getChannel();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
-            @Override
-            public String get(EvtSlashCommand event) {
-                return event.getJDAEvent().getSubcommandGroup();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
-            @Override
-            public String get(EvtSlashCommand event) {
-                return event.getJDAEvent().getSubcommandName();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtSlashCommand.class, AbstractChannel.class, new Getter<AbstractChannel, EvtSlashCommand>() {
-            @Override
-            public AbstractChannel get(EvtSlashCommand event) {
-                return event.getJDAEvent().getChannel();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtSlashCommand.class, Guild.class, new Getter<Guild, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, Guild.class, new Getter<Guild, EvtSlashCommand>() {
             @Override
             public Guild get(EvtSlashCommand event) {
                 return event.getJDAEvent().getGuild();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
-            @Override
-            public String get(EvtSlashCommand event) {
-                return event.getJDAEvent().getToken();
-            }
-        }, 0);
-
-       EventValues.registerEventValue(EvtSlashCommand.class, Member.class, new Getter<Member, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, Member.class, new Getter<Member, EvtSlashCommand>() {
             @Override
             public Member get(EvtSlashCommand event) {
                 return event.getJDAEvent().getMember();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, User.class, new Getter<User, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, User.class, new Getter<User, EvtSlashCommand>() {
             @Override
             public User get(EvtSlashCommand event) {
                 return event.getJDAEvent().getUser();
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtSlashCommand.class, JDA.class, new Getter<JDA, EvtSlashCommand>() {
+        EventValues.registerEventValue(EvtSlashCommand.class, JDA.class, new Getter<JDA, EvtSlashCommand>() {
             @Override
             public JDA get(EvtSlashCommand event) {
                 return event.getJDAEvent().getJDA();

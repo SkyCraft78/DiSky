@@ -11,7 +11,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import info.itsthesky.disky.tools.object.messages.Channel;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 
@@ -44,7 +43,6 @@ public class ExprGuildOf extends SimpleExpression<Guild> {
         Object entity = exprEntity.getSingle(e);
         if (entity == null) return new Guild[0];
         if (entity instanceof Member) return new Guild[] {((Member) entity).getGuild()};
-        if (entity instanceof Channel) return new Guild[] {((Channel) entity).getTextChannel().getGuild()};
         if (entity instanceof TextChannel) return new Guild[] {((TextChannel) entity).getGuild()};
         if (entity instanceof VoiceChannel) return new Guild[] {((VoiceChannel) entity).getGuild()};
         if (entity instanceof Role) return new Guild[] {((Role) entity).getGuild()};
