@@ -9,7 +9,6 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.scope.buttons.ScopeButton;
 import info.itsthesky.disky.tools.MessageBuilder;
 import org.bukkit.event.Event;
 
@@ -17,7 +16,7 @@ import javax.annotation.Nullable;
 
 @Name("Last Message Scope Builder")
 @Description("Return the last used message builder.")
-@Since("1.12")
+@Since("2.0")
 public class ExprLastMessageBuilder extends SimpleExpression<MessageBuilder> {
 
     static {
