@@ -10,6 +10,7 @@ import ch.njol.util.coll.CollectionUtils;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.skript.commands.CommandObject;
 import info.itsthesky.disky.skript.scope.category.ScopeCategory;
 import info.itsthesky.disky.skript.scope.commands.ScopeCommand;
 import info.itsthesky.disky.skript.scope.role.ScopeRole;
@@ -34,7 +35,7 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
     static {
         register(ExprNameOf.class, String.class,
                 "discord name",
-                "member/role/rolebuilder/commandbuilder/voicechannel/voicechannelbuilder/webhookmessagebuilder/category/categorybuilder/channel/textchannel/textchannelbuilder/bot/guild/user/emote"
+                "member/role/rolebuilder/commandbuilder/voicechannel/voicechannelbuilder/webhookmessagebuilder/discordcommand/category/categorybuilder/channel/textchannel/textchannelbuilder/bot/guild/user/emote"
         );
     }
 
@@ -68,6 +69,7 @@ public class ExprNameOf extends SimplePropertyExpression<Object, String> {
             if (entity instanceof JDA) finalName = ((JDA) entity).getSelfUser().getName();
             if (entity instanceof WebhookMessageBuilder) finalName = ((WebhookMessageBuilder) entity).build().getContent();
             if (entity instanceof Emote) finalName = ((Emote) entity).getName();
+            if (entity instanceof CommandObject) finalName = ((CommandObject) entity).getName();
         }
         return finalName;
     }
