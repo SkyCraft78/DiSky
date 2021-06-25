@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.expressions.bot;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -21,9 +22,9 @@ import org.bukkit.event.Event;
 public class CondIsBot extends Condition {
 
 	static {
-		Skript.registerCondition(CondIsBot.class,
-				"["+ Utils.getPrefixName() +"] %user/member% (is|was) a discord bot",
-				"["+ Utils.getPrefixName() +"] %user/member% (is not|isn't) a discord bot");
+		PropertyCondition.register(CondIsBot.class,
+				"[discord] bot",
+				"member/user");
 	}
 
 	private Expression<Object> exprUser;
@@ -41,22 +42,19 @@ public class CondIsBot extends Condition {
 	public boolean check(Event e) {
 		Object entity = exprUser.getSingle(e);
 		if (entity == null) return true;
-		User user;
-		if (entity instanceof User) {
-			user = (User) entity;
-		} else {
-			user = ((Member) entity).getUser();
-		}
-		if (pattern == 0) {
-			return user.isBot();
-		} else {
-			return !user.isBot();
-		}
+		User user = entity instanceof User ? (User) entity : ((Member) entity).getUser();
+		return user.isBot();
 	}
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "user " + exprUser.toString(e, debug) + " is a discord bot";
+		return PropertyCondition.toString(
+				this,
+				PropertyCondition.PropertyType.HAVE,
+				e, debug,
+				exprUser,
+				"discord bot"
+		);
 	}
 
 }

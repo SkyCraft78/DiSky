@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.expressions.bot;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -22,19 +23,17 @@ import org.jetbrains.annotations.NotNull;
 public class CondIsLoaded extends Condition {
 
 	static {
-		Skript.registerCondition(CondIsLoaded.class,
-				"["+ Utils.getPrefixName() +"] [bot] [(named|with name)] %string% (is|was) (loaded|online) [on the server]",
-		"["+ Utils.getPrefixName() +"] [bot] [(named|with name)] %string% (isn't|is not|wasn't|was not) (loaded|online) [on the server]");
+		PropertyCondition.register(CondIsLoaded.class,
+				"(loaded|online) [on the server]",
+		"string");
 	}
 
 	private Expression<String> exprBot;
-	private int pattern;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
 		exprBot = (Expression<String>) exprs[0];
-		pattern = matchedPattern;
 		return true;
 	}
 
@@ -42,16 +41,18 @@ public class CondIsLoaded extends Condition {
 	public boolean check(Event e) {
 		String bot = exprBot.getSingle(e);
 		if (bot == null) return false;
-		if (pattern == 0) {
-			return BotManager.getBot(bot, true) != null;
-		} else {
-			return BotManager.getBot(bot, true) == null;
-		}
+		return BotManager.getBot(bot, true) != null;
 	}
 
 	@Override
 	public @NotNull String toString(@NotNull Event e, boolean debug) {
-		return exprBot.toString(e, debug) + " "+ (pattern == 0 ? " is" : " is not") +" loaded";
+		return PropertyCondition.toString(
+				this,
+				PropertyCondition.PropertyType.HAVE,
+				e, debug,
+				exprBot,
+				"loaded"
+		);
 	}
 
 }

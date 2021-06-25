@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.expressions.member;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -27,10 +28,7 @@ import org.bukkit.event.Event;
 public class CondHasRole extends Condition {
 
 	static {
-		Skript.registerCondition(CondHasRole.class,
-				"["+ Utils.getPrefixName() +"] [the] [member] %member% has [discord] role %role%",
-				"["+ Utils.getPrefixName() +"] [the] [member] %member% (has not|hasn't|don't have|doesn't have) [discord] role %role%"
-		);
+		PropertyCondition.register(CondHasRole.class, PropertyCondition.PropertyType.HAVE, "[discord] [role] %role%", "member");
 	}
 
 	private Expression<Member> exprMember;
@@ -60,7 +58,13 @@ public class CondHasRole extends Condition {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "member " + exprMember.toString(e, debug) + " has the role " + exprRole.toString(e, debug);
+		return PropertyCondition.toString(
+				this,
+				PropertyCondition.PropertyType.HAVE,
+				e, debug,
+				exprMember,
+				"role " + exprRole.toString(e, debug)
+		);
 	}
 
 }

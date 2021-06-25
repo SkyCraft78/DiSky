@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.expressions.member;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.conditions.base.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -11,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
@@ -28,15 +30,15 @@ import org.bukkit.event.Event;
 public class CondHasDiscordPerm extends Condition {
 
 	static {
-		Skript.registerCondition(CondHasDiscordPerm.class,
-				"["+ Utils.getPrefixName() +"] [the] [member] %member% has [discord] permission %permission% [in [channel] %-channel/textchannel%]",
-				"["+ Utils.getPrefixName() +"] [the] [member] %member% (has not|hasn't|don't have|doesn't have) [discord] permission %permission% [in [channel] %-channel/textchannel%]"
+		PropertyCondition.register(CondHasDiscordPerm.class,
+				"[discord] permission %permissions% [in [channel] %-channel/voicechannel/textchannel%]",
+				"member"
 		);
 	}
 
 	private Expression<Member> exprMember;
 	private Expression<Permission> exprPerm;
-	private Expression<Object> exprChannel;
+	private Expression<GuildChannel> exprChannel;
 	private int pattern;
 
 	@SuppressWarnings("unchecked")
@@ -44,7 +46,7 @@ public class CondHasDiscordPerm extends Condition {
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
 		exprMember = (Expression<Member>) exprs[0];
 		exprPerm = (Expression<Permission>) exprs[1];
-		exprChannel = exprs.length == 3 ? null : (Expression<Object>) exprs[2];
+		exprChannel = (Expression<GuildChannel>) exprs[2];
 		pattern = matchedPattern;
 		return true;
 	}
@@ -52,29 +54,34 @@ public class CondHasDiscordPerm extends Condition {
 	@Override
 	public boolean check(Event e) {
 		Member member = exprMember.getSingle(e);
-		Permission permission = exprPerm.getSingle(e);
-		TextChannel channel = null;
-		if (exprChannel != null) channel = Utils.checkChannel(exprChannel);
+		Permission[] permissions = exprPerm.getAll(e);
+		GuildChannel channel = Utils.verifyVar(e, exprChannel);
 
-		if (member == null || permission == null) return false;
+		if (member == null || permissions.length == 0) return false;
 		if (pattern == 0) {
 			if (channel == null) {
-				return member.hasPermission(permission);
+				return member.hasPermission(permissions);
 			} else {
-				return member.hasPermission(channel, permission);
+				return member.hasPermission(channel, permissions);
 			}
 		} else {
 			if (channel == null) {
-				return !member.hasPermission(permission);
+				return !member.hasPermission(permissions);
 			} else {
-				return !member.hasPermission(channel, permission);
+				return !member.hasPermission(channel, permissions);
 			}
 		}
 	}
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "member " + exprMember.toString(e, debug) + " has the permission " + exprPerm.toString(e, debug);
+		return PropertyCondition.toString(
+				this,
+				PropertyCondition.PropertyType.HAVE,
+				e, debug,
+				exprMember,
+				"discord permission " + exprPerm.toString(e, debug) + (exprChannel == null ? "" : " in channel " + exprChannel.toString(e, debug))
+		);
 	}
 
 }
