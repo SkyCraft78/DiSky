@@ -75,7 +75,7 @@ public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
 
         @Override
         public GenericInteractionCreateEvent getInteractionEvent() {
-            return this.event;
+            return getJDAEvent();
         }
     }
 
