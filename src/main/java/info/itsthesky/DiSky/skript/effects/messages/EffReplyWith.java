@@ -23,7 +23,7 @@ import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
+import info.itsthesky.disky.tools.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;

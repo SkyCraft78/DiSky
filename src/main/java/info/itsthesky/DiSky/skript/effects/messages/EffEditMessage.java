@@ -14,7 +14,7 @@ import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
+import info.itsthesky.disky.tools.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;

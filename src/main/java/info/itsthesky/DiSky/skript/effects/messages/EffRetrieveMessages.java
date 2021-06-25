@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions.fromid;
+package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
@@ -11,53 +11,59 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.managers.BotManager;
-import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import info.itsthesky.disky.tools.MessageBuilder;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-@Name("Retrieve User")
-@Description("Retrieve a user from its ID, and store it in a variable.")
-@Examples("retrieve user with id \"388744165443371009\" and store it in {_user}")
-@Since("1.13")
-public class EffRetrieveUser extends Effect {
+import java.util.List;
+
+@Name("Retrieve Messages")
+@Description("Retrieve a specific amount of message in a text channel, and store them in a list variable.")
+@Examples("retrieve last 100 messages from event-channel and store them in {_msg::*}")
+@Since("2.0")
+public class EffRetrieveMessages extends Effect {
 
     static {
-        Skript.registerEffect(EffRetrieveUser.class,
-                "["+ Utils.getPrefixName() +"] retrieve [the] user with [the] id %string% and store (it|the user) in %-object%");
+        Skript.registerEffect(EffRetrieveMessages.class,
+                "["+ Utils.getPrefixName() +"] retrieve [the] [last] %number% (messages|msg) from [the] [channel] %channel/textchannel% and store (them|the messages) in %-objects%");
     }
 
-    private Expression<String> exprID;
+    private Expression<Number> exprAmount;
+    private Expression<GuildChannel> exprChannel;
     private Variable<?> variable;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         Utils.setHasDelayBefore(Kleenean.TRUE);
-        exprID = (Expression<String>) exprs[0];
-        Expression<?> var = exprs[1];
+        exprAmount = (Expression<Number>) exprs[0];
+        exprChannel = (Expression<GuildChannel>) exprs[1];
+        Expression<?> var = exprs[2];
         if (var != null && !(var instanceof Variable)) {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
         } else {
             variable = (Variable<?>) var;
+            if (!variable.isList()) {
+                Skript.error("Cannot store a list of messages into a non-list variable!");
+                return false;
+            }
         }
         return true;
     }
 
     @Override
     protected @Nullable TriggerItem walk(Event e) {
-        String input = exprID.getSingle(e);
-        if (input == null || !Utils.isNumeric(input)) return getNext();
+        Number amount = exprAmount.getSingle(e);
+        GuildChannel channel = exprChannel.getSingle(e);
+        if (amount == null || channel == null) return getNext();
+        if (!channel.getType().equals(ChannelType.TEXT)) return getNext();
         debug(e, true);
 
         Object localVars = Variables.removeLocals(e); // Back up local variables
@@ -66,8 +72,8 @@ public class EffRetrieveUser extends Effect {
         if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
             return null;
 
-        BotManager.getFirstBot().retrieveUserById(input).queue(
-                user -> runConsumer(user, e, localVars),
+        ((TextChannel) channel).getHistory().retrievePast(amount.intValue()).queue(
+                msg -> runConsumer(msg, e, localVars),
                 ex -> runConsumer(null, e, localVars)
         );
 
@@ -76,15 +82,15 @@ public class EffRetrieveUser extends Effect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "retrieve user with id " + exprID.toString(e, debug) + " and store it in " + variable.toString(e, debug);
+        return "retrieve last " + exprAmount.toString(e, debug) + " messages from channel "+ exprChannel.toString(e, debug) +" and store them in " + variable.toString(e, debug);
     }
 
-    private void runConsumer(@Nullable final User user, final Event e, final Object localVars) {
+    private void runConsumer(@Nullable final List<Message> message, final Event e, final Object localVars) {
         if (localVars != null)
             Variables.setLocalVariables(e, localVars);
 
-        if (variable != null && user != null) {
-            variable.change(e, new Object[] {user}, Changer.ChangeMode.SET);
+        if (variable != null && message != null) {
+            variable.change(e, UpdatingMessage.convert(message.toArray(new Message[0])), Changer.ChangeMode.SET);
         }
 
         if (getNext() != null) {
