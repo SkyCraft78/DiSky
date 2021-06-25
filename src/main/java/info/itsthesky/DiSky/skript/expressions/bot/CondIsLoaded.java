@@ -1,7 +1,7 @@
 package info.itsthesky.disky.skript.expressions.bot;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.conditions.base.PropertyCondition;
+import info.itsthesky.disky.tools.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -24,6 +24,7 @@ public class CondIsLoaded extends Condition {
 
 	static {
 		PropertyCondition.register(CondIsLoaded.class,
+				PropertyCondition.PropertyType.BE,
 				"(loaded|online) [on the server]",
 		"string");
 	}

@@ -3,6 +3,7 @@ package info.itsthesky.disky.skript.commands;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.localization.Language;
 import info.itsthesky.disky.managers.BotManager;
+import info.itsthesky.disky.skript.events.other.DiSkyCommand;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,6 +12,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +35,7 @@ public class CommandListener extends ListenerAdapter {
             CommandObject command = storage.getCommand();
             List<String> globalPrefixes = Arrays.asList(BotManager.prefixes.values().toArray(new String[0]).clone());
             for (Expression<String> prefix : command.getPrefixes()) {
+                if (prefix == null) return;
                 for (String alias : command.getUsableAliases()) {
                     Message message = e.getMessage();
                     TextChannel textChannel = null;
@@ -73,7 +77,7 @@ public class CommandListener extends ListenerAdapter {
                     } catch (Exception ignored) {}
                     String rawCommand = "";
 
-                    // TODO: 29/05/2021 Fix the global prefix system. HArd to interfere with original one :'(
+                    // TODO: 29/05/2021 Fix the global prefix system. Hard to interfere with original one :'(
                     if (nonNull(usedCommand)) {
                         if ((nonNull(rawPrefix) && usedCommand.equalsIgnoreCase(rawPrefix + alias))) {
                             event.setPrefix(rawPrefix);
@@ -85,13 +89,13 @@ public class CommandListener extends ListenerAdapter {
                             // Because most of bukkit's apis are sync only, make sure to run this on bukkit's thread
                             Utils.sync(() -> {
 
+                                Event ev = new DiSkyCommand.EvtDiSkyCommand(command, e);
+                                Bukkit.getPluginManager().callEvent(ev);
                                 lastCommandEvent = e;
                                 Bukkit.getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
+                                if (!event.isCancelled() && !((Cancellable) ev).isCancelled()) {
                                     command.execute(event);
                                 }
-                                //Bukkit.getPluginManager().callEvent(new EventDiSkyCommand(e, command));
-
                             });
 
                             return;
