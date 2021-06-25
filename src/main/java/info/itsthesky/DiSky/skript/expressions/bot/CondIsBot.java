@@ -23,7 +23,7 @@ public class CondIsBot extends Condition {
 
 	static {
 		PropertyCondition.register(CondIsBot.class,
-				"[discord] bot",
+				"[a] [discord] bot",
 				"member/user");
 	}
 
