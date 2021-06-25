@@ -6,7 +6,7 @@ import ch.njol.skript.log.HandlerList;
 import ch.njol.util.Kleenean;
 
 /**
- * @author ItsTheSky, thanks to TPGamesNL for the delayed reflection method <3
+ * @author ItsTheSky, thanks to TPGamesNL for the delayed reflection method, and Sashie for the color conversion <3
  */
 public interface VersionAdapter {
 

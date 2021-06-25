@@ -20,9 +20,7 @@ import info.itsthesky.disky.tools.object.UpdatingMessage;
 import info.itsthesky.disky.tools.section.DiSkySection;
 import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
@@ -34,8 +32,6 @@ public class SectionReact extends DiSkySection {
     private Expression<Emote> exprReact;
     private Expression<UpdatingMessage> exprMessage;
     private Expression<JDA> exprBot;
-    private static SectionReactEvent lastEvent;
-    private static GuildMessageReactionAddEvent lastJDAEvent;
 
     static {
         register(
@@ -97,13 +93,12 @@ public class SectionReact extends DiSkySection {
                                 && finalMessage.getId().equalsIgnoreCase(ev.getMessageId())
                                 && !idToCompare.equalsIgnoreCase(ev.getUser().getId()),
                         ev -> {
-                            lastEvent = new SectionReactEvent(ev);
-                            lastJDAEvent = ev;
+                            Event sectionEvent = new SectionReactEvent(ev);
                             if (!(event instanceof Cancellable) || !((Cancellable) event).isCancelled()) {
                                 ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
                             }
-                            Variables.setLocalVariables(e, localVars);
-                            runSection(e);
+                            Variables.setLocalVariables(sectionEvent, localVars);
+                            runSection(sectionEvent);
                         }
                 ));
             });
@@ -119,16 +114,51 @@ public class SectionReact extends DiSkySection {
         return "react to message" + exprMessage.toString(e, debug) + " with reaction " + exprReact.toString(e, debug);
     }
 
-    public static class SectionReactEvent extends BukkitEvent implements MessageEvent, Cancellable {
+    static {
+        EventValues.registerEventValue(SectionReactEvent.class, Member.class, new Getter<Member, SectionReactEvent>() {
+            @Override
+            public Member get(SectionReactEvent event) {
+                return event.JDAEvent.getMember();
+            }
+        }, 0);
 
-        static {
-            EventValues.registerEventValue(SectionReactEvent.class, Member.class, new Getter<Member, SectionReactEvent>() {
-                @Override
-                public Member get(SectionReactEvent event) {
-                    return event.JDAEvent.getMember();
-                }
-            }, 0);
-        }
+        EventValues.registerEventValue(SectionReactEvent.class, User.class, new Getter<User, SectionReactEvent>() {
+            @Override
+            public User get(SectionReactEvent event) {
+                return event.JDAEvent.getUser();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(SectionReactEvent.class, JDA.class, new Getter<JDA, SectionReactEvent>() {
+            @Override
+            public JDA get(SectionReactEvent event) {
+                return event.JDAEvent.getJDA();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(SectionReactEvent.class, GuildChannel.class, new Getter<GuildChannel, SectionReactEvent>() {
+            @Override
+            public GuildChannel get(SectionReactEvent event) {
+                return event.JDAEvent.getChannel();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(SectionReactEvent.class, TextChannel.class, new Getter<TextChannel, SectionReactEvent>() {
+            @Override
+            public TextChannel get(SectionReactEvent event) {
+                return event.JDAEvent.getChannel();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(SectionReactEvent.class, UpdatingMessage.class, new Getter<UpdatingMessage, SectionReactEvent>() {
+            @Override
+            public UpdatingMessage get(SectionReactEvent event) {
+                return UpdatingMessage.from(event.JDAEvent.getMessageId());
+            }
+        }, 0);
+    }
+
+    public static class SectionReactEvent extends BukkitEvent implements MessageEvent, Cancellable {
 
         private final GuildMessageReactionAddEvent JDAEvent;
 
@@ -138,7 +168,7 @@ public class SectionReact extends DiSkySection {
 
         @Override
         public MessageChannel getMessageChannel() {
-            return lastEvent.JDAEvent.getChannel();
+            return JDAEvent.getChannel();
         }
 
         private boolean cancelled;
