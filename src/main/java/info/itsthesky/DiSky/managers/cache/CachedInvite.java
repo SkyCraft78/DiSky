@@ -15,9 +15,9 @@ public class CachedInvite {
     private int uses;
 
     public CachedInvite(final Invite invite) {
-        this.guildId = invite.getGuild().getIdLong();
+        this.guildId = invite.getGuild() == null ? null : invite.getGuild().getIdLong();
         this.uses = invite.getUses();
-        this.userID = invite.getInviter().getIdLong();
+        this.userID = invite.getInviter() == null ? null : invite.getInviter().getIdLong();
         this.code = invite.getCode();
     }
 
