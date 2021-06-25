@@ -11,7 +11,6 @@ import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.util.Getter;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.events.BitrateEvent;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.events.BukkitEvent;

@@ -1,8 +1,8 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.events.BotJoin;
-import info.itsthesky.disky.skript.events.MemberJoin;
+import info.itsthesky.disky.skript.events.bot.BotJoin;
+import info.itsthesky.disky.skript.events.member.MemberJoin;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;

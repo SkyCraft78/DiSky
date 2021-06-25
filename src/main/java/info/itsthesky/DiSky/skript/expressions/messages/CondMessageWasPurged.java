@@ -11,7 +11,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.skript.effects.grab.EffPurgeMessages;
-import info.itsthesky.disky.skript.events.MessageDelete;
+import info.itsthesky.disky.skript.events.message.MessageDelete;
 import info.itsthesky.disky.tools.Utils;
 import org.bukkit.event.Event;
 

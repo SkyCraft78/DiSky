@@ -1,7 +1,7 @@
 package info.itsthesky.disky.managers.cache;
 
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.events.MessageEdit;
+import info.itsthesky.disky.skript.events.message.MessageEdit;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;

@@ -4,12 +4,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.events.TrackEvent;
+import info.itsthesky.disky.skript.events.audio.TrackEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;

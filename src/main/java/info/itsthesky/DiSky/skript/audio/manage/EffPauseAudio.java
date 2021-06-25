@@ -10,7 +10,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.music.AudioUtils;
-import info.itsthesky.disky.skript.events.TrackEvent;
+import info.itsthesky.disky.skript.events.audio.TrackEvent;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.Bukkit;
