@@ -48,10 +48,8 @@ import java.net.URLConnection;
 public class EffUploadFile extends AsyncEffect {
 
     static {
-        String pImage = "[file] %string%";
-        if (DiSky.getPluginManager().isPluginEnabled("SkImage")) pImage = "[(file|image)] %string/image%";
         Skript.registerEffect(EffUploadFile.class,
-                "["+ Utils.getPrefixName() +"] upload "+pImage+" [(with name|named) %-string%] [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] upload %"+(DiSky.SKIMAGE_INSTALLED ? "string/image" : "text")+"% [(with name|named) %-string%] [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprFile;

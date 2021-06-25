@@ -6,6 +6,7 @@ import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.managers.music.AudioUtils;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Metrics;
+import info.itsthesky.disky.tools.ReflectionUtils;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.versions.VSkript22;
 import info.itsthesky.disky.tools.versions.VSkript23;
@@ -32,6 +33,7 @@ public class DiSky extends JavaPlugin {
     private Logger logger;
     private static PluginManager pluginManager;
     public static VersionAdapter SKRIPT_ADAPTER;
+    public static boolean SKIMAGE_INSTALLED;
 
     @Override
     public void onEnable() {
@@ -63,6 +65,10 @@ public class DiSky extends JavaPlugin {
         }
 
         RestAction.setDefaultFailure(DiSkyErrorHandler::logException);
+
+        SKIMAGE_INSTALLED = ReflectionUtils.classExist("info.itsthesky.SkImage.SkImage");
+        if (SKIMAGE_INSTALLED)
+            success("Found SkImage, enabling locale image in the upload effect!");
 
         /* Skript loading */
         log("Skript detection ...");
