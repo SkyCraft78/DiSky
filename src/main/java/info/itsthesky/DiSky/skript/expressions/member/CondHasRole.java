@@ -1,7 +1,6 @@
 package info.itsthesky.disky.skript.expressions.member;
 
-import ch.njol.skript.Skript;
-import ch.njol.skript.conditions.base.PropertyCondition;
+import info.itsthesky.disky.tools.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -10,7 +9,6 @@ import ch.njol.skript.lang.Condition;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;

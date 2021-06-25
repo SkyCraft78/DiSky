@@ -1,7 +1,7 @@
 package info.itsthesky.disky.skript.expressions.bot;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.conditions.base.PropertyCondition;
+import info.itsthesky.disky.tools.PropertyCondition;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
