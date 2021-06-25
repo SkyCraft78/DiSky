@@ -12,7 +12,7 @@ public class VoiceJoin extends DiSkyEvent<GuildVoiceJoinEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", VoiceJoin.class, EvtVoiceJoin.class,
-                "[(user|member)] voice join")
+                "[(user|member)] voice [channel] join")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");

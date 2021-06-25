@@ -12,7 +12,7 @@ public class VoiceLeave extends DiSkyEvent<GuildVoiceLeaveEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", VoiceLeave.class, EvtVoiceLeave.class,
-                "[(user|member)] voice leave")
+                "[(user|member)] voice [channel] leave")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
