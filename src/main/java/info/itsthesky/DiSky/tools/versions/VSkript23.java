@@ -9,7 +9,17 @@ import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.ReflectionUtils;
 
+import java.lang.reflect.Field;
+
 public class VSkript23 implements VersionAdapter {
+
+	private final Field hasDelayBeforeField;
+
+	public VSkript23() {
+		hasDelayBeforeField = ReflectionUtils.getField(ScriptLoader.class, "hasDelayBefore");
+		hasDelayBeforeField.setAccessible(true);
+	}
+
 	@Override
 	public Class<SkriptColor> getColorClass() {
 		return SkriptColor.class;
@@ -27,7 +37,8 @@ public class VSkript23 implements VersionAdapter {
 
 	@Override
 	public Kleenean getHasDelayBefore() {
-		return ScriptLoader.getHasDelayBefore();
+		// Check https://github.com/SkriptLang/Skript/blob/7301bab6fe12b37c864f83b2bb9dfc0e505f3559/src/main/java/ch/njol/skript/ScriptLoader.java#L206
+		return ReflectionUtils.getFieldValue(hasDelayBeforeField);
 	}
 
 	@Override
@@ -37,7 +48,7 @@ public class VSkript23 implements VersionAdapter {
 
 	@Override
 	public void setHasDelayBefore(Kleenean hasDelayBefore) {
-		ScriptLoader.setHasDelayBefore(hasDelayBefore);
+		ReflectionUtils.setFieldValue(hasDelayBeforeField, hasDelayBefore);
 	}
 
 	@Override
