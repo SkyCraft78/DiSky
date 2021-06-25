@@ -11,6 +11,9 @@ import info.itsthesky.disky.tools.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
+/**
+ * @author ItsTheSky, thanks to TPGamesNL for the delayed reflection method, and Sashie for the color conversion <3
+ */
 public class VSkript23 implements VersionAdapter {
 
 	private final Field hasDelayBeforeField;

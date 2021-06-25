@@ -13,6 +13,9 @@ import ch.njol.skript.util.Color;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.ReflectionUtils;
 
+/**
+ * @author ItsTheSky, thanks to TPGamesNL for the delayed reflection method, and Sashie for the color conversion <3
+ */
 public class VSkript22 implements VersionAdapter {
 
 	private Field byNameField;

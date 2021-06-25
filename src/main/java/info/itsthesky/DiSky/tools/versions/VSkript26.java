@@ -8,6 +8,9 @@ import ch.njol.skript.util.SkriptColor;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.ReflectionUtils;
 
+/**
+ * @author ItsTheSky, thanks to TPGamesNL for the delayed reflection method, and Sashie for the color conversion <3
+ */
 public class VSkript26 implements VersionAdapter {
 	@Override
 	public Class<SkriptColor> getColorClass() {
