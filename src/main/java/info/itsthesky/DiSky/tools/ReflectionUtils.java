@@ -47,6 +47,15 @@ public class ReflectionUtils {
         return null;
     }
 
+    public static boolean classExist(String clazz) {
+        try {
+            Class.forName(clazz);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
     /**
      * @param clazz The class to create the instance of.
      * @return A instance object of the given class.

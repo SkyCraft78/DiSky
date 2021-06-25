@@ -78,7 +78,7 @@ public class Messages extends ListenerAdapter {
                                 cachedMessages.add(new CachedMessage(message));
                         });
                     } catch (MissingAccessException ex) {
-                        DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message delete event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+                        if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message delete event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
                     }
                 }
                 if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Message delete cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
