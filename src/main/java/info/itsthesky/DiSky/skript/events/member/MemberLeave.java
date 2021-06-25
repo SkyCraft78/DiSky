@@ -14,7 +14,7 @@ public class MemberLeave extends DiSkyEvent<GuildMemberRemoveEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", MemberLeave.class, EvtMemberLeave.class,
-                "pattern")
+                "member leave [guild]")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
