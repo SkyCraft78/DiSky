@@ -256,9 +256,11 @@ public class CommandFactory {
                     prefix = prefix.substring(1, prefix.length() - 1);
                 }
                 Expression<String> prefixExpr = VariableString.newInstance(prefix, StringMode.MESSAGE);
-                if (((VariableString) prefixExpr).isSimple()) {
-                    prefixExpr = new SimpleLiteral<>(prefix, false);
-                }
+                try {
+                    if (((VariableString) prefixExpr).isSimple()) {
+                        prefixExpr = new SimpleLiteral<>(prefix, false);
+                    }
+                } catch (NullPointerException ignored) { }
                 prefixes.add(prefixExpr);
             }
             for (String prefix : BotManager.prefixes.values()) {
