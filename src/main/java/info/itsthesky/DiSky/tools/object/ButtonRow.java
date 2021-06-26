@@ -5,12 +5,14 @@ import java.util.List;
 
 public class ButtonRow {
 
-    private final List<ButtonBuilder> buttons;
+    private List<ButtonBuilder> buttons;
 
     public ButtonRow(final List<ButtonBuilder> buttons) {
         this.buttons = buttons;
     }
-    
+
+    public void clearButtons() { buttons = new ArrayList<>(); }
+
     public ButtonRow() {
         this.buttons = new ArrayList<>();
     }
