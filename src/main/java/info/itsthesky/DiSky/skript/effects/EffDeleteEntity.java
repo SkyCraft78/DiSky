@@ -30,7 +30,7 @@ public class EffDeleteEntity extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffDeleteEntity.class,
-                "["+ Utils.getPrefixName() +"] delete [discord entity] %messages/channels/voicechannel/textchannels/roles% [with %-bot%]");
+                "["+ Utils.getPrefixName() +"] delete [discord entit(y|ies)] %messages/channels/voicechannels/textchannels/roles% [with %-bot%]");
     }
 
     private Expression<Object> exprEntity;
