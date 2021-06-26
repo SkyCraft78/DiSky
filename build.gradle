@@ -46,6 +46,7 @@ dependencies {
 shadowJar {
     archiveName 'DiSky ' + version + ".jar"
     relocate 'net.dv8tion.jda', 'info.itsthesky.libs.jda'
+    //relocate 'com.neovisionaries.ws', 'info.itsthesky.libs.com.neovisionaries.ws'/
     configurations = [project.configurations.compile]
 }
 /* jar {

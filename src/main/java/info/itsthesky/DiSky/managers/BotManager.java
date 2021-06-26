@@ -61,15 +61,17 @@ public class BotManager {
 
         JDA jda;
         builder.setToken(token)
-                //.addEventListeners(new JDAListener())
-                .addEventListeners(new Messages())
-                //.addEventListeners(new EditedMessages())
                 .addEventListeners(new Utils())
                 .addEventListeners(new CommandListener())
-                .addEventListeners(new InviteTracker())
                 .addEventListeners(new WaiterListener())
                 .addEventListeners(new MessageUpdater())
                 .addEventListeners(customListener.toArray(new Object[0]));
+
+        if (DiSky.CACHE_ENABLED) {
+            builder
+                    .addEventListeners(new Messages())
+                    .addEventListeners(new InviteTracker());
+        }
         try {
             jda = builder.build().awaitReady();
         } catch (LoginException | InterruptedException e) {

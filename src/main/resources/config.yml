@@ -24,6 +24,10 @@ HandleErrors:
   NullPointerException: false
   InsufficientPermissionException: false
 
+# If DiSky should cache or not entities, such as messages and invites.
+# Disabling it will make the bot load faster, but message edit and delete event will not work fine!
+CacheEntities: true
+
 # Enable or disable the token of bot expression.
 # It's mainly to avoid token leakers like with the
 # OP / Permissions commands ('!')
