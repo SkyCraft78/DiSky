@@ -24,8 +24,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 
-import static info.itsthesky.disky.tools.MessageBuilder.SplitPolicy.NEWLINE;
-
 /**
  * Builder system used to build {@link net.dv8tion.jda.api.entities.Message Messages}.
  * <br>Internally the builder uses a {@link java.lang.StringBuilder} to take advantage of the efficiencies offered by the
@@ -40,6 +38,7 @@ public class MessageBuilder implements Appendable
 
 {
     protected final StringBuilder builder = new StringBuilder();
+    protected final String NEWLINE = "\n";
 
     protected boolean isTTS = false;
     protected String nonce;
