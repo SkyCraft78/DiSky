@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 public class DiSky extends JavaPlugin {
 
     public static final String CONFIG = "config.yml";
+    public static boolean CACHE_ENABLED;
     /* Initialisation */
     private static DiSky instance;
     private Logger logger;
@@ -136,6 +137,8 @@ public class DiSky extends JavaPlugin {
         String currentVersion = getDescription().getVersion();
         if (!containAlphaOrBeta && !currentVersion.equals(latestVersion))
             warn("You are not on the latest released version of DiSky! You're on " + currentVersion + " but latest is " + latestVersion);
+
+        CACHE_ENABLED = Utils.getOrSetDefault("config.yml", "CacheEntities", true);
 
         if (containAlphaOrBeta)
             warn("You're using an alpha (or beta) version of DiSky. If you have bugs, report them to the discord!");

@@ -60,8 +60,10 @@ public class Messages extends ListenerAdapter {
 
     @Override
     public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
-        MessageDelete.content = retrieveMessage(event.getMessageId()).getContent();
-        MessageDelete.id = event.getMessageIdLong();
+        try {
+            MessageDelete.content = retrieveMessage(event.getMessageId()).getContent();
+            MessageDelete.id = event.getMessageIdLong();
+        } catch (Exception ignored) {}
     }
 
     @Override
