@@ -18,24 +18,51 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.event.Event;
 
+import java.util.List;
+
 @Name("Enable Intent")
-@Description("Enable specific intent for the current bot in a 'create discord bot' scope.")
+@Description({"Enable specific intent for the current bot in a 'create discord bot' scope. The login effect MUST be in the scope to take the desired configuration.",
+"You can also enable (or disable) every default intent needed for a bot, and if you can enable both intent on the discord developer portal."})
 @Examples("on load:\n" +
         "    make new discord bot:\n" +
-        "        disable guild presences intent for bot builder\n" +
-        "        disable guild members intent for bot builder\n" +
-        "        disable activity cache for bot builder\n" +
-        "        disable client status cache for bot builder\n" +
-        "        login to \"TOKEN\" using base bot builder with the name \"NAME\"")
+        "        enable guild bans intent\n" +
+        "        enable guild emojis intent\n" +
+        "        enable guild webhooks intent\n" +
+        "        enable guild invites intent\n" +
+        "        enable guild voice states intent\n" +
+        "        enable guild message reactions intent\n" +
+        "        enable guild message typing intent\n" +
+        "        enable direct messages intent\n" +
+        "        enable guild messages intent\n" +
+        "        enable guild members intent\n" +
+        "        enable guild presences intent\n" +
+        "        login to \"bot token\" with name \"bot name\"")
 @Since("2.0")
 public class EffManageBuilder extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffManageBuilder.class,
-                "enable [intent] %intent% [intent]");
+                "(enable|disable) [intent] %intents% [intent]",
+                "(enable|disable) [all] default intent[s]");
     }
 
+    private final GatewayIntent[] defaults = new GatewayIntent[] {
+            GatewayIntent.GUILD_BANS,
+            GatewayIntent.GUILD_EMOJIS,
+            GatewayIntent.GUILD_WEBHOOKS,
+            GatewayIntent.GUILD_INVITES,
+            GatewayIntent.GUILD_VOICE_STATES,
+            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+            GatewayIntent.GUILD_MESSAGE_TYPING,
+            GatewayIntent.DIRECT_MESSAGES,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_PRESENCES
+    };
+
     private Expression<GatewayIntent> exprIntent;
+    private boolean enable;
+    private boolean defaultIntents;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -44,31 +71,56 @@ public class EffManageBuilder extends AsyncEffect {
             Skript.error("The 'enable intent' effect can only be used in a create discord bot scope!");
             return false;
         }
-        exprIntent = (Expression<GatewayIntent>) exprs[0];
+        defaultIntents = matchedPattern == 1;
+        enable = !parseResult.expr.startsWith("disable");
+        if (!defaultIntents) exprIntent = (Expression<GatewayIntent>) exprs[0];
         return true;
     }
 
     @Override
     protected void execute(Event e) {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            GatewayIntent intent = exprIntent.getSingle(e);
-            if (intent == null) return;
-            ScopeBotBuilder.lastBuilder.enableIntents(intent);
-            
-            switch (intent) {
-                case GUILD_MEMBERS:
-                    ScopeBotBuilder.lastBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
-                    break;
-                case GUILD_PRESENCES:
-                    ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.CLIENT_STATUS);
-                    ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.ACTIVITY);
-                    break;
-                case GUILD_VOICE_STATES:
-                    ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.VOICE_STATE);
-                    break;
-                case GUILD_EMOJIS:
-                    ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.EMOTE);
-                    break;
+            GatewayIntent[] intents = defaultIntents ? defaults : exprIntent.getArray(e);
+            if (intents == null) return;
+
+            for (GatewayIntent intent : intents) {
+                if (enable) {
+                    ScopeBotBuilder.lastBuilder.enableIntents(intent);
+
+                    switch (intent) {
+                        case GUILD_MEMBERS:
+                            ScopeBotBuilder.lastBuilder.setMemberCachePolicy(MemberCachePolicy.ALL);
+                            break;
+                        case GUILD_PRESENCES:
+                            ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.CLIENT_STATUS);
+                            ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.ACTIVITY);
+                            break;
+                        case GUILD_VOICE_STATES:
+                            ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.VOICE_STATE);
+                            break;
+                        case GUILD_EMOJIS:
+                            ScopeBotBuilder.lastBuilder.enableCache(CacheFlag.EMOTE);
+                            break;
+                    }
+                } else {
+                    ScopeBotBuilder.lastBuilder.disableIntents(intent);
+
+                    switch (intent) {
+                        case GUILD_MEMBERS:
+                            ScopeBotBuilder.lastBuilder.setMemberCachePolicy(MemberCachePolicy.DEFAULT);
+                            break;
+                        case GUILD_PRESENCES:
+                            ScopeBotBuilder.lastBuilder.disableCache(CacheFlag.CLIENT_STATUS);
+                            ScopeBotBuilder.lastBuilder.disableCache(CacheFlag.ACTIVITY);
+                            break;
+                        case GUILD_VOICE_STATES:
+                            ScopeBotBuilder.lastBuilder.disableCache(CacheFlag.VOICE_STATE);
+                            break;
+                        case GUILD_EMOJIS:
+                            ScopeBotBuilder.lastBuilder.disableCache(CacheFlag.EMOTE);
+                            break;
+                    }
+                }
             }
         });
     }
