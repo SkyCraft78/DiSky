@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.JDA;
 import org.bukkit.event.Event;
 
 @Name("Bot")
-@Description("Return  bot object using the bot name.")
+@Description("Return bot object using the bot name.")
 @Examples("set {_bot} to bot named \"MyBot\"")
 @Since("1.0")
 public class ExprJDA extends SimpleExpression<JDA> {

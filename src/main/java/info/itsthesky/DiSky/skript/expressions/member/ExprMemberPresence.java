@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.effects.status;
+package info.itsthesky.disky.skript.expressions.member;
 
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
