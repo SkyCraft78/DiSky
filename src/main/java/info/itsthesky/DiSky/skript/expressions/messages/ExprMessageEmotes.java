@@ -17,7 +17,7 @@ import org.bukkit.event.Event;
 
 @Name("Used Emotes")
 @Description("Return all emotes used in a message.")
-@Examples("set {_users::*} to mentioned users in event-message")
+@Examples("set {_users::*} to used emotes of event-message")
 @Since("1.13.1")
 public class ExprMessageEmotes extends SimpleExpression<Emote> {
 
