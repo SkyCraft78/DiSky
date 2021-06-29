@@ -22,6 +22,9 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * @author ItsTheSky
+ */
 public class AudioUtils {
 
     public static HashMap<AudioPlayer, AudioData> MUSIC_DATA = new HashMap<>();
@@ -114,47 +117,23 @@ public class AudioUtils {
         return musicManager;
     }
 
-    public static void play(Guild guild, VoiceChannel channel, AudioTrack... tracks) {
+    public static void play(Guild guild, AudioTrack... tracks) {
         GuildAudioManager musicManager = getGuildAudioPlayer(guild);
-        connectToFirstVoiceChannel(guild.getAudioManager(), channel);
+        //connectToVoiceChannel(guild.getAudioManager(), channel);
         for (AudioTrack track : tracks) {
             musicManager.trackScheduler.queue(track);
         }
     }
 
-    public static void connectToFirstVoiceChannel(AudioManager audioManager, VoiceChannel channel) {
-        if (audioManager.isConnected() && getGuildAudioPlayer(channel.getGuild()).getPlayer().getPlayingTrack() == null)
+    public static void connectToVoiceChannel(AudioManager audioManager, VoiceChannel channel, boolean force) {
+        if (force)
             audioManager.closeAudioConnection();
-        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+        if (!audioManager.isConnected())
             audioManager.openAudioConnection(channel);
-        }
     }
 
     public static AudioTrack skipTrack(Guild guild) {
         GuildAudioManager musicManager = getGuildAudioPlayer(guild);
         return musicManager.trackScheduler.nextTrack();
-    }
-
-    public static void loadAndPlay(final Guild guild, final VoiceChannel channel, String id) {
-        GuildAudioManager musicManager = getGuildAudioPlayer(guild);
-        MANAGER.loadItemOrdered(musicManager, id, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                play(guild, channel, track);
-            }
-
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
-                if (firstTrack == null) firstTrack = playlist.getTracks().get(0);
-                play(guild, channel, firstTrack);
-            }
-
-            @Override
-            public void noMatches() { }
-
-            @Override
-            public void loadFailed(FriendlyException exception) { }
-        });
     }
 }

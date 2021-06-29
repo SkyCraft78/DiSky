@@ -13,11 +13,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.disky.managers.music.AudioUtils;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.bukkit.event.Event;
 
-@Name("Play Audio")
-@Description("Play a specific audio track (can be get from search or load locale effects) to a voice channel")
+@Name("Connect Bot")
+@Description("Connect a bot to a specific voice channel. Then, you can use the play effect to play something. Using the force part, it will simply disconnect the bot if it already connected.")
 @Examples("discord command play [<string>]:\n" +
         "\tprefixes: *\n" +
         "\taliases: p\n" +
@@ -69,44 +72,47 @@ import org.bukkit.event.Event;
         "\t\t\t\tadd \"`•` Author: %track author of {_track}%\" to {_l::*}\n" +
         "\t\t\t\tset description of embed to join {_l::*} with nl\n" +
         "\t\t\treply with last embed")
-@Since("1.6, 1.9 (rework using search), 2.0 (rework using connect effect)")
-public class EffPlayAudio extends Effect {
+@Since("2.0")
+public class EffConnect extends Effect {
 
     static {
-        Skript.registerEffect(EffPlayAudio.class, // [the] [bot] [(named|with name)] %string%
-                "["+ Utils.getPrefixName() +"] play [tracks] %tracks% in [the] [guild] %guild% [with %-bot%]");
+        Skript.registerEffect(EffConnect.class, // [the] [bot] [(named|with name)] %string%
+                "["+ Utils.getPrefixName() +"] [force] connect [the] %bot% to [the] [voice] [channel] %channel/voicechannel%",
+                "["+ Utils.getPrefixName() +"] [force] make [the] %bot% join [the] [voice] [channel] %channel/voicechannel%"
+                );
     }
 
-    private Expression<AudioTrack> exprTracks;
-    private Expression<Guild> exprGuild;
     private Expression<JDA> exprBot;
+    private Expression<GuildChannel> exprChannel;
+    private boolean force;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprTracks = (Expression<AudioTrack>) exprs[0];
-        exprGuild = (Expression<Guild>) exprs[1];
-        exprBot = (Expression<JDA>) exprs[2];
+        exprBot = (Expression<JDA>) exprs[0];
+        exprChannel = (Expression<GuildChannel>) exprs[1];
+        force = parseResult.expr.contains("force");
         return true;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     protected void execute(Event e) {
-        AudioTrack[] tracks = exprTracks.getAll(e);
-        Guild guild = exprGuild.getSingle(e);
-        JDA bot = Utils.verifyVar(e, exprBot);
-        if (guild == null || tracks.length == 0) return;
+        GuildChannel channel = exprChannel.getSingle(e);
+        JDA bot = exprBot.getSingle(e);
+        if (channel == null || bot == null) return;
 
-        if (bot != null)
-            guild = bot.getGuildById(guild.getId());
+        // Be sure the channel is got by the right JDA
+        channel = bot.getVoiceChannelById(channel.getId());
 
-        AudioUtils.play(guild, tracks);
+        if (!channel.getType().equals(ChannelType.VOICE)) return;
+
+        AudioUtils.connectToVoiceChannel(channel.getGuild().getAudioManager(), (VoiceChannel) channel, force);
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "play tracks " + exprTracks.toString(e, debug) + " in guild " + exprGuild.toString(e, debug) + (exprBot == null ? "" : " with bot" + exprBot.toString(e, debug));
+        return (force ? "force " : "") + "connect the bot " + exprBot.toString(e, debug) + " to channel " + exprChannel.toString(e, debug);
     }
 
 }

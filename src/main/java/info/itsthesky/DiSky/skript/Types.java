@@ -431,7 +431,7 @@ public class Types {
 					@Override
 					public @NotNull User parse(final @NotNull String s, final @NotNull ParseContext context) {
 						if (context.equals(ParseContext.COMMAND)) {
-							return (Utils.parseLong(s, false, true) == null ? null : BotManager.getFirstBot().getUserById(Utils.parseLong(s, false, true)));
+							return (Utils.parseLong(s, false, true) == null ? null : BotManager.search(jda -> jda.retrieveUserById(Utils.parseLong(s, false, true)).complete()));
 						}
 						return null;
 					}
