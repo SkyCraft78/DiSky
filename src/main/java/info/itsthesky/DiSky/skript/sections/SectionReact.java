@@ -49,64 +49,43 @@ public class SectionReact extends DiSkySection {
         return init("react section", SectionReactEvent.class, parseResult);
     }
 
-    @Nullable
     @Override
-    protected TriggerItem walk(Event e) {
-        debug(e, true);
+    protected void execute(Event e) {
+        DiSkyErrorHandler.executeHandleCode(e, event -> {
+            Emote emote = exprReact.getSingle(e);
+            UpdatingMessage tempMessage = exprMessage.getSingle(e);
+            JDA bot = Utils.verifyVar(e, exprBot);
+            if (tempMessage == null || emote == null) return;
+            Message message = tempMessage.getMessage();
 
-        Delay.addDelayedEvent(e); // Mark this event as delayed
-        Object localVars = Variables.removeLocals(e); // Back up local variables
+            if (bot != null)
+                message = bot.getTextChannelById(message.getId()).getHistory().getMessageById(message.getId());
 
-        if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
-            return null;
-
-        Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-            Object timing = null;
-            if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                Trigger trigger = getTrigger();
-                if (trigger != null) {
-                    timing = SkriptTimings.start(trigger.getDebugLabel());
-                }
+            if (emote.isEmote()) {
+                message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+            } else {
+                message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
             }
 
-            DiSkyErrorHandler.executeHandleCode(e, event -> {
-                Emote emote = exprReact.getSingle(e);
-                UpdatingMessage tempMessage = exprMessage.getSingle(e);
-                JDA bot = Utils.verifyVar(e, exprBot);
-                if (tempMessage == null || emote == null) return;
-                Message message = tempMessage.getMessage();
-
-                if (bot != null)
-                    message = bot.getTextChannelById(message.getId()).getHistory().getMessageById(message.getId());
-
-                if (emote.isEmote()) {
-                    message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
-                } else {
-                    message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
-                }
-
-                String idToCompare = message.getJDA().getSelfUser().getId();
-                Message finalMessage = message;
-                WaiterListener.events.add(new WaiterListener.WaitingEvent<>(
-                        GuildMessageReactionAddEvent.class,
-                        ev -> new Emote(ev.getReaction().getReactionEmote()).getName().equalsIgnoreCase(emote.getName())
-                                && finalMessage.getId().equalsIgnoreCase(ev.getMessageId())
-                                && !idToCompare.equalsIgnoreCase(ev.getUser().getId()),
-                        ev -> {
-                            Event sectionEvent = new SectionReactEvent(ev);
-                            if (!(event instanceof Cancellable) || !((Cancellable) event).isCancelled()) {
-                                ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
-                            }
-                            Variables.setLocalVariables(sectionEvent, localVars);
-                            runSection(sectionEvent);
-                        }
-                ));
-            });
-
-            Variables.removeLocals(e); // Clean up local vars, we may be exiting now
-            SkriptTimings.stop(timing); // Stop timing if it was even started
+            String idToCompare = message.getJDA().getSelfUser().getId();
+            Message finalMessage = message;
+            Object vars = Variables.removeLocals(event);
+            Variables.setLocalVariables(event, vars);
+            WaiterListener.events.add(new WaiterListener.WaitingEvent<>(
+                    GuildMessageReactionAddEvent.class,
+                    ev -> new Emote(ev.getReaction().getReactionEmote()).getName().equalsIgnoreCase(emote.getName())
+                            && finalMessage.getId().equalsIgnoreCase(ev.getMessageId())
+                            && !idToCompare.equalsIgnoreCase(ev.getUser().getId()),
+                    ev -> {
+                        SectionReactEvent sectionEvent = new SectionReactEvent(ev);
+                        System.out.println(sectionEvent.isCancelled());
+                        if (sectionEvent.isCancelled())
+                            ev.getReaction().removeReaction(ev.getUser()).queue(null, DiSkyErrorHandler::logException);
+                        Variables.setLocalVariables(sectionEvent, vars);
+                        runSection(sectionEvent);
+                    }
+            ));
         });
-        return null;
     }
 
     @Override

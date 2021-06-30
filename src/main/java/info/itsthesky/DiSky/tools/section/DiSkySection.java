@@ -22,6 +22,7 @@ public abstract class DiSkySection extends EffectSection {
     private boolean alreadyExecuted = false;
 
     // This one should never be used btw
+    // You should override it :)
     @Override
     public boolean init(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         //throw new IllegalStateException();

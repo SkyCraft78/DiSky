@@ -32,7 +32,7 @@ public abstract class EffectSection extends Condition {
         /*if (this instanceof LazyEffectSection) //This one doesn't need to load the section separated.
             return;*/
         Node n = SkriptLogger.getNode(); //Skript sets the node before parsing this 'effect'
-        if (n == null || !(n instanceof SectionNode)) //Check in case it wasn't loaded as inline condition
+        if (!(n instanceof SectionNode)) //Check in case it wasn't loaded as inline condition
             return;
         //True if it was used as condition
         hasIfOrElseIf = StringUtils.startsWithIgnoreCase(n.getKey(), "if ") || StringUtils.startsWithIgnoreCase(n.getKey(), "else if ");
