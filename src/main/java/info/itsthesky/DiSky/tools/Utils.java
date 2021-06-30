@@ -269,10 +269,10 @@ public class Utils extends ListenerAdapter {
 
     public static Emote unicodeFrom(String input) {
         if (EmojiManager.isEmoji(input)) {
-            return new Emote(input);
+            return new Emote(input, EmojiParser.parseToUnicode(input));
         } else {
             String emote = input.contains(":") ? input : ":" + input + ":";
-            return new Emote(EmojiParser.parseToUnicode(emote));
+            return new Emote(input.replaceAll(":", ""), EmojiParser.parseToUnicode(emote));
         }
     }
 
