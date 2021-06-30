@@ -73,7 +73,7 @@ public class SectionReact extends DiSkySection {
             Variables.setLocalVariables(event, vars);
             WaiterListener.events.add(new WaiterListener.WaitingEvent<>(
                     GuildMessageReactionAddEvent.class,
-                    ev -> new Emote(ev.getReaction().getReactionEmote()).getName().equalsIgnoreCase(emote.getName())
+                    ev -> Emote.fromReaction(ev.getReaction().getReactionEmote()).getName().equalsIgnoreCase(emote.getName())
                             && finalMessage.getId().equalsIgnoreCase(ev.getMessageId())
                             && !idToCompare.equalsIgnoreCase(ev.getUser().getId()),
                     ev -> {

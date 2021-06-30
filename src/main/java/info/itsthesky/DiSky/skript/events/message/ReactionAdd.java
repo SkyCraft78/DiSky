@@ -50,7 +50,7 @@ public class ReactionAdd extends DiSkyEvent<GuildMessageReactionAddEvent> {
        EventValues.registerEventValue(EvtReactionAdd.class, info.itsthesky.disky.tools.object.Emote.class, new Getter<info.itsthesky.disky.tools.object.Emote, EvtReactionAdd>() {
             @Override
             public info.itsthesky.disky.tools.object.Emote get(EvtReactionAdd event) {
-                return new info.itsthesky.disky.tools.object.Emote(event.getJDAEvent().getReactionEmote());
+                return info.itsthesky.disky.tools.object.Emote.fromReaction(event.getJDAEvent().getReactionEmote());
             }
         }, 0);
 

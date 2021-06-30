@@ -28,7 +28,7 @@ public class PrivateReactionAdd extends DiSkyEvent<PrivateMessageReactionAddEven
        EventValues.registerEventValue(EvtPrivateReactionAdd.class, info.itsthesky.disky.tools.object.Emote.class, new Getter<info.itsthesky.disky.tools.object.Emote, EvtPrivateReactionAdd>() {
             @Override
             public info.itsthesky.disky.tools.object.Emote get(EvtPrivateReactionAdd event) {
-                return new info.itsthesky.disky.tools.object.Emote(event.getJDAEvent().getReactionEmote());
+                return info.itsthesky.disky.tools.object.Emote.fromReaction(event.getJDAEvent().getReactionEmote());
             }
         }, 0);
 

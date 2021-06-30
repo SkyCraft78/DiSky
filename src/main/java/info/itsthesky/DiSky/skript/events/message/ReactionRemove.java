@@ -37,7 +37,7 @@ public class ReactionRemove extends DiSkyEvent<GuildMessageReactionRemoveEvent> 
        EventValues.registerEventValue(EvtReactionRemove.class, info.itsthesky.disky.tools.object.Emote.class, new Getter<info.itsthesky.disky.tools.object.Emote, EvtReactionRemove>() {
             @Override
             public info.itsthesky.disky.tools.object.Emote get(EvtReactionRemove event) {
-                return new info.itsthesky.disky.tools.object.Emote(event.getJDAEvent().getReactionEmote());
+                return info.itsthesky.disky.tools.object.Emote.fromReaction(event.getJDAEvent().getReactionEmote());
             }
         }, 0);
 

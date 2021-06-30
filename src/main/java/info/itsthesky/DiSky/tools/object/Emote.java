@@ -1,5 +1,6 @@
 package info.itsthesky.disky.tools.object;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
@@ -9,34 +10,29 @@ import java.util.List;
 public class Emote implements IMentionable {
     private final String name;
     private net.dv8tion.jda.api.entities.Emote emote;
-    private boolean isEmote = false;
+    private final boolean isEmote;
     private final String mention;
     private Emoji emoji;
-    private long id;
 
-    public Emote(String name) {
-        this.name = name;
-        this.mention = name;
+    public Emote(String name, String mention) {
+        this.name = name.replaceAll(":", "");
+        this.mention = mention;
+        this.isEmote = false;
     }
 
-    public Emote(MessageReaction.ReactionEmote emote) {
+    public static Emote fromReaction(MessageReaction.ReactionEmote emote) {
         if (emote.isEmote()) {
-            this.name = emote.getEmote().getName();
-            this.emote = emote.getEmote();
-            this.isEmote = true;
-            this.mention = emote.getEmote().getAsMention();
+            return new Emote(emote.getEmote());
         } else {
-            this.name = emote.getName();
-            this.mention = name;
+            return new Emote(EmojiParser.parseToAliases(emote.getEmoji()), emote.getEmoji());
         }
-        if (emote.isEmoji())
-            emoji = Emoji.fromUnicode(emote.getAsCodepoints());
     }
 
     public Emote(Emoji emoji) {
         this.emoji = emoji;
         this.mention = emoji.getName();
-        this.name = emoji.getName();
+        this.name = emoji.getId();
+        this.isEmote = false;
     }
 
     public Emote(net.dv8tion.jda.api.entities.Emote emote) {
@@ -59,11 +55,17 @@ public class Emote implements IMentionable {
     }
 
     public String getName() {
-        return name;
+        return isEmote ? emote.getName() : name;
     }
 
     public JDA getJDA() {
         return isEmote ? emote.getJDA() : null;
+    }
+
+    @NotNull
+    @Override
+    public String getId() {
+        return getID();
     }
 
     public boolean isEmote() {
@@ -82,21 +84,17 @@ public class Emote implements IMentionable {
         return isEmote && emote.isAnimated();
     }
 
-    public boolean compare(Emote emote) {
-        return emote.getAsMention().equals(getAsMention());
-    }
-
     public String getID() {
-        return isEmote ? emote.getId() : null;
+        return isEmote ? emote.getId() : name;
     }
 
     @Override
     public @NotNull String getAsMention() {
-        return isEmote ? mention : name;
+        return isEmote ? emote.getAsMention() : mention;
     }
 
     @Override
     public long getIdLong() {
-        return this.id;
+        return Long.parseLong(getID());
     }
 }
