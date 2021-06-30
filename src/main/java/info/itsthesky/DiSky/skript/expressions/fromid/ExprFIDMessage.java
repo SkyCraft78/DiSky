@@ -25,7 +25,7 @@ public class ExprFIDMessage extends SimpleExpression<UpdatingMessage> {
 
 	static {
 		Skript.registerExpression(ExprFIDMessage.class, UpdatingMessage.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [discord] message with [the] id %string% [in [the] [channel] %channel/textchannel%]"
+				"["+ Utils.getPrefixName() +"] [discord] message with [the] id %string% [in [the] [channel] %-channel/textchannel%]"
 		);
 	}
 
@@ -36,7 +36,7 @@ public class ExprFIDMessage extends SimpleExpression<UpdatingMessage> {
 	@Override
 	public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
 		exprID = (Expression<String>) exprs[0];
-		if (exprs.length != 1) exprChannel = (Expression<GuildChannel>) exprs[1];
+		exprChannel = (Expression<GuildChannel>) exprs[1];
 		return true;
 	}
 
