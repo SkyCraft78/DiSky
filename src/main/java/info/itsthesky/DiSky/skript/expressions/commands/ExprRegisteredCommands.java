@@ -32,8 +32,7 @@ public class ExprRegisteredCommands extends SimpleExpression<CommandObject> {
     @Nullable
     @Override
     protected CommandObject[] get(Event e) {
-        List<CommandObject> objects = new ArrayList<>();
-        CommandFactory.getInstance().commandMap.forEach((cmd, cmd1) -> objects.add(cmd1));
+        List<CommandObject> objects = new ArrayList<>(CommandFactory.getInstance().commandMap.values());
         return objects.toArray(new CommandObject[0]);
     }
 
