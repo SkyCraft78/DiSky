@@ -53,16 +53,18 @@ public class ExprMemberNick extends SimplePropertyExpression<Member, String> {
 
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
-        if (mode == Changer.ChangeMode.SET) {
-            if (delta == null || delta.length == 0) return;
-            String nick = delta[0].toString();
-            for (Member member : getExpr().getArray(e)) {
-                member.modifyNickname(nick).queue(null, DiSkyErrorHandler::logException);
+        DiSkyErrorHandler.executeHandleCode(e, event -> {
+            if (mode == Changer.ChangeMode.SET) {
+                if (delta == null || delta.length == 0) return;
+                String nick = delta[0].toString();
+                for (Member member : getExpr().getArray(e)) {
+                    member.modifyNickname(nick).queue(null, DiSkyErrorHandler::logException);
+                }
+            } else if (mode.equals(Changer.ChangeMode.RESET)) {
+                for (Member member : getExpr().getArray(e)) {
+                    member.modifyNickname(null).queue(null, DiSkyErrorHandler::logException);
+                }
             }
-        } else if (mode.equals(Changer.ChangeMode.RESET)) {
-            for (Member member : getExpr().getArray(e)) {
-                member.modifyNickname(null).queue(null, DiSkyErrorHandler::logException);
-            }
-        }
+        });
     }
 }
