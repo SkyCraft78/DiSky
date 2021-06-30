@@ -53,7 +53,7 @@ public class InviteTracker extends ListenerAdapter {
             cachedInvite.incrementUses();
             inv[0] = invite;
         });
-        MemberJoin.usedInvite = inv[0];
+        //MemberJoin.usedInvite = inv[0];
         BotJoin.usedInvite = inv[0];
     }
 

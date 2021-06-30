@@ -72,7 +72,7 @@ public class EffManageBuilder extends AsyncEffect {
             return false;
         }
         defaultIntents = matchedPattern == 1;
-        enable = !parseResult.expr.startsWith("disable");
+        enable = parseResult.expr.startsWith("enable");
         if (!defaultIntents) exprIntent = (Expression<GatewayIntent>) exprs[0];
         return true;
     }
