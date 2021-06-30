@@ -1,6 +1,7 @@
 package info.itsthesky.disky.tools.object;
 
 import ch.njol.util.Validate;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Message;
 
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -18,7 +19,7 @@ import java.util.Map;
 /**
  * @author Blitz
  */
-public class UpdatingMessage {
+public class UpdatingMessage implements ISnowflake {
 
     private static final Map<String, Message> MESSAGE_MAP = new HashMap<>();
     // it's important to use a weakreference to prevent a memory leak here
@@ -118,6 +119,12 @@ public class UpdatingMessage {
         return ID;
     }
 
+    @NotNull
+    @Override
+    public String getId() {
+        return this.ID;
+    }
+
     public Message getMessage() {
         return dataMessage != null ? dataMessage : MESSAGE_MAP.get(ID);
     }
@@ -126,5 +133,10 @@ public class UpdatingMessage {
     protected void finalize() throws Throwable {
         // we don't need the message anymore if the updatingmessage was GCd
         MESSAGE_MAP.remove(getID());
+    }
+
+    @Override
+    public long getIdLong() {
+        return Long.parseLong(this.ID);
     }
 }

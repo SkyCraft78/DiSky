@@ -1,14 +1,17 @@
 package info.itsthesky.disky.skript;
 
 import ch.njol.skript.classes.ClassInfo;
+import ch.njol.skript.classes.Comparator;
 import ch.njol.skript.classes.Parser;
 import ch.njol.skript.lang.ParseContext;
 import ch.njol.skript.registrations.Classes;
+import ch.njol.skript.registrations.Comparators;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandObject;
+import info.itsthesky.disky.tools.DiSkyComparator;
 import info.itsthesky.disky.tools.MessageBuilder;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
@@ -30,6 +33,46 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Types {
+
+	public static class DiSkyComparators {
+
+		static {
+			/*
+			 * Basics ISnowflakes entities which can be handled by the disky comparator
+			 */
+			Comparators.registerComparator(Member.class, Member.class, new DiSkyComparator<>());
+			Comparators.registerComparator(User.class, User.class, new DiSkyComparator<>());
+			Comparators.registerComparator(Emote.class, Emote.class, new DiSkyComparator<>());
+			Comparators.registerComparator(GuildChannel.class, GuildChannel.class, new DiSkyComparator<>());
+			Comparators.registerComparator(TextChannel.class, TextChannel.class, new DiSkyComparator<>());
+			Comparators.registerComparator(VoiceChannel.class, VoiceChannel.class, new DiSkyComparator<>());
+			Comparators.registerComparator(Guild.class, Guild.class, new DiSkyComparator<>());
+			Comparators.registerComparator(UpdatingMessage.class, UpdatingMessage.class, new DiSkyComparator<>());
+			Comparators.registerComparator(Category.class, Category.class, new DiSkyComparator<>());
+			Comparators.registerComparator(Role.class, Role.class, new DiSkyComparator<>());
+			Comparators.registerComparator(Webhook.class, Webhook.class, new DiSkyComparator<>());
+			Comparators.registerComparator(ButtonBuilder.class, ButtonBuilder.class, new DiSkyComparator<>());
+
+			/*
+			 * Custom entities which need a precise comparator
+			 */
+			Comparators.registerComparator(JDA.class, JDA.class, new Comparator<JDA, JDA>() {
+				@Override
+				public Relation compare(JDA jda, JDA jda2) {
+					if (jda.getSelfUser().getId().equals(jda2.getSelfUser().getId()))
+						return Relation.EQUAL;
+					return Relation.NOT_EQUAL;
+				}
+
+				@Override
+				public boolean supportsOrdering() {
+					return false;
+				}
+			});
+		}
+
+	}
+
 	static  {
 		Classes.registerClass(new ClassInfo<>(Category.class, "category")
 				.user("categor(y|ies)")

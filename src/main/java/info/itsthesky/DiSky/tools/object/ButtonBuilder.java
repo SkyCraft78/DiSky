@@ -2,12 +2,13 @@ package info.itsthesky.disky.tools.object;
 
 import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 
 import javax.annotation.Nullable;
 
-public class ButtonBuilder {
+public class ButtonBuilder implements ISnowflake {
 
     private String content;
     private ButtonStyle color;
@@ -94,8 +95,18 @@ public class ButtonBuilder {
         return content;
     }
 
+    @Override
     public String getId() {
-        return idOrURl;
+        return this.idOrURl;
+    }
+
+    @Override
+    public long getIdLong() {
+        try {
+            return Long.parseLong(this.idOrURl);
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 
     public void setContent(String content) {
