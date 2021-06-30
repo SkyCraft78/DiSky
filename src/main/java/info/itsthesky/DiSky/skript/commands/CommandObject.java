@@ -33,9 +33,9 @@ public class CommandObject {
     private final String cooldownMessage;
     private final List<String> bots;
 
-    private Trigger trigger;
+    private final Trigger trigger;
 
-    private List<Argument<?>> arguments;
+    private final List<Argument<?>> arguments;
 
     public CommandObject(File script, String name, String pattern, List<Argument<?>> arguments, List<Expression<String>> prefixes,
                          List<String> aliases, String description, String usage, List<String> roles,

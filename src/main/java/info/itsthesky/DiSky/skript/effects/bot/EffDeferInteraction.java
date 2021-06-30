@@ -15,9 +15,12 @@ import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.events.MessageEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import org.bukkit.event.Event;
+
+import java.util.Arrays;
 
 @Name("Defer Interaction")
 @Description({"Let discord you've been receiving the interaction (work in buttons and slash commands events only) ONE TIME!",
@@ -35,7 +38,7 @@ public class EffDeferInteraction extends AsyncEffect {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        if (!ScriptLoader.isCurrentEvent(ButtonClick.EvtButtonClick.class, SlashCommand.EvtSlashCommand.class)) {
+        if (!Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class)) {
             Skript.error("Cannot defer an interaction in a non-interaction event! (slash command / button)");
             return false;
         }
