@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
-def version = '2.0-alpha4'
+def version = '2.0-alpha5'
 group 'info.itsthesky'
 
 
