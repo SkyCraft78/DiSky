@@ -46,7 +46,7 @@ public class EffSendMessage extends Effect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
-                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with row[s] %-buttonrows%] [with [the] %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with (component[s]|row[s]) %-buttonrows%] [with [the] %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;

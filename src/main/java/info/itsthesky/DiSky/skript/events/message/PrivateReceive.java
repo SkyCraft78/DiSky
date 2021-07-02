@@ -29,7 +29,7 @@ public class PrivateReceive extends DiSkyEvent<PrivateMessageReceivedEvent> {
        EventValues.registerEventValue(EvtPrivateReceive.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtPrivateReceive>() {
             @Override
             public UpdatingMessage get(EvtPrivateReceive event) {
-                return UpdatingMessage.from(event.getJDAEvent().getMessage());
+                return UpdatingMessage.from(event.getJDAEvent().getChannel().retrieveMessageById(event.getJDAEvent().getMessageId()).complete());
             }
         }, 0);
 

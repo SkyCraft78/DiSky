@@ -51,7 +51,7 @@ public class ReactionRemove extends DiSkyEvent<GuildMessageReactionRemoveEvent> 
         EventValues.registerEventValue(EvtReactionRemove.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtReactionRemove>() {
             @Override
             public UpdatingMessage get(EvtReactionRemove event) {
-                return UpdatingMessage.from(event.getJDAEvent().getMessageId());
+                return UpdatingMessage.from(event.getJDAEvent().getChannel().retrieveMessageById(event.getJDAEvent().getMessageId()).complete());
             }
         }, 0);
 

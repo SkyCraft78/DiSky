@@ -78,7 +78,7 @@ public class ReactionAdd extends DiSkyEvent<GuildMessageReactionAddEvent> {
         EventValues.registerEventValue(EvtReactionAdd.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtReactionAdd>() {
             @Override
             public UpdatingMessage get(EvtReactionAdd event) {
-                return UpdatingMessage.from(event.getJDAEvent().getMessageId());
+                return UpdatingMessage.from(event.getJDAEvent().getChannel().retrieveMessageById(event.getJDAEvent().getMessageId()).complete());
             }
         }, 0);
 
