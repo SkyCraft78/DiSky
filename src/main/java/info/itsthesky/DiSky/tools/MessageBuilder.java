@@ -1170,52 +1170,6 @@ public class MessageBuilder implements Appendable
     }
 
     /**
-     * Creates a {@link MessageAction MessageAction}
-     * with the current settings without building a {@link net.dv8tion.jda.api.entities.Message Message} instance first.
-     *
-     * @param  channel
-     *         The not-null target {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}
-     *
-     * @throws java.lang.IllegalArgumentException
-     *         If the provided channel is {@code null}
-     * @throws net.dv8tion.jda.api.exceptions.PermissionException
-     *         If the currently logged in account does not have permission to send or read messages in this channel.
-     * @throws java.lang.UnsupportedOperationException
-     *         If this is a PrivateChannel and both users (sender and receiver) are bots
-     *
-     * @return {@link MessageAction MessageAction}
-     *
-     * @deprecated Use {@link MessageChannel#sendMessage(Message) channel.sendMessage(builder.build())} instead
-     */
-    @Nonnull
-    @Deprecated
-    @DeprecatedSince("4.2.1")
-    @ForRemoval(deadline="4.3.0")
-    @ReplaceWith("channel.sendMessage(builder.build())")
-    public MessageAction sendTo(@Nonnull MessageChannel channel)
-    {
-        Checks.notNull(channel, "Target Channel");
-        switch (channel.getType())
-        {
-            case TEXT:
-                final TextChannel text = (TextChannel) channel;
-                final Member self = text.getGuild().getSelfMember();
-                if (!self.hasAccess(text))
-                    throw new MissingAccessException(text, Permission.VIEW_CHANNEL);
-                if (!self.hasPermission(text, Permission.MESSAGE_WRITE))
-                    throw new InsufficientPermissionException(text, Permission.MESSAGE_WRITE);
-                break;
-            case PRIVATE:
-                final PrivateChannel priv = (PrivateChannel) channel;
-                if (priv.getUser().isBot() && channel.getJDA().getAccountType() == AccountType.BOT)
-                    throw new UnsupportedOperationException("Cannot send a private message between bots.");
-        }
-        final Route.CompiledRoute route = Route.Messages.SEND_MESSAGE.compile(channel.getId());
-        final MessageActionImpl action = new MessageActionImpl(channel.getJDA(), route, channel, builder);
-        return action.tts(isTTS).embed(embed).nonce(nonce);
-    }
-
-    /**
      * Creates a {@link net.dv8tion.jda.api.entities.Message Message} object from this MessageBuilder
      *
      * <p><b>Hint:</b> You can use {@link #build(int, int)} or
@@ -1241,7 +1195,7 @@ public class MessageBuilder implements Appendable
             throw new IllegalStateException("Cannot build a Message with more than 2000 characters. Please limit your input.");
 
         String[] ids = new String[0];
-        return new DataMessage(isTTS, message, nonce, embed,
+        return new DataMessage(isTTS, message, nonce, Collections.singletonList(embed),
                 allowedMentions, mentionedUsers.toArray(ids), mentionedRoles.toArray(ids), components.toArray(new ComponentLayout[0]));
     }
 
@@ -1304,7 +1258,7 @@ public class MessageBuilder implements Appendable
 
         if (this.embed != null)
         {
-            ((DataMessage) messages.get(messages.size() - 1)).setEmbed(embed);
+            ((DataMessage) messages.get(messages.size() - 1)).setEmbeds(Collections.singletonList(embed));
         }
 
         return messages;

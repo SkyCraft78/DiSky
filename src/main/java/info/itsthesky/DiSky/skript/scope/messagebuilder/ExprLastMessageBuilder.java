@@ -21,7 +21,7 @@ public class ExprLastMessageBuilder extends SimpleExpression<MessageBuilder> {
 
     static {
         Skript.registerExpression(ExprLastMessageBuilder.class, MessageBuilder.class, ExpressionType.SIMPLE,
-                "[the] [last] [(generated|created)] (message|msg) [builder]"
+                "[the] [last] [(generated|created)] (message|msg) builder"
         );
     }
 
