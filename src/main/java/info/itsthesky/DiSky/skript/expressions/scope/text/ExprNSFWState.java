@@ -29,7 +29,7 @@ public class ExprNSFWState extends SimplePropertyExpression<Object, Boolean> {
     @Nullable
     @Override
     public Boolean convert(Object entity) {
-        if (entity instanceof TextChannel) return ((TextChannel) entity).isNews();
+        if (entity instanceof TextChannel) return ((TextChannel) entity).isNSFW();
         if (entity instanceof GuildChannel) return ((GuildChannel) entity).getType().equals(ChannelType.TEXT) ? ((TextChannel) entity).isNSFW() : null;
         return false;
     }
