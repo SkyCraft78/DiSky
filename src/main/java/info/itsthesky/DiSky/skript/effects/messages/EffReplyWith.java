@@ -23,7 +23,7 @@ import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
-import info.itsthesky.disky.tools.MessageBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
@@ -116,7 +116,7 @@ public class EffReplyWith extends Effect {
             MessageBuilder toSend;
             switch (content.getClass().getSimpleName()) {
                 case "EmbedBuilder":
-                    toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                    toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
                     break;
                 case "String":
                     toSend = new MessageBuilder(content.toString());
@@ -205,7 +205,7 @@ public class EffReplyWith extends Effect {
                 }
             });
         });
-        return null;
+        return getNext();
     }
 
     @Override

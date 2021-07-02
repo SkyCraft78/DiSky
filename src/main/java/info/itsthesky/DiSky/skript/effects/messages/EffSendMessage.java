@@ -20,7 +20,7 @@ import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import info.itsthesky.disky.tools.MessageBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -91,13 +91,12 @@ public class EffSendMessage extends Effect {
             return null;
 
         DiSkyErrorHandler.executeHandleCode(e, event -> {
-            Message storedMessage;
 
             /* Message cast */
             MessageBuilder toSend = null;
             switch (content.getClass().getSimpleName()) {
                 case "EmbedBuilder":
-                    toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                    toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
                     break;
                 case "String":
                     toSend = new MessageBuilder(content.toString());
