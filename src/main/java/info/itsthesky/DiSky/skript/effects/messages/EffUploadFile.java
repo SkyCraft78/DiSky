@@ -45,7 +45,7 @@ import java.net.URLConnection;
         "\t\t\tstop\n" +
         "\t\tupload arg-1 with content arg-2 to event-channel")
 @Since("1.4, 1.10 (added locale files & custom content)")
-public class EffUploadFile extends AsyncEffect {
+public class EffUploadFile extends Effect {
 
     static {
         Skript.registerEffect(EffUploadFile.class,
@@ -66,9 +66,9 @@ public class EffUploadFile extends AsyncEffect {
         exprFileName = (Expression<String>) exprs[1];
         exprContent = (Expression<Object>) exprs[2];
         exprChannel = (Expression<Object>) exprs[3];
-        exprBot = (Expression<JDA>) exprs[1];
+        exprBot = (Expression<JDA>) exprs[4];
 
-        Expression<?> var = exprs[4];
+        Expression<?> var = exprs[5];
         if (var != null && !(var instanceof Variable)) {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
@@ -381,9 +381,7 @@ public class EffUploadFile extends AsyncEffect {
             }
 
         });
-
-
-        return null;
+        return getNext();
     }
 
     @Override
