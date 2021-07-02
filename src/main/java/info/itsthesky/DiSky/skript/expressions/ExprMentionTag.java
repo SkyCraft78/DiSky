@@ -41,9 +41,7 @@ public class ExprMentionTag extends SimpleExpression<String> {
 	protected String[] get(final Event e) {
 		Object entity = exprEntity.getSingle(e);
 		if (entity instanceof JDA) {
-			final JDA bot = BotManager.getBot(entity.toString());
-			if (bot == null)
-				return new String[0];
+			JDA bot = (JDA) entity;
 			entity = bot.getSelfUser();
 		}
 
