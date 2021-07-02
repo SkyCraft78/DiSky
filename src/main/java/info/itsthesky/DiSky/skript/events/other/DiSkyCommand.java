@@ -6,7 +6,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
 import info.itsthesky.disky.skript.commands.CommandObject;
-import info.itsthesky.disky.skript.events.guild.GuildMessage;
 import info.itsthesky.disky.tools.events.BukkitEvent;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
