@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions.buttons;
+package info.itsthesky.disky.skript.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -9,12 +9,9 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.AsyncEffect;
-import info.itsthesky.disky.tools.StaticData;
-import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;

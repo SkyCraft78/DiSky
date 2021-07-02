@@ -23,6 +23,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
+import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -142,6 +144,21 @@ public class Types {
 				.description("Represent a message button.")
 				.since("1.12")
 		);
+
+		Classes.registerClass(new ClassInfo<>(SelectionMenu.Builder.class, "selectbuilder")
+				.user("selectbuilders?")
+				.name("Selection Menu Builder")
+				.description("Represent a selection menu builder.")
+				.since("2.0")
+		);
+
+		Classes.registerClass(new ClassInfo<>(SelectOption.class, "selectchoice")
+				.user("selectchoices?")
+				.name("Selection Menu Choice")
+				.description("Represent a selection menu choice.")
+				.since("2.0")
+		);
+
 		Classes.registerClass(new ClassInfo<>(ButtonRow.class, "buttonrow")
 				.user("buttonrows?")
 				.name("Message Buttons Row")

@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions.buttons;
+package info.itsthesky.disky.skript.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -11,10 +11,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.object.ButtonRow;
-import info.itsthesky.disky.tools.object.ButtonRow;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import org.bukkit.event.Event;
 
 @Name("New Button Row")

@@ -1,25 +1,14 @@
-package info.itsthesky.disky.skript.expressions.buttons;
+package info.itsthesky.disky.skript.component;
 
-import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.expressions.base.SimplePropertyExpression;
-import ch.njol.skript.lang.Expression;
-import ch.njol.skript.lang.SkriptParser;
-import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.disky.tools.AsyncEffect;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.MultiplyPropertyExpression;
-import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.ButtonRow;
-import info.itsthesky.disky.tools.object.RoleBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +41,7 @@ import org.jetbrains.annotations.Nullable;
         "\tset {_id} to discord id of event-button\n" +
         "\t# > We check here the button's ID, and see if it's one of us:\n" +
         "\t{_id} is \"button-id-here\", \"cant-have-two-same-id\" or \"no-space-allowed-either\"\n" +
-        "\t# > Since we don't reply, we just defering the interaction\n" +
+        "\t# > Since we don't reply, we just deferring the interaction\n" +
         "\tdefer the interaction")
 @Since("2.0")
 public class EffAddButtonToRow extends MultiplyPropertyExpression<ButtonRow, ButtonBuilder> {
@@ -60,7 +49,7 @@ public class EffAddButtonToRow extends MultiplyPropertyExpression<ButtonRow, But
     static {
         register(EffAddButtonToRow.class,
                 ButtonBuilder.class,
-                "row[s]",
+                "button[s]",
                 "buttonrow"
         );
     }

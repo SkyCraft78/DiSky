@@ -7,6 +7,7 @@ import ch.njol.skript.lang.*;
 import ch.njol.skript.log.SkriptLogger;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
+import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import org.bukkit.event.Event;
 
 import java.lang.reflect.Constructor;

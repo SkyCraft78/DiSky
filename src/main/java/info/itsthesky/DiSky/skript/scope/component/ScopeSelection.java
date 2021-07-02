@@ -1,8 +1,7 @@
-package info.itsthesky.disky.skript.scope.buttons;
+package info.itsthesky.disky.skript.scope.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
-import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
@@ -10,32 +9,28 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.EffectSection;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.TextChannelBuilder;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
 
-@Name("Button Builder")
-@Description("This builder allow you to custom button easily. Use the one-line creator for a faster way! The string input represent the button ID or the URL if it's a link button.")
-@Since("1.12")
-public class ScopeButton extends EffectSection {
+@Name("Selection Menu Builder")
+@Description("Create easily a new selection menu (aka dropdown).")
+@Since("2.0")
+public class ScopeSelection extends EffectSection {
 
-    public static ButtonBuilder lastBuilder;
+    public static SelectionMenu.Builder lastBuilder;
 
     static {
-        Skript.registerCondition(ScopeButton.class, "make [new] [discord] button with [the] [(url|id)] %string%");
+        Skript.registerCondition(ScopeSelection.class, "make [new] [discord] (select[s]|dropdown|selection menu) with [the] id %string%");
     }
 
     private Expression<String> exprInput;
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        if (checkIfCondition()) {
-            return false;
-        }
-        if (!hasSection()) {
-            return false;
-        }
+        if (checkIfCondition()) return false;
+        if (!hasSection()) return false;
         loadSection(true);
         exprInput = (Expression<String>) exprs[0];
         return true;
@@ -45,13 +40,13 @@ public class ScopeButton extends EffectSection {
     protected void execute(Event e) {
         String input = exprInput.getSingle(e);
         if (input == null) return;
-        lastBuilder = new ButtonBuilder(input, null);
+        lastBuilder = SelectionMenu.create(input);
         runSection(e);
     }
 
     @Override
     public String toString(@Nullable Event e, boolean debug) {
-        return "make new button with id or url " + exprInput.toString(e, debug);
+        return "make new select with id " + exprInput.toString(e, debug);
     }
 
 }

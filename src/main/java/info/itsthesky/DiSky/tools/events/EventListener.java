@@ -1,6 +1,7 @@
 package info.itsthesky.disky.tools.events;
 
 import info.itsthesky.disky.managers.BotManager;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
@@ -24,17 +25,17 @@ public class EventListener<T> extends ListenerAdapter {
     public static void addListener(EventListener<?> listener) {
         removeListener(listener);
         listeners.add(listener);
-        BotManager.getBotsJDA().forEach(jda -> jda.addEventListener(listener));
+        BotManager.execute(jda -> jda.addEventListener(listener));
     }
 
     public static void removeListener(EventListener<?> listener) {
         listeners.remove(listener);
-        BotManager.getBotsJDA().forEach(jda -> jda.removeEventListener(listener));
+        BotManager.execute(jda -> jda.removeEventListener(listener));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onGenericEvent(net.dv8tion.jda.api.events.GenericEvent event) {
+    public void onGenericEvent(GenericEvent event) {
         if (enabled && clazz.isInstance(event)) {
             consumer.accept((T) event);
         }

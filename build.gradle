@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
-def version = '2.0-alpha5'
+def version = '2.0-beta1'
 group 'info.itsthesky'
 
 
@@ -33,7 +33,10 @@ dependencies {
     compile 'club.minnced:discord-webhooks:0.5.5-rc'
     // Commits: com.github.dv8fromtheworld:jda
     // Stable: net.dv8tion:JDA
-    compile('net.dv8tion:JDA:4.2.1_273') {
+    // compile('net.dv8tion:JDA:4.2.1_273') {
+    //     exclude module: "opus-java"
+    // }
+    compile('com.github.dv8fromtheworld:jda:bac73c8') {
         exclude module: "opus-java"
     }
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'

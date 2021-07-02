@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,6 +55,10 @@ public class Utils extends ListenerAdapter {
 
     public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
         return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
+    }
+
+    public static Emoji convert(Emote emote) {
+        return emote.isEmote() ? Emoji.fromEmote(emote.getEmote()) : Emoji.fromUnicode(emote.getAsMention());
     }
 
     public static void setHasDelayBefore(Kleenean hasDelayBefore) {
@@ -274,6 +279,10 @@ public class Utils extends ListenerAdapter {
             String emote = input.contains(":") ? input : ":" + input + ":";
             return new Emote(input.replaceAll(":", ""), EmojiParser.parseToUnicode(emote));
         }
+    }
+
+    public static SelectionMenu.Builder convert(SelectionMenu original) {
+        return SelectionMenu.fromData(original.toData());
     }
 
     @Nullable

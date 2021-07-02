@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions.buttons;
+package info.itsthesky.disky.skript.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -12,18 +12,11 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.ButtonBuilder;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
-import net.dv8tion.jda.internal.interactions.ButtonImpl;
 import org.bukkit.event.Event;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Name("New Button")
 @Description("Create a new custom button with a style, content, link state, enable state and emoji. The emoji MUST be a UNICODE character.")
@@ -83,7 +76,7 @@ public class ExprNewButton extends SimpleExpression<ButtonBuilder> {
         Button button = (content == null ? Button.of(style, idOrURL, "") : Button.of(style, idOrURL, content));
 
         if (emoji != null && content != null)
-            button = Button.of(style, idOrURL, content).withEmoji(emoji.isEmote() ? Emoji.fromEmote(emoji.getEmote()) : Emoji.fromUnicode(emoji.getName()));
+            button = Button.of(style, idOrURL, content).withEmoji(Utils.convert(emoji));
 
         if (!isEnabled)
             button = button.asDisabled();

@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.scope.buttons;
+package info.itsthesky.disky.skript.scope.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;

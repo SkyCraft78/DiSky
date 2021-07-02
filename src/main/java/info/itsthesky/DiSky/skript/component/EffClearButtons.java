@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.expressions.buttons;
+package info.itsthesky.disky.skript.component;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -14,7 +14,6 @@ import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.StaticData;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
 import java.util.Collections;

@@ -4,7 +4,9 @@ import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.cache.InviteTracker;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
+import info.itsthesky.disky.skript.events.other.test;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.events.EventListener;
 import info.itsthesky.disky.tools.object.MessageUpdater;
 import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
@@ -18,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -65,6 +68,7 @@ public class BotManager {
                 .addEventListeners(new CommandListener())
                 .addEventListeners(new WaiterListener())
                 .addEventListeners(new MessageUpdater())
+                .addEventListeners(EventListener.listeners.toArray(new ListenerAdapter[0]))
                 .addEventListeners(customListener.toArray(new Object[0]));
 
         if (DiSky.CACHE_ENABLED) {
@@ -104,6 +108,11 @@ public class BotManager {
             logger.warning("The bot '"+name+"' has been disconnected!");
         });
         bots.clear();
+    }
+
+    public static void execute(Consumer<JDA> function) {
+        for (JDA bot : getBotsJDA())
+            function.accept(bot);
     }
 
     public static <E> E search(Function<JDA, E> getter) {

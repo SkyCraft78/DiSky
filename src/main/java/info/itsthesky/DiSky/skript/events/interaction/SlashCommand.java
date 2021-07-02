@@ -1,4 +1,4 @@
-package info.itsthesky.disky.skript.events.other;
+package info.itsthesky.disky.skript.events.interaction;
 
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Getter;
