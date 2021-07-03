@@ -15,13 +15,13 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 @Name("Used Alias")
-@Description("Get the used alias in a discord command trigger.)")
-@Since("1.11")
+@Description("Get the used alias in a discord command trigger.")
+@Since("2.0")
 public class ExprUsedAlias extends SimpleExpression<String> {
 
     static {
         Skript.registerExpression(ExprUsedAlias.class, String.class, ExpressionType.SIMPLE,
-                "(registered|all) [discord] (command[s]|cmd[s])"
+                "[the] used alias[es]"
         );
     }
 
@@ -29,7 +29,7 @@ public class ExprUsedAlias extends SimpleExpression<String> {
     @Nullable
     @Override
     protected String[] get(Event e) {
-        return new String[] {CommandEvent.lastEvent.getUsedAlias()};
+        return new String[] {((CommandEvent) e).getUsedAlias()};
     }
 
     @Override
