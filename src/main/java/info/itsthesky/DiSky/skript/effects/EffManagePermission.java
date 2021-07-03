@@ -36,8 +36,8 @@ public class EffManagePermission extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffManagePermission.class,
-                "["+ Utils.getPrefixName() +"] allow [discord] [perm[ission]] %permissions% to %member/role/rolebuilder% in [the] [channel] %channel/textchannel/voicechannel%",
-                "["+ Utils.getPrefixName() +"] deny [discord] [perm[ission]] %permissions% to %member/role/rolebuilder% in [the] [channel] %channel/textchannel/voicechannel%"
+                "["+ Utils.getPrefixName() +"] allow [discord] [perm[ission]] %permissions% to %member/role/rolebuilder% in [the] [channel] %category/channel/textchannel/voicechannel%",
+                "["+ Utils.getPrefixName() +"] deny [discord] [perm[ission]] %permissions% to %member/role/rolebuilder% in [the] [channel] %category/channel/textchannel/voicechannel%"
         );
     }
 
@@ -63,17 +63,14 @@ public class EffManagePermission extends AsyncEffect {
         Object entity = exprEntity.getSingle(e);
         if (perm.length == 0 || target == null) return;
 
-        GuildChannel channel = null;
-        if (entity instanceof TextChannel) channel = (TextChannel) entity;
-        if (entity instanceof VoiceChannel) channel = (VoiceChannel) entity;
-        if (entity instanceof GuildChannel) channel = (GuildChannel) entity;
+        GuildChannel channel = (GuildChannel) entity;
 
         if (target instanceof Role) {
             Role role = (Role) target;
             if (isAllow) {
-                channel.upsertPermissionOverride(role).setAllow(perm).queue(null, DiSkyErrorHandler::logException);
+                channel.upsertPermissionOverride(role).grant(perm).queue(null, DiSkyErrorHandler::logException);
             } else {
-                channel.upsertPermissionOverride(role).setDeny(perm).queue(null, DiSkyErrorHandler::logException);
+                channel.upsertPermissionOverride(role).deny(perm).queue(null, DiSkyErrorHandler::logException);
             }
         } if (target instanceof RoleBuilder) {
             RoleBuilder role = (RoleBuilder) target;
@@ -85,9 +82,9 @@ public class EffManagePermission extends AsyncEffect {
         } else if (target instanceof Member) {
             Member member = (Member) target;
             if (isAllow) {
-                channel.upsertPermissionOverride(member).setAllow(perm).queue(null, DiSkyErrorHandler::logException);
+                channel.upsertPermissionOverride(member).grant(perm).queue(null, DiSkyErrorHandler::logException);
             } else {
-                channel.upsertPermissionOverride(member).setDeny(perm).queue(null, DiSkyErrorHandler::logException);
+                channel.upsertPermissionOverride(member).deny(perm).queue(null, DiSkyErrorHandler::logException);
             }
         }
 
