@@ -59,7 +59,7 @@ public class SectionReact extends DiSkySection {
             Message message = tempMessage.getMessage();
 
             if (bot != null)
-                message = bot.getTextChannelById(message.getId()).getHistory().getMessageById(message.getId());
+                message = bot.getTextChannelById(message.getId()).retrieveMessageById(message.getId()).complete();
 
             if (emote.isEmote()) {
                 message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);

@@ -12,6 +12,7 @@ import com.vdurmont.emoji.EmojiParser;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.object.ButtonBuilder;
+import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.JDA;
 import info.itsthesky.disky.tools.MessageBuilder;
@@ -19,8 +20,12 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -55,6 +60,57 @@ public class Utils extends ListenerAdapter {
 
     public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
         return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
+    }
+
+    public static ReplyAction parseComponents(ReplyAction action, Object... components) {
+        return action.addActionRows(parseRows(components).toArray(new ActionRow[0]));
+    }
+
+    public static MessageAction parseComponents(MessageAction action, Object... components) {
+        return action.setActionRows(parseRows(components).toArray(new ActionRow[0]));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] safeArray(T... original) {
+        List<T> safes = new ArrayList<>();
+        for (T o : original) {
+            if (o instanceof Object[]) {
+                Collections.addAll(safes, (T[]) o);
+            } else {
+                safes.add(o);
+            }
+        }
+        return (T[]) safes.toArray(new Object[0]);
+    }
+
+    public static List<ActionRow> parseRows(Object... components) {
+        components = safeArray(components);
+        // We assume it's a "SET" action
+        List<ActionRow> rows = new ArrayList<>();
+        try {
+            for (Object component : components) {
+                if (component == null) continue;
+                if (component instanceof ButtonRow) {
+                    List<Button> buttons = new ArrayList<>();
+                    for (ButtonBuilder buttonBuilder : ((ButtonRow) component).getButtons()) {
+                        if (buttonBuilder.build() != null)
+                            buttons.add(buttonBuilder.build());
+                    }
+                    if (buttons.size() > 0) rows.add(ActionRow.of(buttons.toArray(new Component[0])));
+                } else {
+                    SelectionMenu selects = ((SelectionMenu.Builder) component).build();
+                    rows.add(ActionRow.of(selects));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return rows;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] verifyVars(@NotNull Event e, @Nullable Expression<T> expression) {
+        return expression == null ? (T[]) new Object[0] : (expression.getArray(e) == null ? (T[]) new Object[0] : expression.getArray(e));
     }
 
     public static Emoji convert(Emote emote) {

@@ -50,11 +50,11 @@ public class EffReplyWith extends Effect {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
-                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [with [row[s]] %-buttonrows%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply with [(personal|hidden)] [the] [message] %string/message/messagebuilder/embed% [with [(component|row)[s]] %-buttonrows/selectbuilder%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
-    private Expression<ButtonRow> exprRow;
+    private Expression<Object> exprComponents;
     private boolean ephemeral = false;
     private Variable<?> variable;
 
@@ -62,23 +62,13 @@ public class EffReplyWith extends Effect {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<Object>) exprs[0];
-        if (exprs.length == 2) {
-            Expression<?> var = exprs[1];
-            if (var != null && !(var instanceof Variable)) {
-                Skript.error("Cannot store the message in a non-variable expression");
-                return false;
-            } else {
-                variable = (Variable<?>) var;
-            }
+        exprComponents = (Expression<Object>) exprs[1];
+        Expression<?> var = exprs[2];
+        if (var != null && !(var instanceof Variable)) {
+            Skript.error("Cannot store the message in a non-variable expression");
+            return false;
         } else {
-            exprRow = (Expression<ButtonRow>) exprs[1];
-            Expression<?> var = exprs[2];
-            if (var != null && !(var instanceof Variable)) {
-                Skript.error("Cannot store the message in a non-variable expression");
-                return false;
-            } else {
-                variable = (Variable<?>) var;
-            }
+            variable = (Variable<?>) var;
         }
         ephemeral = parseResult.expr.contains("reply with personal") || parseResult.expr.contains("reply with hidden");
 
@@ -98,7 +88,7 @@ public class EffReplyWith extends Effect {
     @Override
     protected @Nullable TriggerItem walk(Event e) {
         Object content = exprMessage.getSingle(e);
-        ButtonRow[] rows = exprRow == null ? new ButtonRow[0] : exprRow.getAll(e);
+        Object[] components = Utils.verifyVars(e, exprComponents);
         if (content == null) return null;
         debug(e, true);
 
@@ -135,19 +125,7 @@ public class EffReplyWith extends Effect {
             if (event instanceof InteractionEvent) {
                 GenericInteractionCreateEvent ev = ((InteractionEvent) event).getInteractionEvent();
                 ReplyAction action = ev.reply(toSend.build());
-                if (rows != null || rows.length == 0) {
-                    List<ActionRow> rows1 = new ArrayList<>();
-                    for (ButtonRow row : rows) {
-                        List<Button> buttons = new ArrayList<>();
-
-                        for (ButtonBuilder buttonBuilder : row.getButtons()) {
-                            if (buttonBuilder.build() != null)
-                                buttons.add(buttonBuilder.build());
-                        }
-                        if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
-                    }
-                    action = action.addActionRows(rows1);
-                }
+                action = Utils.parseComponents(action, components);
                 action.setEphemeral(ephemeral).queue();
                 return;
             }
@@ -159,19 +137,7 @@ public class EffReplyWith extends Effect {
             if (channel == null) return;
             MessageAction action = channel
                     .sendMessage(toSend.build());
-            if (rows != null || rows.length == 0) {
-                List<ActionRow> rows1 = new ArrayList<>();
-                for (ButtonRow row : rows) {
-                    List<Button> buttons = new ArrayList<>();
-
-                    for (ButtonBuilder buttonBuilder : row.getButtons()) {
-                        if (buttonBuilder.build() != null)
-                            buttons.add(buttonBuilder.build());
-                    }
-                    if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
-                }
-                action = action.setActionRows(rows1);
-            }
+            action = Utils.parseComponents(action, components);
             action.queue(m -> {
                 // Re-set local variables
                 if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)

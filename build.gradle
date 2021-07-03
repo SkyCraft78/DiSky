@@ -36,7 +36,7 @@ dependencies {
     // compile('net.dv8tion:JDA:4.2.1_273') {
     //     exclude module: "opus-java"
     // }
-    compile('com.github.dv8fromtheworld:jda:bac73c8') {
+    compile('com.github.dv8fromtheworld:jda:a8453ad') {
         exclude module: "opus-java"
     }
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'

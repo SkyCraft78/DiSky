@@ -4,7 +4,6 @@ import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.managers.cache.InviteTracker;
 import info.itsthesky.disky.managers.cache.Messages;
 import info.itsthesky.disky.skript.commands.CommandListener;
-import info.itsthesky.disky.skript.events.other.test;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.events.EventListener;
 import info.itsthesky.disky.tools.object.MessageUpdater;
@@ -12,8 +11,6 @@ import info.itsthesky.disky.tools.section.WaiterListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

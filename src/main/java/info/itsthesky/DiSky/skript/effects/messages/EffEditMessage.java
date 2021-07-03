@@ -33,7 +33,7 @@ public class EffEditMessage extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffEditMessage.class,
-                "["+ Utils.getPrefixName() +"] edit [discord] [message] %message% (with|to show) [new (embed|string)] %embed/string/messagebuilder% [(keeping buttons|and keep buttons)]");
+                "["+ Utils.getPrefixName() +"] edit [discord] [message] %message% (with|to show) [new (embed|string)] %embed/string/messagebuilder% [(keeping (component|button)[s]|and keep (component|button)[s])]");
     }
 
     private Expression<UpdatingMessage> exprMessage;
@@ -78,9 +78,7 @@ public class EffEditMessage extends AsyncEffect {
                 return;
             }
             if (keepButtons) {
-                //List<ActionRow> rows = new ArrayList<>(StaticData.actionRows.get(message.getMessage().getIdLong()) == null ? new ArrayList<>() : StaticData.actionRows.get(message.getMessage().getIdLong()));
                 List<ActionRow> rows = new ArrayList<>(message.getMessage().getActionRows());
-
                 message.getMessage().editMessage(toSend.build()).setActionRows(rows).queue();
             } else {
                 message.getMessage().editMessage(toSend.build()).queue();

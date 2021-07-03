@@ -46,12 +46,12 @@ public class EffSendMessage extends Effect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
-                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with (component[s]|row[s]) %-buttonrows%] [with [the] %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] send [message] %string/message/embed/messagebuilder% to [the] [(user|channel)] %user/member/textchannel/channel% [with [(component|row)[s]] %-buttonrows/selectbuilder%] [with [the] %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprMessage;
     private Expression<Object> exprChannel;
-    private Expression<ButtonRow> exprRow;
+    private Expression<Object> exprComponents;
     private Variable<?> variable;
     private Expression<JDA> exprBot;
 
@@ -61,7 +61,7 @@ public class EffSendMessage extends Effect {
         Utils.setHasDelayBefore(Kleenean.TRUE);
         exprMessage = (Expression<Object>) exprs[0];
         exprChannel = (Expression<Object>) exprs[1];
-        exprRow = (Expression<ButtonRow>) exprs[2];
+        exprComponents = (Expression<Object>) exprs[2];
         exprBot = (Expression<JDA>) exprs[3];
         Expression<?> var = exprs[4];
         if (var != null && !(var instanceof Variable)) {
@@ -77,7 +77,8 @@ public class EffSendMessage extends Effect {
     protected @Nullable TriggerItem walk(Event e) {
         Object entity = exprChannel.getSingle(e);
         Object content = exprMessage.getSingle(e);
-        ButtonRow[] rows = exprRow == null ? new ButtonRow[0] : exprRow.getAll(e);
+        Object component = Utils.verifyVars(e, exprComponents);
+        JDA bot = Utils.verifyVar(e, exprBot);
         if (entity == null || content == null) return null;
         debug(e, true);
 
@@ -138,27 +139,14 @@ public class EffSendMessage extends Effect {
                 return;
             }
 
-            if (exprBot != null && exprBot.getSingle(e) != null) {
-                JDA bot = exprBot.getSingle(e);
-                if (!Utils.areJDASimilar(channel.getJDA(), bot)) return;
-            }
+            toSend = new MessageBuilder("test");
+            //toSend = new MessageBuilder().setEmbeds(new EmbedBuilder().setTitle("test").build());
+
+            if (bot != null)
+                channel = bot.getTextChannelById(channel.getId());
 
             MessageAction action = channel.sendMessage(toSend.build());
-
-            if (rows != null || rows.length == 0) {
-                List<ActionRow> rows1 = new ArrayList<>();
-                for (ButtonRow row : rows) {
-                    List<Button> buttons = new ArrayList<>();
-
-                    for (ButtonBuilder buttonBuilder : row.getButtons()) {
-                        if (buttonBuilder.build() != null)
-                            buttons.add(buttonBuilder.build());
-                    }
-                    if (buttons.size() > 0) rows1.add(ActionRow.of(buttons.toArray(new Component[0])));
-                }
-                action = action.setActionRows(rows1);
-            }
-
+            action = Utils.parseComponents(action, component);
             action.queue(m -> {
                 // Re-set local variables
                 if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)

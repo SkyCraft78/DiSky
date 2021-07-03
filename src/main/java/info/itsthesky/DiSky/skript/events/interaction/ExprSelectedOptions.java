@@ -12,15 +12,18 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
-@Name("Menu Selected Options")
-@Description("Get every options selected in a dropdown menu interact event.")
+import java.util.ArrayList;
+import java.util.List;
+
+@Name("Menu Selected Values")
+@Description("Get every values configured in a selection menu which are currently selected.")
 @Since("2.0")
-public  class ExprSelectedOptions extends SimpleExpression<SelectOption> {
+public  class ExprSelectedOptions extends SimpleExpression<String> {
 
     static {
-        Skript.registerExpression(ExprSelectedOptions.class, SelectOption.class, ExpressionType.SIMPLE,
-                "[all] [the] (choices|options) selected",
-                "[all] [the] selected (choices|options)"
+        Skript.registerExpression(ExprSelectedOptions.class, String.class, ExpressionType.SIMPLE,
+                "[all] [the] value[s] selected",
+                "[all] [the] selected value[s]"
         );
     }
 
@@ -28,7 +31,7 @@ public  class ExprSelectedOptions extends SimpleExpression<SelectOption> {
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         if (!ScriptLoader.isCurrentEvent(SelectionMenu.EvtSelectionMenu.class)) {
-            Skript.error("The selected options can only be used in a selection menu update event!");
+            Skript.error("The selected values can only be used in a selection menu update event!");
             return false;
         }
         return true;
@@ -36,16 +39,19 @@ public  class ExprSelectedOptions extends SimpleExpression<SelectOption> {
 
     @Nullable
     @Override
-    protected SelectOption[] get(Event e) {
+    protected String[] get(Event e) {
         SelectionMenu.EvtSelectionMenu event = (SelectionMenu.EvtSelectionMenu) e;
-        return event.getJDAEvent().getSelectedOptions().toArray(new SelectOption[0]);
+        List<String> strings = new ArrayList<>();
+        for (SelectOption option : event.getJDAEvent().getSelectedOptions())
+            strings.add(option.getValue());
+        return strings.toArray(new String[0]);
     }
     @Override
-    public Class<? extends SelectOption> getReturnType() { return SelectOption.class; }
+    public Class<? extends String> getReturnType() { return String.class; }
     @Override
     public boolean isSingle() { return true; }
     @Override
     public String toString(@Nullable Event e, boolean debug) {
-        return "all of the selected choices";
+        return "all of the selected values";
     }
 }

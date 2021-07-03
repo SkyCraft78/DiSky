@@ -16,15 +16,15 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 
-@Name("Mentioned Users")
-@Description("Return all users who are mentioned in a message.")
-@Examples("set {_users::*} to mentioned users in event-message")
+@Name("Mentioned Members")
+@Description("Return all members who are mentioned in a message.")
+@Examples("set {_members::*} to mentioned members in event-message")
 @Since("1.4.2")
 public class ExprMessageMentionedUsers extends SimpleExpression<Member> {
 
 	static {
 		Skript.registerExpression(ExprMessageMentionedUsers.class, Member.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] mentioned (users|members) in [the] [message] %message%"
+				"["+ Utils.getPrefixName() +"] [the] mentioned members in [the] [message] %message%"
 		);
 	}
 
@@ -56,7 +56,7 @@ public class ExprMessageMentionedUsers extends SimpleExpression<Member> {
 
 	@Override
 	public String toString(Event e, boolean debug) {
-		return "mentioned users of message " + exprMessage.toString(e, debug);
+		return "mentioned memebrs of message " + exprMessage.toString(e, debug);
 	}
 
 }

@@ -9,10 +9,11 @@ import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.NodeInformation;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
-import net.dv8tion.jda.api.interactions.components.selections.SelectionMenuInteraction;
 import org.bukkit.event.Event;
 
 @Name("New Selection Menu Choice")
@@ -25,6 +26,7 @@ public class ExprNewChoice extends SimpleExpression<SelectOption> {
                 "[a] new [default] choice with value %string% (with name|named) %string%[,] [with (desc|description) %-string%][,] [with [emoji] %-emote%]");
     }
 
+    private NodeInformation information;
     private Expression<String> exprValue, exprName, exprDesc;
     private Expression<Emote> exprEmote;
     private boolean isDefault;
@@ -32,6 +34,7 @@ public class ExprNewChoice extends SimpleExpression<SelectOption> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        information = new NodeInformation();
         exprValue = (Expression<String>) exprs[0];
         exprName = (Expression<String>) exprs[1];
         exprDesc = (Expression<String>) exprs[2];
@@ -47,6 +50,11 @@ public class ExprNewChoice extends SimpleExpression<SelectOption> {
         String desc = Utils.verifyVar(e, exprDesc);
         Emote emote = Utils.verifyVar(e, exprEmote);
         if (value == null || name == null) return new SelectOption[0];
+
+        if (desc != null && desc.length() > 50) {
+            DiSky.error("The choice description cannot be bigger than 50 characters! " + information.getDebugLabel());
+            return new SelectOption[0];
+        }
 
         SelectOption option;
 
