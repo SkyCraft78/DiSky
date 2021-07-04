@@ -7,7 +7,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
 import ch.njol.util.coll.CollectionUtils;
-import info.itsthesky.disky.tools.MessageBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
