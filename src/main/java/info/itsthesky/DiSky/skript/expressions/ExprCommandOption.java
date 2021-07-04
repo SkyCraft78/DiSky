@@ -1,5 +1,6 @@
 package info.itsthesky.disky.skript.expressions;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Name;
@@ -38,6 +39,10 @@ public class ExprCommandOption extends SimpleExpression<Object> {
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        if (!ScriptLoader.isCurrentEvent(SlashCommand.EvtSlashCommand.class)) {
+            Skript.error("Cannot use the option expression in a non-slash command event!");
+            return false;
+        }
         this.exprID = (Expression<String>) exprs[0];
         return true;
     }
@@ -48,7 +53,7 @@ public class ExprCommandOption extends SimpleExpression<Object> {
         String id = exprID.getSingle(e);
         if (id == null) return new Object[0];
         if (e instanceof SlashCommand.EvtSlashCommand) {
-            OptionMapping option = StaticData.lastSlashCommandEvent.getOption(id);
+            OptionMapping option = ((SlashCommand.EvtSlashCommand) e).getJDAEvent().getOption(id);
             if (option == null) return new Object[0];
             switch (option.getType()) {
                 case CHANNEL:

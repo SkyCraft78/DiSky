@@ -9,10 +9,13 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.NodeInformation;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.SlashCommand;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.internal.utils.Checks;
 import org.bukkit.event.Event;
 
 @Name("Add Slash Command Option")
@@ -34,6 +37,7 @@ public class EffAddOption extends Effect {
     private Expression<String> exprName;
     private Expression<String> exprDesc;
     private Expression<SlashCommand> exprBuilder;
+    private NodeInformation information;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -43,6 +47,7 @@ public class EffAddOption extends Effect {
         exprDesc = (Expression<String>) exprs[2];
         exprBuilder = (Expression<SlashCommand>) exprs[3];
         isRequire = matchedPattern != 0;
+        information = new NodeInformation();
         return true;
     }
 
@@ -53,6 +58,10 @@ public class EffAddOption extends Effect {
         String desc = exprDesc.getSingle(e);
         SlashCommand builder = exprBuilder.getSingle(e);
         if (name == null || desc == null || type == null || builder == null) return;
+        if (!Checks.ALPHANUMERIC_WITH_DASH.matcher(name).find()) {
+            DiSky.error("The specified ID in an option of slash command cannot have any space! " + information.getDebugLabel());
+            return;
+        }
         builder.addOption(
                 new OptionData(type, name, desc)
                         .setRequired(isRequire)
