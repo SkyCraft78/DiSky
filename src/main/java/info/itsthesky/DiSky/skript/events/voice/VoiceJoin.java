@@ -39,6 +39,13 @@ public class VoiceJoin extends DiSkyEvent<GuildVoiceJoinEvent> {
             }
         }, 0);
 
+        EventValues.registerEventValue(EvtVoiceJoin.class, GuildChannel.class, new Getter<GuildChannel, EvtVoiceJoin>() {
+            @Override
+            public GuildChannel get(EvtVoiceJoin event) {
+                return event.getJDAEvent().getNewValue();
+            }
+        }, 0);
+
         EventValues.registerEventValue(EvtVoiceJoin.class, Member.class, new Getter<Member, EvtVoiceJoin>() {
             @Override
             public Member get(EvtVoiceJoin event) {
