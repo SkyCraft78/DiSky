@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * Just a simple reflection class, just to not depend on Skript 2.2+ (I think it is the only thing I use from it)
@@ -47,6 +48,17 @@ public class ReflectionUtils {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeMethodEx(Class<?> clazz, String method, Object instance, Object... parameters) throws Exception {
+        Class<?>[] parameterTypes = new Class<?>[parameters.length];
+        int x = 0;
+        for (Object obj : parameters)
+            parameterTypes[x++] = obj.getClass();
+        Method m = clazz.getDeclaredMethod(method, parameterTypes);
+        m.setAccessible(true);
+        return (T) m.invoke(instance, parameters);
+    }
+
     public static boolean classExist(String clazz) {
         try {
             Class.forName(clazz);
@@ -57,7 +69,7 @@ public class ReflectionUtils {
     }
 
     /**
-     * @param clazz The class to create the instance of.
+     * @param clz The class to create the instance of.
      * @return A instance object of the given class.
      */
     public static <T> T newInstance(Class<T> clz) {

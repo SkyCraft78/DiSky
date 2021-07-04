@@ -4,10 +4,7 @@ import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.managers.music.AudioUtils;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.Metrics;
-import info.itsthesky.disky.tools.ReflectionUtils;
-import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.*;
 import info.itsthesky.disky.tools.versions.VSkript22;
 import info.itsthesky.disky.tools.versions.VSkript23;
 import info.itsthesky.disky.tools.versions.VSkript26;
@@ -18,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,6 +31,7 @@ public class DiSky extends JavaPlugin {
     private static PluginManager pluginManager;
     public static VersionAdapter SKRIPT_ADAPTER;
     public static boolean SKIMAGE_INSTALLED;
+    public static SkriptAddon SKRIPT_ADDON;
 
     @Override
     public void onEnable() {
@@ -71,20 +68,11 @@ public class DiSky extends JavaPlugin {
         if (SKIMAGE_INSTALLED)
             success("Found SkImage, enabling locale image in the upload effect!");
 
-        /* Skript loading */
-        log("Skript detection ...");
-        if ((pluginManager.getPlugin("Skript") != null) && Skript.isAcceptRegistrations()) {
-            success("Skript found! Starting registration ...");
-            SkriptAddon addon = Skript.registerAddon(this);
-            try {
-                addon.loadClasses("info.itsthesky.disky.skript");
-            } catch (IOException e) {
-                e.printStackTrace();
-                error("Wait, this is anormal. Please report the error above on the DiSky GitHub!.");
-            }
-        } else {
-            error("Cannot hook into Skript (Skript is not loaded or doesn't accept registration)");
-            pluginManager.disablePlugin(this);
+        if (!tryRegister()) {
+            error("Cannot found or hack Skript to register proper syntaxes!");
+            error("disabling this addon, bye!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         Utils.saveResourceAs(CONFIG);
 
@@ -149,6 +137,43 @@ public class DiSky extends JavaPlugin {
         log("Discord: &9" + "https://discord.gg/whWuXwaVwM");
         log("GitHub: &9" + "https://github.com/SkyCraft78/DiSky/");
         log("===== DiSky seems to be started correctly! =====");
+    }
+
+    public boolean tryRegister() {
+        /* Skript loading */
+        log("Skript detection ...");
+        if (pluginManager.getPlugin("Skript") == null) return false;
+        if (Skript.isAcceptRegistrations()) {
+            success("Skript found! Starting registration ...");
+            // Be sure Skript doesn't have DiSky already in addons hashmap
+            SkriptReflectionUtils.removeAddon(this);
+            SKRIPT_ADDON = Skript.registerAddon(this);
+            try {
+                SKRIPT_ADDON.loadClasses("info.itsthesky.disky.skript");
+            } catch (IOException e) {
+                e.printStackTrace();
+                error("Wait, this is anormal. Please report the error above on the DiSky GitHub!.");
+                return false;
+            }
+            return true;
+        } else {
+            warn("Skript found, but registration are closed. Hacking Skript to open them...");
+            if (!SkriptReflectionUtils.openRegistration()) {
+                error("Cannot force open the Skript registration!");
+                return false;
+            }
+            SKRIPT_ADDON = Skript.registerAddon(this);
+            try {
+                SKRIPT_ADDON.loadClasses("info.itsthesky.disky.skript");
+            } catch (IOException e) {
+                e.printStackTrace();
+                SkriptReflectionUtils.closeRegistration();
+                error("Wait, this is anormal. Please report the error above on the DiSky GitHub!.");
+            }
+            SkriptReflectionUtils.closeRegistration();
+            success("Closing hacking for Skript registration. Everything seems to be loaded correctly!");
+        }
+        return true;
     }
 
     @Override
