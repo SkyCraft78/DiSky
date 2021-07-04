@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Name("Is a bot loaded")
 @Description("See if a specific bot is loaded on the server or not.")
-@Examples("if bot \"name\" is loaded:")
+@Examples("if \"name\" is loaded:")
 @Since("1.5.2")
 public class CondIsLoaded extends Condition {
 
