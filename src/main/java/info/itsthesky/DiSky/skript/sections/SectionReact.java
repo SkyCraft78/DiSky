@@ -129,6 +129,13 @@ public class SectionReact extends DiSkySection {
             }
         }, 0);
 
+        EventValues.registerEventValue(SectionReactEvent.class, Guild.class, new Getter<Guild, SectionReactEvent>() {
+            @Override
+            public Guild get(SectionReactEvent event) {
+                return event.JDAEvent.getGuild();
+            }
+        }, 0);
+
         EventValues.registerEventValue(SectionReactEvent.class, UpdatingMessage.class, new Getter<UpdatingMessage, SectionReactEvent>() {
             @Override
             public UpdatingMessage get(SectionReactEvent event) {

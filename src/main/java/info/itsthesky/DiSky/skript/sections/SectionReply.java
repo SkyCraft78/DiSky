@@ -10,7 +10,7 @@ import ch.njol.skript.util.Getter;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.MessageBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.events.BukkitEvent;
 import info.itsthesky.disky.tools.events.InteractionEvent;
@@ -209,6 +209,13 @@ public class SectionReply extends DiSkySection {
             @Override
             public TextChannel get(SectionReplyEvent event) {
                 return (TextChannel) event.JDAEvent.getChannel();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(SectionReplyEvent.class, Guild.class, new Getter<Guild, SectionReplyEvent>() {
+            @Override
+            public Guild get(SectionReplyEvent event) {
+                return event.JDAEvent.getGuild();
             }
         }, 0);
 
