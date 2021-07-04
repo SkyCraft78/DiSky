@@ -9,12 +9,13 @@ import net.dv8tion.jda.api.entities.Invite;
  */
 public class CachedInvite {
 
-    private final long guildId;
-    private final long userID;
-    private final String code;
+    private long guildId;
+    private long userID;
+    private String code;
     private int uses;
 
     public CachedInvite(final Invite invite) {
+        if (invite == null) return;
         this.guildId = invite.getGuild() == null ? null : invite.getGuild().getIdLong();
         this.uses = invite.getUses();
         this.userID = invite.getInviter() == null ? null : invite.getInviter().getIdLong();
