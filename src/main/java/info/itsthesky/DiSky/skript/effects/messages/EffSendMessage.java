@@ -139,9 +139,6 @@ public class EffSendMessage extends Effect {
                 return;
             }
 
-            toSend = new MessageBuilder("test");
-            //toSend = new MessageBuilder().setEmbeds(new EmbedBuilder().setTitle("test").build());
-
             if (bot != null)
                 channel = bot.getTextChannelById(channel.getId());
 
