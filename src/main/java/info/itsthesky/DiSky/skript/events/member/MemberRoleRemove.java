@@ -13,7 +13,7 @@ public class MemberRoleRemove extends DiSkyEvent<GuildMemberRoleRemoveEvent> {
 
     static {
         DiSkyEvent.register("Inner Event Name", MemberRoleRemove.class, EvtMemberRoleRemove.class,
-                "pattern")
+                "member role remove[d]")
                 .setName("Docs Event Name")
                 .setDesc("Event description")
                 .setExample("Event Example");
