@@ -1,5 +1,6 @@
 package info.itsthesky.disky.skript.effects.messages;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
@@ -16,6 +17,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -31,6 +33,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 
 @Name("Upload File")
 @Description("Upload a file from an URL to a channel or a private user. If SkImage is installed, you can also send an image directly.")
@@ -49,7 +52,7 @@ public class EffUploadFile extends Effect {
 
     static {
         Skript.registerEffect(EffUploadFile.class,
-                "["+ Utils.getPrefixName() +"] upload %"+(DiSky.SKIMAGE_INSTALLED ? "string/image" : "string")+"% [(with name|named) %-string%] [with [the] [content] %-string/embed/messagebuilder%] to [the] [(channel|user)] %channel/textchannel/user/member% [with %-bot%] [and store it in %-object%]");
+                "["+ Utils.getPrefixName() +"] upload %"+(DiSky.SKIMAGE_INSTALLED ? "string/image" : "string")+"% [(with name|named) %-string%] [with [the] [content] %-string/embed/messagebuilder%] [to [the] [(channel|user)] %-channel/textchannel/user/member%] [with %-bot%] [and store it in %-object%]");
     }
 
     private Expression<Object> exprFile;
@@ -58,6 +61,7 @@ public class EffUploadFile extends Effect {
     private Variable<?> variable;
     private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
+    private boolean interaction = false;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -67,6 +71,13 @@ public class EffUploadFile extends Effect {
         exprContent = (Expression<Object>) exprs[2];
         exprChannel = (Expression<Object>) exprs[3];
         exprBot = (Expression<JDA>) exprs[4];
+
+        interaction = Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class);
+
+        if (exprChannel == null && !interaction) {
+            Skript.error("Need to specific a channel if you are not using the upload effect in an interaction event!");
+            return false;
+        }
 
         Expression<?> var = exprs[5];
         if (var != null && !(var instanceof Variable)) {
@@ -88,7 +99,7 @@ public class EffUploadFile extends Effect {
             Object content = exprContent == null ? null : exprContent.getSingle(e);
             Object f = exprFile.getSingle(e);
             String fileName = exprFileName == null ? "image.png" : (exprFileName.getSingle(e) == null ? "image.png" : exprFileName.getSingle(e));
-            if (entity == null) return;
+            if (!interaction && entity == null) return;
 
             debug(e, true);
 
@@ -139,15 +150,9 @@ public class EffUploadFile extends Effect {
                     channel = ((Member) entity).getUser().openPrivateChannel().complete();
                     break;
             }
-            if (channel == null) {
+            if (!interaction && channel == null) {
                 Skript.error("[DiSky] Cannot parse or cast the message channel in the upload effect!");
                 return;
-            }
-
-            /* 'with bot' verification */
-            if (exprBot != null && exprBot.getSingle(e) != null) {
-                JDA bot = exprBot.getSingle(e);
-                if (!Utils.areJDASimilar(channel.getJDA(), bot)) return;
             }
 
             if (f instanceof BufferedImage) {
