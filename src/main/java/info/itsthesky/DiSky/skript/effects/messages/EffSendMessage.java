@@ -114,6 +114,8 @@ public class EffSendMessage extends Effect {
                 return;
             }
 
+            boolean isPM = false;
+
             /* Channel Cast */
             MessageChannel channel = null;
             switch (entity.getClass().getSimpleName()) {
@@ -128,10 +130,12 @@ public class EffSendMessage extends Effect {
                 case "User":
                 case "UserImpl":
                     channel = ((User) entity).openPrivateChannel().complete();
+                    isPM = true;
                     break;
                 case "Member":
                 case "MemberImpl":
                     channel = ((Member) entity).getUser().openPrivateChannel().complete();
+                    isPM = true;
                     break;
             }
             if (channel == null) {
@@ -139,8 +143,17 @@ public class EffSendMessage extends Effect {
                 return;
             }
 
-            if (bot != null)
-                channel = bot.getTextChannelById(channel.getId());
+            if (bot != null) {
+
+                if (isPM) {
+                    channel = bot.getPrivateChannelById(channel.getId());
+                    if (channel == null)
+                        channel = bot.retrieveUserById(channel.getId()).complete().openPrivateChannel().complete();
+                } else {
+                    channel = bot.getTextChannelById(channel.getId());
+                }
+
+            }
 
             MessageAction action = channel.sendMessage(toSend.build());
             action = Utils.parseComponents(action, component);
