@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateSystemChannelEvent;
 public class GuildSystemChannel extends DiSkyEvent<GuildUpdateSystemChannelEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildSystemChannel.class, EvtGuildSystemChannel.class,
+        DiSkyEvent.register("Guild System Channel Update", GuildSystemChannel.class, EvtGuildSystemChannel.class,
                 "[guild] system channel (change|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild System Channel Update");
 
 
         EventValues.registerEventValue(EvtGuildSystemChannel.class, TextChannel.class, new Getter<TextChannel, EvtGuildSystemChannel>() {

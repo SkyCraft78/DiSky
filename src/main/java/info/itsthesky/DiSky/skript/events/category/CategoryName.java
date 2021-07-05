@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdateNameEven
 public class CategoryName extends DiSkyEvent<CategoryUpdateNameEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", CategoryName.class, EvtCategoryName.class,
+        DiSkyEvent.register("Category Name", CategoryName.class, EvtCategoryName.class,
                 "category name (change|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Category Name");
 
        EventValues.registerEventValue(EvtCategoryName.class, Category.class, new Getter<Category, EvtCategoryName>() {
             @Override

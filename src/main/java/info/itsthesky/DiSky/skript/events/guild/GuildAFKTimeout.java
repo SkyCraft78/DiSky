@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateAfkTimeoutEvent;
 public class GuildAFKTimeout extends DiSkyEvent<GuildUpdateAfkTimeoutEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildAFKTimeout.class, EvtGuildAFKTimeout.class,
+        DiSkyEvent.register("AFK Timeout Update", GuildAFKTimeout.class, EvtGuildAFKTimeout.class,
                 "[guild] afk timeout (update|change)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("AFK Timeout Update");
 
 
        EventValues.registerEventValue(EvtGuildAFKTimeout.class, Number.class, new Getter<Number, EvtGuildAFKTimeout>() {

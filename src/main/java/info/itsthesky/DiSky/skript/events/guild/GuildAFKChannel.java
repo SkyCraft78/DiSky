@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateAfkChannelEvent;
 public class GuildAFKChannel extends DiSkyEvent<GuildUpdateAfkChannelEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildAFKChannel.class, EvtGuildAFKChannel.class,
+        DiSkyEvent.register("AFK Channel Update", GuildAFKChannel.class, EvtGuildAFKChannel.class,
                 "[guild] afk channel (update|change)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("AFK Channel Update");
 
 
        EventValues.registerEventValue(EvtGuildAFKChannel.class, VoiceChannel.class, new Getter<VoiceChannel, EvtGuildAFKChannel>() {

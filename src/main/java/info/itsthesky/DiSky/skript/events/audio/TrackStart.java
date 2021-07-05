@@ -12,11 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class TrackStart extends SkriptEvent {
 
     static {
-        DiSkyEvent.register("Inner Event Name", TrackStart.class, TrackEvent.class,
+        DiSkyEvent.register("Track Start", TrackStart.class, TrackEvent.class,
                 "track start")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Track Start");
     }
 
     private Expression<JDA> bot;

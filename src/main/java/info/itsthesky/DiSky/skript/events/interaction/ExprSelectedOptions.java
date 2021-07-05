@@ -49,7 +49,7 @@ public  class ExprSelectedOptions extends SimpleExpression<String> {
     @Override
     public Class<? extends String> getReturnType() { return String.class; }
     @Override
-    public boolean isSingle() { return true; }
+    public boolean isSingle() { return false; }
     @Override
     public String toString(@Nullable Event e, boolean debug) {
         return "all of the selected values";

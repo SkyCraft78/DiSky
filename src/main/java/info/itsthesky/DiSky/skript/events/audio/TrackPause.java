@@ -12,11 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class TrackPause extends SkriptEvent {
 
     static {
-        DiSkyEvent.register("Inner Event Name", TrackPause.class, TrackEvent.class,
+        DiSkyEvent.register("Track Pause", TrackPause.class, TrackEvent.class,
                 "track pause")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Track Pause");
 
     }
 

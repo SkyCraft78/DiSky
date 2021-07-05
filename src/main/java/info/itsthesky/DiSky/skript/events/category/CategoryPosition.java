@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdatePosition
 public class CategoryPosition extends DiSkyEvent<CategoryUpdatePositionEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", CategoryPosition.class, EvtCategoryPosition.class,
+        DiSkyEvent.register("Category Position", CategoryPosition.class, EvtCategoryPosition.class,
                 "category position (change|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Category Position");
 
 
        EventValues.registerEventValue(EvtCategoryPosition.class, Category.class, new Getter<Category, EvtCategoryPosition>() {

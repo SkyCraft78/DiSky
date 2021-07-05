@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent;
 public class GuildName extends DiSkyEvent<GuildUpdateNameEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildName.class, EvtGuildName.class,
+        DiSkyEvent.register("Guild Name Update", GuildName.class, EvtGuildName.class,
                 "guild name (change|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild Name Update");
 
 
         EventValues.registerEventValue(EvtGuildName.class, String.class, new Getter<String, EvtGuildName>() {

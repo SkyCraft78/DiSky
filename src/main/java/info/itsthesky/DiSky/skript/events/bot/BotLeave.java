@@ -11,11 +11,9 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 public class BotLeave extends DiSkyEvent<GuildLeaveEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", BotLeave.class, EvtBotLeave.class,
+        DiSkyEvent.register("Bot Leave Guild", BotLeave.class, EvtBotLeave.class,
                 "bot leave [guild]")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Bot Leave Guild");
 
 
        EventValues.registerEventValue(EvtBotLeave.class, Guild.class, new Getter<Guild, EvtBotLeave>() {

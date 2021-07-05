@@ -13,11 +13,9 @@ import java.util.Locale;
 public class GuildBoostTier extends DiSkyEvent<GuildUpdateBoostTierEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildBoostTier.class, EvtGuildBoostTier.class,
+        DiSkyEvent.register("Guild Boost Tier Update", GuildBoostTier.class, EvtGuildBoostTier.class,
                 "[guild] boost tier (update|change)]")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild Boost Tier Update");
 
        EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
             @Override

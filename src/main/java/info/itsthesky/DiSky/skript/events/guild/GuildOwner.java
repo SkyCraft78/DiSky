@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 public class GuildOwner extends DiSkyEvent<GuildUpdateOwnerEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildOwner.class, EvtGuildOwner.class,
+        DiSkyEvent.register("Guild Owner Update", GuildOwner.class, EvtGuildOwner.class,
                 "[guild] owner (change|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild Owner Update");
 
 
        EventValues.registerEventValue(EvtGuildOwner.class, Member.class, new Getter<Member, EvtGuildOwner>() {

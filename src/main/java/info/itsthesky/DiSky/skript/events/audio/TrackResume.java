@@ -12,11 +12,9 @@ import org.jetbrains.annotations.Nullable;
 public class TrackResume extends SkriptEvent {
 
     static {
-        DiSkyEvent.register("Inner Event Name", TrackResume.class, TrackEvent.class,
+        DiSkyEvent.register("Track Resume", TrackResume.class, TrackEvent.class,
                 "track (play|resume)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Track Resume");
 
     }
 

@@ -12,11 +12,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateIconEvent;
 public class GuildIcon extends DiSkyEvent<GuildUpdateIconEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildIcon.class, EvtGuildIcon.class,
+        DiSkyEvent.register("Guild Icon Update", GuildIcon.class, EvtGuildIcon.class,
                 "[guild] icon (update|change)]")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild Icon Update");
 
 
         EventValues.registerEventValue(EvtGuildIcon.class, Guild.class, new Getter<Guild, EvtGuildIcon>() {

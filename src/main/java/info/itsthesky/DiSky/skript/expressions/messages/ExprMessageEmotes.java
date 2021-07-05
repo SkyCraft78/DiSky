@@ -1,4 +1,4 @@
-package info.itsthesky.DiSky.skript.expressions.messages;
+package info.itsthesky.disky.skript.expressions.messages;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.doc.Description;
@@ -13,6 +13,8 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.internal.entities.MemberImpl;
 import org.bukkit.event.Event;
 
 @Name("Used Emotes")

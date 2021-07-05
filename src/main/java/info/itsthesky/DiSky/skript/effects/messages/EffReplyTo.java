@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -19,6 +20,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.event.Event;
 
 @Name("Reply To message")
@@ -29,23 +31,29 @@ public class EffReplyTo extends AsyncEffect {
 
     static {
         Skript.registerEffect(EffReplyTo.class,
-                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ing] %-boolean%] [(with|using) %-bot%] [and store (it|the message) in %-object%]");
+                "["+ Utils.getPrefixName() +"] reply to [the] [message] %message% (using|with|via) [message] %string/message/messagebuilder/embed% [[with] mention[ing] %-boolean%] [(with|using) %-bot%] [with [(component|row)[s]] %-buttonrows/selectbuilder%] [and store (it|the message) in %-object%]");
     }
 
     private Expression<UpdatingMessage> exprTarget;
     private Expression<Object> exprMessage;
     private Expression<JDA> exprBot;
-    private Expression<Object> exprVar;
+    private Variable<?> var;
     private Expression<Boolean> exprMention;
+    private Expression<Object> exprRows;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprTarget = (Expression<UpdatingMessage>) exprs[0];
         exprMessage = (Expression<Object>) exprs[1];
-        if (exprs.length > 2) exprMention = (Expression<Boolean>) exprs[2];
-        if (exprs.length > 3) exprBot = (Expression<JDA>) exprs[3];
-        if (exprs.length > 4) exprVar = (Expression<Object>) exprs[4];
+        exprMention = (Expression<Boolean>) exprs[2];
+        exprBot = (Expression<JDA>) exprs[3];
+        exprRows = (Expression<Object>) exprs[4];
+        Expression<?> expr = exprs[5];
+        if (expr != null && !(expr instanceof Variable)) {
+            Skript.error("Cannot store the sent message in a non-variable expression!");
+        }
+        var = (Variable<?>) expr;
         return true;
     }
 
@@ -54,21 +62,26 @@ public class EffReplyTo extends AsyncEffect {
         DiSkyErrorHandler.executeHandleCode(e, Event -> {
             UpdatingMessage target = exprTarget.getSingle(e);
             Object msg = exprMessage.getSingle(e);
+            JDA bot = Utils.verifyVar(e, exprBot);
+            Object[] components = Utils.verifyVars(e, exprRows);
             Message storedMessage = null;
+            MessageAction action = null;
             boolean mention = exprMention != null && (exprMention.getSingle(e) != null && exprMention.getSingle(e));
             if (target == null || msg == null) return;
-            if (exprBot != null && !Utils.areJDASimilar(target.getMessage().getJDA(), exprBot.getSingle(e))) return;
 
-            if (msg instanceof Message) storedMessage = target.getMessage().reply((Message) msg).mentionRepliedUser(mention).complete();
-            if (msg instanceof EmbedBuilder) storedMessage = target.getMessage().reply(((EmbedBuilder) msg).build()).mentionRepliedUser(mention).complete();
-            if (msg instanceof MessageBuilder) storedMessage = target.getMessage().reply(((MessageBuilder) msg).build()).mentionRepliedUser(mention).complete();
-            if (storedMessage == null) storedMessage = target.getMessage().reply(msg.toString()).mentionRepliedUser(mention).complete();
+            if (bot != null)
+                target = UpdatingMessage.from(bot.getTextChannelById(target.getMessage().getTextChannel().getId()).retrieveMessageById(target.getID()).complete());
 
+            if (msg instanceof Message) action = target.getMessage().reply((Message) msg).mentionRepliedUser(mention);
+            if (msg instanceof EmbedBuilder) action = target.getMessage().replyEmbeds(((EmbedBuilder) msg).build()).mentionRepliedUser(mention);
+            if (msg instanceof MessageBuilder) action = target.getMessage().reply(((MessageBuilder) msg).build()).mentionRepliedUser(mention);
+            if (action == null) action = target.getMessage().reply(msg.toString()).mentionRepliedUser(mention);
+
+            action = Utils.parseComponents(action, components);
+
+            storedMessage = action.complete();
             ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
-            if (exprVar == null) return;
-            if (!exprVar.getClass().getName().equalsIgnoreCase("ch.njol.skript.lang.Variable")) return;
-            Variable var = (Variable) exprVar;
-            Utils.setSkriptVariable(var, storedMessage, e);
+            var.change(e, new Object[] {UpdatingMessage.from(storedMessage)}, Changer.ChangeMode.SET);
         });
     }
 

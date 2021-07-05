@@ -15,11 +15,9 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 public class ButtonClick extends DiSkyEvent<ButtonClickEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", ButtonClick.class, EvtButtonClick.class,
+        DiSkyEvent.register("Button Click", ButtonClick.class, EvtButtonClick.class,
                 "button click")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Button Click");
 
        EventValues.registerEventValue(EvtButtonClick.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtButtonClick>() {
             @Override

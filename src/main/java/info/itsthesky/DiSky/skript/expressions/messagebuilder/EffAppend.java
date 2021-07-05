@@ -12,6 +12,7 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.bukkit.event.Event;
 
 @Name("Append string / embed")

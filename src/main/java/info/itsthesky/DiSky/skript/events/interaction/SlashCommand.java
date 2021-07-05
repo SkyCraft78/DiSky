@@ -14,11 +14,9 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 public class SlashCommand extends DiSkyEvent<SlashCommandEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", SlashCommand.class, EvtSlashCommand.class,
+        DiSkyEvent.register("Slash Command", SlashCommand.class, EvtSlashCommand.class,
                 "slash command")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Slash Command");
 
         EventValues.registerEventValue(EvtSlashCommand.class, String.class, new Getter<String, EvtSlashCommand>() {
             @Override

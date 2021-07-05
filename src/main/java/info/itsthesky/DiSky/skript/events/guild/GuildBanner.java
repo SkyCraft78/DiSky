@@ -11,11 +11,9 @@ import net.dv8tion.jda.api.events.guild.update.GuildUpdateBannerEvent;
 public class GuildBanner extends DiSkyEvent<GuildUpdateBannerEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", GuildBanner.class, EvtGuildBanner.class,
+        DiSkyEvent.register("Guild Banner Update", GuildBanner.class, EvtGuildBanner.class,
                 "[guild] banner (update|change)]")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Guild Banner Update");
 
 
         EventValues.registerEventValue(EvtGuildBanner.class, String.class, new Getter<String, EvtGuildBanner>() {

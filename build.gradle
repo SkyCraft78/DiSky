@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
-def version = '2.0-beta2'
+def version = '2.0'
 group 'info.itsthesky'
 
 
@@ -36,7 +36,7 @@ dependencies {
     // compile('net.dv8tion:JDA:4.2.1_273') {
     //     exclude module: "opus-java"
     // }
-    compile('com.github.dv8fromtheworld:jda:a8453ad') {
+    compile('com.github.dv8fromtheworld:jda:1b6677e') {
         exclude module: "opus-java"
     }
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.29'

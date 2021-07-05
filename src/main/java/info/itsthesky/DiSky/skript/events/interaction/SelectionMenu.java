@@ -6,6 +6,7 @@ import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.events.DiSkyEvent;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.events.SimpleDiSkyEvent;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -18,11 +19,9 @@ import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 public class SelectionMenu extends DiSkyEvent<SelectionMenuEvent> {
 
     static {
-        DiSkyEvent.register("Inner Event Name", SelectionMenu.class, EvtSelectionMenu.class,
+        DiSkyEvent.register("Selection Menu Interact", SelectionMenu.class, EvtSelectionMenu.class,
                 "(selection menu|drop[ ]down) (interact|change|select|update)")
-                .setName("Docs Event Name")
-                .setDesc("Event description")
-                .setExample("Event Example");
+                .setName("Selection Menu Interact");
 
         EventValues.registerEventValue(EvtSelectionMenu.class, SelectOption[].class, new Getter<SelectOption[], EvtSelectionMenu>() {
             @Override
@@ -56,6 +55,20 @@ public class SelectionMenu extends DiSkyEvent<SelectionMenuEvent> {
             @Override
             public Member get(EvtSelectionMenu event) {
                 return event.getJDAEvent().getMember();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtSelectionMenu.class, String.class, new Getter<String, EvtSelectionMenu>() {
+            @Override
+            public String get(EvtSelectionMenu event) {
+                return event.getJDAEvent().getComponent().getId();
+            }
+        }, 0);
+
+        EventValues.registerEventValue(EvtSelectionMenu.class, UpdatingMessage.class, new Getter<UpdatingMessage, EvtSelectionMenu>() {
+            @Override
+            public UpdatingMessage get(EvtSelectionMenu event) {
+                return UpdatingMessage.from(event.getJDAEvent().getMessage());
             }
         }, 0);
 
