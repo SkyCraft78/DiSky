@@ -143,9 +143,13 @@ public class Utils extends ListenerAdapter {
         return new Color(bukkitColor.getRed(), bukkitColor.getGreen(), bukkitColor.getBlue());
     }
 
-    public static String getLatestVersion() {
-        DataArray json = DataArray.fromJson(getTextFromURL("https://api.github.com/repos/SkyCraft78/DiSky/tags"));
-        return json.getObject(1).getString("name");
+    public static @Nullable String getLatestVersion() {
+        try {
+            DataArray json = DataArray.fromJson(getTextFromURL("https://api.github.com/repos/SkyCraft78/DiSky/tags"));
+            return json.getObject(1).getString("name");
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static String getTextFromURL(String url) {

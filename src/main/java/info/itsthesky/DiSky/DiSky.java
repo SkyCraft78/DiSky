@@ -123,8 +123,12 @@ public class DiSky extends JavaPlugin {
                         getDescription().getVersion().contains("beta");
         String latestVersion = Utils.getLatestVersion();
         String currentVersion = getDescription().getVersion();
-        if (!containAlphaOrBeta && !currentVersion.equals(latestVersion))
-            warn("You are not on the latest released version of DiSky! You're on " + currentVersion + " but latest is " + latestVersion);
+        if (latestVersion == null) {
+            warn("Cannot connect to GitHub to check the version update!");
+        } else {
+            if (!containAlphaOrBeta && !currentVersion.equals(latestVersion))
+                warn("You are not on the latest released version of DiSky! You're on " + currentVersion + " but latest is " + latestVersion);
+        }
 
         CACHE_ENABLED = Utils.getOrSetDefault("config.yml", "CacheEntities", true);
 
