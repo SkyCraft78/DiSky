@@ -58,12 +58,20 @@ public class DiSkyType<T> {
 
                     @Override
                     public @NotNull String toString(@NotNull T entity, int flags) {
-                        return toString.apply(entity);
+                        try {
+                            return toString.apply(entity);
+                        } catch (Exception ex) {
+                            return entity.toString();
+                        }
                     }
 
                     @Override
                     public @NotNull String toVariableNameString(@NotNull T entity) {
-                        return toString.apply(entity);
+                        try {
+                            return toString.apply(entity);
+                        } catch (Exception ex) {
+                            return entity.toString();
+                        }
                     }
 
                     @Override
