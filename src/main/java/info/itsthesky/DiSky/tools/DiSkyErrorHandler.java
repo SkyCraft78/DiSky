@@ -50,6 +50,8 @@ public class DiSkyErrorHandler {
             ErrorResponseException exception = (ErrorResponseException) ex;
             if (exception.getErrorCode() == 10008) logger.severe("The message specified in a DiSky effect / expression / event doesn't exist on discord!");
 
+        } else {
+            ex.printStackTrace();
         }
     }
 

@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import net.dv8tion.jda.api.utils.data.DataArray;
@@ -81,6 +82,23 @@ public class Utils extends ListenerAdapter {
             }
         }
         return (T[]) safes.toArray(new Object[0]);
+    }
+
+    /**
+     * Handler of the result and the exception of a JDA's rest action.
+     * @param restAction   The rest action to hande
+     * @param consumer     The consumer to execute when the rest action succeed or not.
+     * @param defaultValue The default value to use if an exception occur. Can be null.
+     * @author Sky
+     */
+    public static <T> void handleRestAction(RestAction<T> restAction, Consumer<T> consumer, @Nullable T defaultValue) {
+        restAction.queue(
+                consumer,
+                ex -> {
+                    DiSkyErrorHandler.logException(ex);
+                    consumer.accept(defaultValue);
+                }
+        );
     }
 
     public static List<ActionRow> parseRows(Object... components) {

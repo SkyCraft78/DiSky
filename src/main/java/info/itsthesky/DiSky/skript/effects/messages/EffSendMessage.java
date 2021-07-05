@@ -6,32 +6,19 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.effects.Delay;
-import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
-import ch.njol.skript.variables.Variables;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.ButtonRow;
+import info.itsthesky.disky.tools.WaiterEffect;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Name("Send discord Message")
 @Description("Send a message in a specific channel, with a specific bot. Use that syntax only for non-textchannel event.")
@@ -42,7 +29,7 @@ import java.util.List;
         "\t\tset timestamp of embed to now\n" +
         "\tsend last embed to text channel with id \"818182473502294066\"")
 @Since("1.0")
-public class EffSendMessage extends Effect {
+public class EffSendMessage extends WaiterEffect {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
@@ -55,10 +42,9 @@ public class EffSendMessage extends Effect {
     private Variable<?> variable;
     private Expression<JDA> exprBot;
 
-    @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        Utils.setHasDelayBefore(Kleenean.TRUE);
+    @SuppressWarnings("unchecked")
+    public boolean initEffect(Expression<?>[] exprs, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<Object>) exprs[0];
         exprChannel = (Expression<Object>) exprs[1];
         exprComponents = (Expression<Object>) exprs[2];
@@ -74,130 +60,62 @@ public class EffSendMessage extends Effect {
     }
 
     @Override
-    protected @Nullable TriggerItem walk(Event e) {
+    public void runEffect(Event e) {
         Object entity = exprChannel.getSingle(e);
         Object content = exprMessage.getSingle(e);
         Object component = Utils.verifyVars(e, exprComponents);
         JDA bot = Utils.verifyVar(e, exprBot);
-        if (entity == null || content == null) return null;
-        debug(e, true);
+        if (entity == null || content == null) return;
 
-        Delay.addDelayedEvent(e); // Mark this event as delayed
-        Object _localVars = null;
-        if (DiSky.SkriptUtils.MANAGE_LOCALES)
-            _localVars = Variables.removeLocals(e); // Back up local variables
-        Object localVars = _localVars;
+        /* Message cast */
+        MessageBuilder builder = null;
+        if (content instanceof EmbedBuilder) builder = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
+        if (content instanceof MessageBuilder) builder = (MessageBuilder) content;
+        if (content instanceof String) builder = new MessageBuilder(content.toString());
+        if (builder == null) {
+            Skript.error("[DiSky] Cannot parse or cast the message in the send effect!");
+            return;
+        }
 
-        if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
-            return null;
+        /* Channel cast with consumer */
+        pause();
+        if (entity instanceof GuildChannel) {
+            runChannel((MessageChannel) entity, e, builder, component);
+            return;
+        } else if (entity instanceof User || entity instanceof Member) {
+            User user = (entity instanceof User) ? (User) entity : ((Member) entity).getUser();
+            MessageBuilder finalBuilder = builder;
+            Utils.handleRestAction(
+                    user.openPrivateChannel(),
+                    channel -> runChannel(channel, e, finalBuilder, component),
+                    null
+            );
+            return;
+        }
+        restart();
+    }
 
-        DiSkyErrorHandler.executeHandleCode(e, event -> {
+    private void runChannel(MessageChannel channel, Event event, MessageBuilder builder, Object components) {
 
-            /* Message cast */
-            MessageBuilder toSend = null;
-            switch (content.getClass().getSimpleName()) {
-                case "EmbedBuilder":
-                    toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
-                    break;
-                case "String":
-                    toSend = new MessageBuilder(content.toString());
-                    break;
-                case "MessageBuilder":
-                    toSend = (MessageBuilder) content;
-                    break;
-                case "Message":
-                    toSend = new MessageBuilder((Message) content);
-                    break;
-            }
-            if (toSend == null) {
-                Skript.error("[DiSky] Cannot parse or cast the message in the send effect!");
-                return;
-            }
+        if (channel == null) {
+            restart();
+            return;
+        }
 
-            boolean isPM = false;
-
-            /* Channel Cast */
-            MessageChannel channel = null;
-            switch (entity.getClass().getSimpleName()) {
-                case "TextChannel":
-                case "TextChannelImpl":
-                    channel = (MessageChannel) entity;
-                    break;
-                case "GuildChannel":
-                case "GuildChannelImpl":
-                    channel = ((GuildChannel) entity).getType().equals(ChannelType.TEXT) ? (MessageChannel) entity : null;
-                    break;
-                case "User":
-                case "UserImpl":
-                    channel = ((User) entity).openPrivateChannel().complete();
-                    isPM = true;
-                    break;
-                case "Member":
-                case "MemberImpl":
-                    channel = ((Member) entity).getUser().openPrivateChannel().complete();
-                    isPM = true;
-                    break;
-            }
-            if (channel == null) {
-                Skript.error("[DiSky] Cannot parse or cast the message channel in the send effect!");
-                return;
-            }
-
-            if (bot != null) {
-
-                if (isPM) {
-                    channel = bot.getPrivateChannelById(channel.getId());
-                    if (channel == null)
-                        channel = bot.retrieveUserById(channel.getId()).complete().openPrivateChannel().complete();
-                } else {
-                    channel = bot.getTextChannelById(channel.getId());
+        MessageAction action = channel.sendMessage(builder.build());
+        action = Utils.parseComponents(action, components);
+        action.queue(
+                message -> {
+                    if (variable != null)
+                        variable.change(event, new UpdatingMessage[] {UpdatingMessage.from(message)}, Changer.ChangeMode.SET);
+                    restart();
                 }
+        );
 
-            }
-
-            MessageAction action = channel.sendMessage(toSend.build());
-            action = Utils.parseComponents(action, component);
-            action.queue(m -> {
-                // Re-set local variables
-                if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                    Variables.setLocalVariables(event, localVars);
-
-                ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                if (variable != null) {
-                    variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                }
-
-                if (getNext() != null) {
-                    Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                        Object timing = null;
-                        if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                            Trigger trigger = getTrigger();
-                            if (trigger != null) {
-                                timing = SkriptTimings.start(trigger.getDebugLabel());
-                            }
-                        }
-
-                        TriggerItem.walk(getNext(), event);
-
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                            Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                        SkriptTimings.stop(timing); // Stop timing if it was even started
-                    });
-                } else {
-                    if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                        Variables.removeLocals(event);
-                }
-            });
-        });
-        return null;
     }
 
     @Override
     public String toString(Event e, boolean debug) {
         return "send discord message " + exprMessage.toString(e, debug) + " to channel or user " + exprChannel.toString(e, debug);
     }
-
-    @Override
-    protected void execute(Event event) { }
 }
