@@ -8,17 +8,14 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.scope.bot.ScopeBotBuilder;
+import info.itsthesky.disky.skript.scope.ScopeBotBuilder;
 import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.EffectSection;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.bukkit.event.Event;
-
-import java.util.List;
 
 @Name("Enable Intent")
 @Description({"Enable specific intent for the current bot in a 'create discord bot' scope. The login effect MUST be in the scope to take the desired configuration.",

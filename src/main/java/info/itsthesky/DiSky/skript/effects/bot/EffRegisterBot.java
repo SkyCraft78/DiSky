@@ -8,7 +8,7 @@ import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.events.bukkit.SkriptStartEvent;
 import ch.njol.skript.log.ErrorQuality;
-import info.itsthesky.disky.skript.scope.bot.ScopeBotBuilder;
+import info.itsthesky.disky.skript.scope.ScopeBotBuilder;
 import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
