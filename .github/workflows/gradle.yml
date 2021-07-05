@@ -25,3 +25,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with shadowJar
       run: ./gradlew shadowJar
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: DiSky-nighty
+        path: build/libs/
