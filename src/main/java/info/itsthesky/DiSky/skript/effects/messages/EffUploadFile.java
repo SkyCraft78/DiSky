@@ -11,18 +11,22 @@ import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
 import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
+import ch.njol.util.Validate;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.AsyncEffect;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.WaiterEffect;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +52,7 @@ import java.util.Arrays;
         "\t\t\tstop\n" +
         "\t\tupload arg-1 with content arg-2 to event-channel")
 @Since("1.4, 1.10 (added locale files & custom content)")
-public class EffUploadFile extends Effect {
+public class EffUploadFile extends WaiterEffect {
 
     static {
         Skript.registerEffect(EffUploadFile.class,
@@ -65,7 +69,7 @@ public class EffUploadFile extends Effect {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+    public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprFile = (Expression<Object>) exprs[0];
         exprFileName = (Expression<String>) exprs[1];
         exprContent = (Expression<Object>) exprs[2];
@@ -90,48 +94,34 @@ public class EffUploadFile extends Effect {
     }
 
     @Override
-    protected void execute(Event event) { }
+    public void runEffect(Event e) {
+        Object entity = exprChannel.getSingle(e);
+        Object content = exprContent == null ? null : exprContent.getSingle(e);
+        Object f = exprFile.getSingle(e);
+        String fileName = exprFileName == null ? "image.png" : (exprFileName.getSingle(e) == null ? "image.png" : exprFileName.getSingle(e));
+        if (!interaction && entity == null) return;
 
-    @Override
-    protected @Nullable TriggerItem walk(Event e) {
-        DiSkyErrorHandler.executeHandleCode(e, event -> {
-            Object entity = exprChannel.getSingle(e);
-            Object content = exprContent == null ? null : exprContent.getSingle(e);
-            Object f = exprFile.getSingle(e);
-            String fileName = exprFileName == null ? "image.png" : (exprFileName.getSingle(e) == null ? "image.png" : exprFileName.getSingle(e));
-            if (!interaction && entity == null) return;
+        /* Message cast */
+        MessageBuilder toSend = null;
+        if (content != null)
+            switch (content.getClass().getSimpleName()) {
+                case "EmbedBuilder":
+                    toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
+                    break;
+                case "String":
+                    toSend = new MessageBuilder(content.toString());
+                    break;
+                case "MessageBuilder":
+                    toSend = (MessageBuilder) content;
+                    break;
+                case "Message":
+                    toSend = new MessageBuilder((Message) content);
+                    break;
+            }
 
-            debug(e, true);
-
-            Delay.addDelayedEvent(e); // Mark this event as delayed
-            Object _localVars = null;
-            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                _localVars = Variables.removeLocals(e); // Back up local variables
-            Object localVars = _localVars;
-
-            if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
-                return;
-
-            /* Message cast */
-            MessageBuilder toSend = null;
-            if (content != null)
-                switch (content.getClass().getSimpleName()) {
-                    case "EmbedBuilder":
-                        toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
-                        break;
-                    case "String":
-                        toSend = new MessageBuilder(content.toString());
-                        break;
-                    case "MessageBuilder":
-                        toSend = (MessageBuilder) content;
-                        break;
-                    case "Message":
-                        toSend = new MessageBuilder((Message) content);
-                        break;
-                }
-
-            /* Channel Cast */
-            MessageChannel channel = null;
+        /* Channel Cast */
+        MessageChannel channel = null;
+        if (!interaction) {
             switch (entity.getClass().getSimpleName()) {
                 case "TextChannel":
                 case "TextChannelImpl":
@@ -150,243 +140,54 @@ public class EffUploadFile extends Effect {
                     channel = ((Member) entity).getUser().openPrivateChannel().complete();
                     break;
             }
-            if (!interaction && channel == null) {
-                Skript.error("[DiSky] Cannot parse or cast the message channel in the upload effect!");
-                return;
-            }
+        }
+        if (!interaction && channel == null) {
+            Skript.error("[DiSky] Cannot parse or cast the message channel in the upload effect!");
+            return;
+        }
 
-            if (f instanceof BufferedImage) {
-                BufferedImage image = (BufferedImage) f;
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                try {
-                    ImageIO.write(image, "png", os);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        InputStream stream = convert(f);
+        if (stream == null) return;
 
-                if (toSend == null) {
-                    channel.sendFile(is, fileName).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
+        RestAction<Message> action;
 
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
+        // Mean we reply to the interaction with a file
+        if (interaction) {
+            GenericInteractionCreateEvent event = ((InteractionEvent) e).getInteractionEvent();
+            Validate.notNull(event); // Just in case of anything, should not be null lmao
 
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                } else {
-                    channel.sendMessage(toSend.build()).addFile(is, fileName).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
-
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
-
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                }
-                return;
-            }
-
-            if (f == null) return;
-            String url = f.toString();
-            if (Utils.containURL(url)) {
-
-                InputStream stream = getFileFromURL(url);
-                String ext = getExtensionFromUrl(url);
-                if (stream == null) return;
-
-                if (toSend == null) {
-                    channel.sendFile(stream, "file." + ext).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
-
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
-
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                } else {
-                    channel.sendMessage(toSend.build()).addFile(stream, "file." + ext).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
-
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
-
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                }
-
+            if (toSend == null) {
+                action = event
+                        .getHook()
+                        .sendFile(stream, fileName);
             } else {
-
-                File file = new File(url);
-                if (!file.exists()) DiSkyErrorHandler.logException(new FileNotFoundException("Can't found the file to send in a channel! (Path: "+file.getPath()+")"));
-
-                if (toSend == null) {
-                    channel.sendFile(file).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
-
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
-
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                } else {
-                    channel.sendMessage(toSend.build()).addFile(file).queue(m -> {
-                        // Re-set local variables
-                        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-                            Variables.setLocalVariables(event, localVars);
-
-                        ExprLastMessage.lastMessage = UpdatingMessage.from(m);
-                        if (variable != null) {
-                            variable.change(event, new Object[] {UpdatingMessage.from(m)}, Changer.ChangeMode.SET);
-                        }
-
-                        if (getNext() != null) {
-                            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                                Object timing = null;
-                                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                                    Trigger trigger = getTrigger();
-                                    if (trigger != null) {
-                                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                                    }
-                                }
-
-                                TriggerItem.walk(getNext(), event);
-
-                                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                    Variables.removeLocals(event); // Clean up local vars, we may be exiting now
-
-                                SkriptTimings.stop(timing); // Stop timing if it was even started
-                            });
-                        } else {
-                            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                                Variables.removeLocals(event);
-                        }
-                    });
-                }
+                action = event
+                        .getHook()
+                        .sendMessage(toSend.build())
+                        .addFile(stream, fileName);
             }
 
-        });
-        return getNext();
+        } else {
+
+            if (toSend == null) {
+                action = channel
+                        .sendFile(stream, fileName);
+            } else {
+                action = channel
+                        .sendMessage(toSend.build())
+                        .addFile(stream, fileName);
+            }
+
+        }
+
+        pause(); // We pause the trigger items execution
+        Utils.handleRestAction(action,
+                message -> {
+                    if (variable != null)
+                        variable.change(e, (message == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(message)}), Changer.ChangeMode.SET);
+                    restart();
+                },
+                null);
     }
 
     @Override
@@ -394,7 +195,34 @@ public class EffUploadFile extends Effect {
         return "upload " + exprFile.toString(e, debug) + " in channel or to user " + exprChannel.toString(e, debug);
     }
 
-    public static InputStream getFileFromURL(String url) {
+    public static InputStream convert(Object entity) {
+        if (entity instanceof BufferedImage) return getStreamFromImage((BufferedImage) entity);
+        if (entity instanceof File) return getStreamFromFile((File) entity);
+        if (entity instanceof String) return getStreamFromURL(entity.toString());
+        return null;
+    }
+
+    public static InputStream getStreamFromImage(BufferedImage image) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", os);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return new ByteArrayInputStream(os.toByteArray());
+    }
+
+    public static InputStream getStreamFromFile(File file) {
+        InputStream targetStream = null;
+        try {
+            targetStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return targetStream;
+    }
+
+    public static InputStream getStreamFromURL(String url) {
         try {
             URLConnection connection = new URL(url).openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/4.77");
