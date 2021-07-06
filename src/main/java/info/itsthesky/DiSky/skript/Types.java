@@ -1,40 +1,23 @@
 package info.itsthesky.disky.skript;
 
-import ch.njol.skript.classes.ClassInfo;
 import ch.njol.skript.classes.Comparator;
-import ch.njol.skript.classes.Parser;
-import ch.njol.skript.lang.ParseContext;
-import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.registrations.Comparators;
 import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import info.itsthesky.disky.managers.BotManager;
-import info.itsthesky.disky.skript.commands.CommandEvent;
 import info.itsthesky.disky.skript.commands.CommandObject;
 import info.itsthesky.disky.tools.DiSkyComparator;
 import info.itsthesky.disky.tools.DiSkyType;
-import net.dv8tion.jda.api.MessageBuilder;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import info.itsthesky.disky.tools.object.*;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.components.ButtonStyle;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.internal.entities.TextChannelImpl;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Types {
 
@@ -114,13 +97,17 @@ public class Types {
 				TextChannel.class,
 				"textchannel",
 				"textchannels?",
-				input -> BotManager.search(bot -> bot.getTextChannelById(input))
+				TextChannel::getName,
+				input -> BotManager.search(bot -> bot.getTextChannelById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				GuildChannel.class,
 				"channel",
 				"channels?",
-				input -> BotManager.search(bot -> bot.getGuildChannelById(input))
+				GuildChannel::getName,
+				input -> BotManager.search(bot -> bot.getGuildChannelById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				Guild.class,
