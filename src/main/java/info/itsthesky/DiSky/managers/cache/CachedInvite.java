@@ -15,11 +15,13 @@ public class CachedInvite {
     private int uses;
 
     public CachedInvite(final Invite invite) {
-        if (invite == null) return;
-        this.guildId = invite.getGuild() == null ? null : invite.getGuild().getIdLong();
-        this.uses = invite.getUses();
-        this.userID = invite.getInviter() == null ? null : invite.getInviter().getIdLong();
-        this.code = invite.getCode();
+        try {
+            if (invite == null) return;
+            this.guildId = invite.getGuild() == null ? null : invite.getGuild().getIdLong();
+            this.uses = invite.getUses();
+            this.userID = invite.getInviter() == null ? null : invite.getInviter().getIdLong();
+            this.code = invite.getCode();
+        } catch (Exception ignored) {}
     }
 
     public long getGuildId() {
