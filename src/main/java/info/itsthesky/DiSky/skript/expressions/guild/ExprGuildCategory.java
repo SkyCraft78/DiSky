@@ -23,7 +23,7 @@ public class ExprGuildCategory extends SimpleExpression<Category> {
 
 	static {
 		Skript.registerExpression(ExprGuildCategory.class, Category.class, ExpressionType.SIMPLE,
-				"["+ Utils.getPrefixName() +"] [the] [discord] [guild] category of [the] [guild] %guild%");
+				"["+ Utils.getPrefixName() +"] [the] [discord] [guild] categor(y|ies) of [the] [guild] %guild%");
 	}
 
 	private Expression<Guild> exprGuild;
