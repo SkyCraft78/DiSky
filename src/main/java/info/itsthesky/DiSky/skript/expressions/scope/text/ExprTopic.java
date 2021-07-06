@@ -1,11 +1,14 @@
 package info.itsthesky.disky.skript.expressions.scope.text;
 
+import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.classes.Changer;
+import ch.njol.skript.config.Config;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
 import ch.njol.skript.expressions.base.SimplePropertyExpression;
+import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.coll.CollectionUtils;
 import info.itsthesky.disky.tools.object.TextChannelBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -14,6 +17,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
 
 import javax.annotation.Nullable;
+import java.io.ByteArrayInputStream;
+import java.util.List;
 
 @Name("Topic of a text channel (or builder)")
 @Description("Get or set the topic of text channel or builder.")
@@ -23,7 +28,7 @@ public class ExprTopic extends SimplePropertyExpression<Object, String> {
 
     static {
         register(ExprTopic.class, String.class,
-                "topic",
+                "[discord] topic",
                 "channel/textchannel/textchannelbuilder"
         );
     }
@@ -32,6 +37,7 @@ public class ExprTopic extends SimplePropertyExpression<Object, String> {
     @Override
     public String convert(Object entity) {
         if (entity instanceof TextChannel) return ((TextChannel) entity).getTopic();
+        if (entity instanceof TextChannelBuilder) return ((TextChannelBuilder) entity).getTopic();
         if (entity instanceof GuildChannel) return ((GuildChannel) entity).getType().equals(ChannelType.TEXT) ? ((TextChannel) entity).getTopic() : null;
         return null;
     }

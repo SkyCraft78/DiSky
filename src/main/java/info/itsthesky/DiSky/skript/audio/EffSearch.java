@@ -64,29 +64,16 @@ public class EffSearch extends Effect {
 
     private Expression<AudioSite> exprSite;
     private Expression<String> exprQueries;
-    private boolean isVarLocal;
-    private VariableString exprVar;
+    private Variable<?> var;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprSite = (Expression<AudioSite>) exprs[0];
         exprQueries = (Expression<String>) exprs[1];
-        if (exprs[2] != null) {
-            Expression<?> expr = exprs[2];
-            if (expr instanceof Variable) {
-                Variable<?> varExpr = (Variable<?>) expr;
-                if (varExpr.isList()) {
-                    exprVar = Utils.getVariableName(varExpr);
-                    isVarLocal = varExpr.isLocal();
-                    return true;
-                }
-            }
-            Skript.error("DiSky need a list for storing results, however, " + expr + " is not a list variable");
-            return false;
-        }
+        if (Utils.parseVar(exprs[2], true) == null) return false;
+        var = Utils.parseVar(exprs[2], true);
         return true;
-
     }
 
     @Override
@@ -95,13 +82,13 @@ public class EffSearch extends Effect {
         if (site == null) return;
         String query = exprQueries.getSingle(e);
         AudioTrack[] results = AudioUtils.search(query, site);
-        if (exprVar == null) return;
-        Utils.setList(exprVar.toString(e), e, isVarLocal, (Object[]) results);
+        if (var != null)
+            Utils.setSkriptList(var, e, (Object[]) results);
     }
 
     @Override
     public String toString(Event event, boolean debug) {
-        return "search " + exprSite.toString(event, debug) + " for " + exprQueries.toString(event, debug) + " and store the results in " + exprVar.toString(event, debug);
+        return "search " + exprSite.toString(event, debug) + " for " + exprQueries.toString(event, debug) + " and store the results in " + var.toString(event, debug);
     }
 
 }

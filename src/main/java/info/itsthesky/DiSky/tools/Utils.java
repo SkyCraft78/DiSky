@@ -65,11 +65,20 @@ public class Utils extends ListenerAdapter {
         return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
     }
 
-    public static @Nullable Variable<?> parseVar(Expression<?> expression) {
-        if (expression instanceof Variable<?>)
+    public static @Nullable Variable<?> parseVar(Expression<?> expression, boolean shouldBeList) {
+        if (expression instanceof Variable<?>) {
+            if (shouldBeList && !((Variable<?>) expression).isList()) {
+                Skript.error("The specified variable must be a list!");
+                return null;
+            }
             return (Variable<?>) expression;
+        }
         Skript.error("You must specific a valid variable, but got " + expression.toString());
         return null;
+    }
+
+    public static @Nullable Variable<?> parseVar(Expression<?> expression) {
+        return parseVar(expression, false);
     }
 
     public static ReplyAction parseComponents(ReplyAction action, Object... components) {
