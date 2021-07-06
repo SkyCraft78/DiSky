@@ -61,7 +61,7 @@ public class EffManagePermission extends AsyncEffect {
         Permission[] perm = exprPerm.getArray(e);
         Object target = exprTarget.getSingle(e);
         Object entity = exprEntity.getSingle(e);
-        if (perm.length == 0 || target == null) return;
+        if (perm.length == 0 || target == null || entity == null) return;
 
         GuildChannel channel = (GuildChannel) entity;
 
