@@ -1,5 +1,7 @@
 package info.itsthesky.disky.tools;
 
+import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.Variable;
 import ch.njol.skript.lang.VariableString;
@@ -61,6 +63,13 @@ public class Utils extends ListenerAdapter {
 
     public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
         return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
+    }
+
+    public static @Nullable Variable<?> parseVar(Expression<?> expression) {
+        if (expression instanceof Variable<?>)
+            return (Variable<?>) expression;
+        Skript.error("You must specific a valid variable, but got " + expression.toString());
+        return null;
     }
 
     public static ReplyAction parseComponents(ReplyAction action, Object... components) {
@@ -434,29 +443,11 @@ public class Utils extends ListenerAdapter {
     }
 
     public static <T> void setSkriptVariable(Variable<T> variable, Object value, Event event) {
-        String name = variable.getName().toString(event);
-        Variables.setVariable(name, value, event, variable.isLocal());
+        variable.change(event, new Object[] {value}, Changer.ChangeMode.SET);
     }
 
-    public static <T> void setSkriptList(Variable<T> variable, Event event, Object... value) {
-        String name = variable.getName().toString(event);
-        setList(name, event, variable.isLocal(), value);
-    }
-
-    /**
-     * Small edition for DiSky
-     * @author Blitz
-     */
-    public static void setList(String name, Event e, boolean isLocal, Object... objects) {
-        if (objects == null || name == null) return;
-        List<Object> list = Arrays.asList(objects.clone());
-
-        int separatorLength = Variable.SEPARATOR.length() + 1;
-        name = name.substring(0, (name.length() - separatorLength));
-        name = name.toLowerCase() + Variable.SEPARATOR;
-        for (int i = 1; i < list.size()+1; i++){
-            Variables.setVariable(name + i, list.get(i-1), e, isLocal);
-        }
+    public static <T> void setSkriptList(Variable<T> variable, Event event, Object... values) {
+        variable.change(event, values, Changer.ChangeMode.SET);
     }
 
     @Nullable

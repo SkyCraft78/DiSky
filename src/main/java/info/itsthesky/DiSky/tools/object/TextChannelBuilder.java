@@ -4,6 +4,7 @@ import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 public class TextChannelBuilder {
 
@@ -24,15 +25,14 @@ public class TextChannelBuilder {
         this.category = null;
     }
 
-    public TextChannel createChannel(Guild guild) {
+    public ChannelAction<TextChannel> createChannel(Guild guild) {
         return guild
                 .createTextChannel(this.name)
                 .setSlowmode(this.slowmode)
                 .setTopic(this.topic)
                 .setNews(this.news)
                 .setParent(this.category)
-                .setNSFW(this.nsfw)
-                .complete();
+                .setNSFW(this.nsfw);
     }
 
     public String getName() { return name; }

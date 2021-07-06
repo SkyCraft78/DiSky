@@ -35,29 +35,14 @@ public class RoleBuilder {
         this.mentionable = role.isMentionable();
     }
 
-    public Role create(Guild guild) {
-        RoleAction manager = guild
+    public RoleAction create(Guild guild) {
+        return guild
                 .createRole()
                 .setHoisted(this.separate)
                 .setColor(this.color)
                 .setName(this.name)
-                .setMentionable(this.mentionable);
-        Role finalRole = manager.complete();
-
-        for (Permission perm : this.allow) {
-            finalRole
-                    .getManager()
-                    .givePermissions(perm)
-                    .queue();
-        }
-        for (Permission perm : this.deny) {
-            finalRole
-                    .getManager()
-                    .revokePermissions(perm)
-                    .queue();
-        }
-
-        return finalRole;
+                .setMentionable(this.mentionable)
+                .setPermissions(this.allow);
     }
 
     public String getName() {
