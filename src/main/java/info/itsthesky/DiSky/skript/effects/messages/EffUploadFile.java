@@ -117,7 +117,7 @@ public class EffUploadFile extends Effect {
             if (content != null)
                 switch (content.getClass().getSimpleName()) {
                     case "EmbedBuilder":
-                        toSend = new MessageBuilder().setEmbed(((EmbedBuilder) content).build());
+                        toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) content).build());
                         break;
                     case "String":
                         toSend = new MessageBuilder(content.toString());
