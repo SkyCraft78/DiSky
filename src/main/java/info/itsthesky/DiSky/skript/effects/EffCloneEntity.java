@@ -13,8 +13,10 @@ import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.WaiterEffect;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
         "\t\tclone arg-1 and store it in {_c}\n" +
         "\t\treply with \"Channel cloned: %mention tag of {_c}%\"")
 @Since("1.5.3")
-public class EffCloneEntity extends Effect {
+public class EffCloneEntity extends WaiterEffect {
 
     static {
         Skript.registerEffect(EffCloneEntity.class,
@@ -42,8 +44,7 @@ public class EffCloneEntity extends Effect {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        Utils.setHasDelayBefore(Kleenean.TRUE);
+    public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprEntity = (Expression<Object>) exprs[0];
         exprGuild = (Expression<Guild>) exprs[1];
         Expression<?> var = exprs[2];
@@ -61,71 +62,36 @@ public class EffCloneEntity extends Effect {
     }
 
     @Override
-    protected @Nullable TriggerItem walk(Event e) {
+    public void runEffect(Event e) {
         Object entity = exprEntity.getSingle(e);
         Guild guild = Utils.verifyVar(e, exprGuild);
-        if (entity == null) return getNext();
-        debug(e, true);
-
-        Object _localVars = null;
-        if (DiSky.SkriptUtils.MANAGE_LOCALES)
-            _localVars = Variables.removeLocals(e); // Back up local variables
-        Object localVars = _localVars;
-
-        Delay.addDelayedEvent(e); // Mark this event as delayed
-
-        if (!Skript.getInstance().isEnabled()) // See https://github.com/SkriptLang/Skript/issues/3702
-            return null;
+        if (entity == null) return;
 
         if (entity instanceof GuildChannel) {
-            ((GuildChannel) entity).createCopy().queue(
-                    cloned -> runConsumer(cloned, e, localVars),
-                    ex -> runConsumer(null, e, localVars));
+            Utils.handleRestAction(
+                    ((GuildChannel) entity).createCopy(guild == null ? ((GuildChannel) entity).getGuild() : guild),
+                    channel -> {
+                        if (var != null)
+                            var.change(e, new GuildChannel[] {channel}, Changer.ChangeMode.SET);
+                        restart();
+                    },
+                    null
+            );
         } else {
-            ((Role) entity).createCopy().queue(
-                    cloned -> runConsumer(cloned, e, localVars),
-                    ex -> runConsumer(null, e, localVars));
+            Utils.handleRestAction(
+                    ((Role) entity).createCopy(guild == null ? ((Role) entity).getGuild() : guild),
+                    role -> {
+                        if (var != null)
+                            var.change(e, new Role[] {role}, Changer.ChangeMode.SET);
+                        restart();
+                    },
+                    null
+            );
         }
-
-        return null;
     }
 
     @Override
     public String toString(Event e, boolean debug) {
         return "clone discord entity " + exprEntity.toString(e, debug);
     }
-
-    private void runConsumer(@Nullable final Object entity, final Event e, final Object localVars) {
-        if (DiSky.SkriptUtils.MANAGE_LOCALES && localVars != null)
-            Variables.setLocalVariables(e, localVars);
-
-        if (DiSky.SkriptUtils.MANAGE_LOCALES && var != null && entity != null) {
-            var.change(e, new Object[] {entity}, Changer.ChangeMode.SET);
-        }
-
-        if (getNext() != null) {
-            Object vars = Variables.removeLocals(e); // Back up local variables
-            Bukkit.getScheduler().runTask(Skript.getInstance(), () -> { // Walk to next item synchronously
-                Object timing = null;
-                if (SkriptTimings.enabled()) { // getTrigger call is not free, do it only if we must
-                    Trigger trigger = getTrigger();
-                    if (trigger != null) {
-                        timing = SkriptTimings.start(trigger.getDebugLabel());
-                    }
-                }
-                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                    Variables.setLocalVariables(e, vars);
-                TriggerItem.walk(getNext(), e);
-                if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                    Variables.removeLocals(e); // Clean up local vars, we may be exiting now
-                SkriptTimings.stop(timing); // Stop timing if it was even started
-            });
-        } else {
-            if (DiSky.SkriptUtils.MANAGE_LOCALES)
-                Variables.removeLocals(e);
-        }
-    }
-
-    @Override
-    protected void execute(Event e) { }
 }

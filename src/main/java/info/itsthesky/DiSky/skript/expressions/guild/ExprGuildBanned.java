@@ -43,6 +43,7 @@ public class ExprGuildBanned extends SimpleExpression<User> {
 		Guild guild = exprGuild.getSingle(e);
 		if (guild == null) return new User[0];
 		List<User> user = new ArrayList<>();
+		// TODO: 06/07/2021 Add a way to use async effect in expression
 		guild.retrieveBanList().complete().forEach(ban -> user.add(ban.getUser()));
 		return user.toArray(new User[0]);
 	}
