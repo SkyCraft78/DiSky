@@ -13,12 +13,9 @@ import ch.njol.skript.timings.SkriptTimings;
 import ch.njol.skript.variables.Variables;
 import ch.njol.util.Validate;
 import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.AsyncEffect;
+import info.itsthesky.disky.tools.*;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.WaiterEffect;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -66,6 +63,7 @@ public class EffUploadFile extends WaiterEffect {
     private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
     private boolean interaction = false;
+    private NodeInformation info;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -75,6 +73,8 @@ public class EffUploadFile extends WaiterEffect {
         exprContent = (Expression<Object>) exprs[2];
         exprChannel = (Expression<Object>) exprs[3];
         exprBot = (Expression<JDA>) exprs[4];
+
+        info = new NodeInformation();
 
         interaction = Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class);
 
@@ -98,7 +98,7 @@ public class EffUploadFile extends WaiterEffect {
         Object entity = exprChannel.getSingle(e);
         Object content = exprContent == null ? null : exprContent.getSingle(e);
         Object f = exprFile.getSingle(e);
-        String fileName = exprFileName == null ? "image.png" : (exprFileName.getSingle(e) == null ? "image.png" : exprFileName.getSingle(e));
+        String fileName = Utils.verifyVar(e, exprFileName, "image.png");
         if (!interaction && entity == null) return;
 
         /* Message cast */
@@ -180,7 +180,6 @@ public class EffUploadFile extends WaiterEffect {
 
         }
 
-        pause(); // We pause the trigger items execution
         Utils.handleRestAction(action,
                 message -> {
                     if (variable != null)
@@ -195,56 +194,51 @@ public class EffUploadFile extends WaiterEffect {
         return "upload " + exprFile.toString(e, debug) + " in channel or to user " + exprChannel.toString(e, debug);
     }
 
-    public static InputStream convert(Object entity) {
+    public InputStream convert(Object entity) {
         if (entity instanceof BufferedImage) return getStreamFromImage((BufferedImage) entity);
-        if (entity instanceof File) return getStreamFromFile((File) entity);
-        if (entity instanceof String) return getStreamFromURL(entity.toString());
-        return null;
+        if (Utils.containURL(entity.toString())) {
+            return getStreamFromURL(entity.toString());
+        } else {
+            return getStreamFromFile(new File(entity.toString()));
+        }
     }
 
-    public static InputStream getStreamFromImage(BufferedImage image) {
+    public InputStream getStreamFromImage(BufferedImage image) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ImageIO.write(image, "png", os);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException ex) {
+            DiSky.error("Cannot create the InputStream from an image! Error: " + ex.getMessage());
+            DiSky.error("Related line: " + info.getDebugLabel());
         }
         return new ByteArrayInputStream(os.toByteArray());
     }
 
-    public static InputStream getStreamFromFile(File file) {
+    public InputStream getStreamFromFile(File file) {
         InputStream targetStream = null;
         try {
             targetStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            DiSky.error("The specified file doesn't exist! " + info.getDebugLabel());
         }
         return targetStream;
     }
 
-    public static InputStream getStreamFromURL(String url) {
+    public InputStream getStreamFromURL(String url) {
         try {
             URLConnection connection = new URL(url).openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/4.77");
             return connection.getInputStream();
         } catch (MalformedURLException ex) {
-            DiSkyErrorHandler.logException(new MalformedURLException("DiSky tried to load an URL, but this one was malformed."));
-        } catch (IOException | IllegalArgumentException ignored) { }
+            DiSky.error("DiSky tried to load an URL, but this one was malformed. " + info.getDebugLabel());
+        } catch (IOException | IllegalArgumentException ex) {
+            DiSky.error("DiSky tried to load an URL, but got an unknown error: " + ex.getMessage());
+        }
         return null;
     }
 
-    public static String getExtensionFromUrl(String s) {
+    public String getExtensionFromUrl(String s) {
         return s.substring(s.lastIndexOf("."));
     }
 
-    public static byte[] getByteArray(BufferedImage bi, String format) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            ImageIO.write(bi, format, stream);
-        } catch (IOException e) {
-            Skript.error("Can't convert an Image (from skImage addon) to send it in Discord!");
-        }
-        return stream.toByteArray();
-
-    }
 }
