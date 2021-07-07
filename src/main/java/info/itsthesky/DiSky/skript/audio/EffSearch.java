@@ -13,6 +13,8 @@ import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.AudioSite;
 import org.bukkit.event.Event;
 
+import java.util.Arrays;
+
 @Name("Search Audio")
 @Description("Search audio track in an audio website (see Audio Site).")
 @Since("1.9")
@@ -83,7 +85,7 @@ public class EffSearch extends Effect {
         String query = exprQueries.getSingle(e);
         AudioTrack[] results = AudioUtils.search(query, site);
         if (var != null)
-            Utils.setSkriptList(var, e, (Object[]) results);
+            Utils.setSkriptList(var, e, Arrays.asList(results));
     }
 
     @Override

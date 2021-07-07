@@ -65,7 +65,6 @@ public class EffRetrieveMessages extends WaiterEffect {
         if (amount == null || channel == null) return;
         if (!channel.getType().equals(ChannelType.TEXT)) return;
 
-        pause(); // We pause the trigger execution
         Utils.handleRestAction(
                 ((TextChannel) channel).getHistory().retrievePast(amount.intValue()),
                 msg -> runConsumer(msg, e),
@@ -79,9 +78,8 @@ public class EffRetrieveMessages extends WaiterEffect {
     }
 
     private void runConsumer(@Nullable final List<Message> entities, final Event e) {
-        List<UpdatingMessage> msg = Arrays.asList(UpdatingMessage.convert(entities.toArray(new Message[0])));
         if (variable != null)
-            variable.change(e, msg.toArray(new UpdatingMessage[0]), Changer.ChangeMode.SET);
+            Utils.setSkriptList(variable, e, (Object[]) UpdatingMessage.convert(entities.toArray(new Message[0])));
         restart(); // We change the next trigger item and resume the trigger execution
     }
 

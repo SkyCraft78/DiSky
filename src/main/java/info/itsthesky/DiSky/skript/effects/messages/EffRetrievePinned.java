@@ -1,7 +1,6 @@
-package info.itsthesky.disky.skript.effects.guild;
+package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -13,36 +12,36 @@ import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.WaiterEffect;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Name("Guild Banned Users")
-@Description("Retrieve every banned user and store them in a list.")
-@Examples("retrieve banned users of event-guild and store them in {_l::*}")
-@Since("2.0")
-public class RetrieveBanned extends WaiterEffect {
+@Name("Pinned Messages")
+@Description("Get all pinned message of a specific text channel.")
+@Examples("set {_msg::*} to pinned message of event-channel")
+@Since("1.0")
+public class EffRetrievePinned extends WaiterEffect {
 
     static {
-        Skript.registerEffect(RetrieveBanned.class,
-                "["+ Utils.getPrefixName() +"] retrieve [ban[ned]] user[s] from [the] [guild] %guild% and store (them|the [banned] users) in %-objects%");
+        Skript.registerEffect(EffRetrievePinned.class,
+                "["+ Utils.getPrefixName() +"] retrieve [the] pin[ned] (messages|msg) from [the] [channel] %channel/textchannel% and store (them|the messages) in %-objects%");
     }
 
-    private Expression<Number> exprAmount;
-    private Expression<Guild> exprGuild;
+    private Expression<GuildChannel> exprChannel;
     private Variable<?> variable;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        exprAmount = (Expression<Number>) exprs[0];
-        exprGuild = (Expression<Guild>) exprs[1];
-        Expression<?> var = exprs[2];
+        exprChannel = (Expression<GuildChannel>) exprs[0];
+        Expression<?> var = exprs[1];
         if (var != null && !(var instanceof Variable)) {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
@@ -58,16 +57,16 @@ public class RetrieveBanned extends WaiterEffect {
 
     @Override
     public void runEffect(Event e) {
-        Number amount = exprAmount.getSingle(e);
-        Guild guild = exprGuild.getSingle(e);
-        if (amount == null || guild == null) return;
+        GuildChannel channel = exprChannel.getSingle(e);
+        if (channel == null) return;
+        if (!channel.getType().equals(ChannelType.TEXT)) return;
+
 
         Utils.handleRestAction(
-                guild.retrieveBanList(),
-                bans -> {
-                    List<User> users = bans.stream().map(Guild.Ban::getUser).collect(Collectors.toList());
+                ((TextChannel) channel).retrievePinnedMessages(),
+                msg -> {
                     if (variable != null)
-                        variable.change(e, users.toArray(new User[0]), Changer.ChangeMode.SET);
+                        Utils.setSkriptList(variable, e, Arrays.asList(UpdatingMessage.convert(msg.toArray(new Message[0]))));
                     restart(); // We change the next trigger item and resume the trigger execution
                 },
                 new ArrayList<>()
@@ -76,9 +75,6 @@ public class RetrieveBanned extends WaiterEffect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "retrieve banned users from guild " + exprGuild.toString(e, debug) +" and store them in " + variable.toString(e, debug);
+        return "retrieve pinned messages from channel "+ exprChannel.toString(e, debug) +" and store them in " + variable.toString(e, debug);
     }
-
-    @Override
-    protected void execute(Event e) { }
 }

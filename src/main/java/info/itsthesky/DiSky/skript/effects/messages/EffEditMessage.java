@@ -8,10 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.tools.AsyncEffect;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.StaticData;
-import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.*;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -29,7 +26,7 @@ import java.util.List;
         "wait 3 second\n" +
         "edit message {_msg} to show \":x: ... has been edited\"")
 @Since("1.2")
-public class EffEditMessage extends AsyncEffect {
+public class EffEditMessage extends WaiterEffect {
 
     static {
         Skript.registerEffect(EffEditMessage.class,
@@ -38,52 +35,52 @@ public class EffEditMessage extends AsyncEffect {
 
     private Expression<UpdatingMessage> exprMessage;
     private Expression<Object> exprNew;
-    private boolean keepButtons;
+    private boolean keepComponents;
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+    public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprMessage = (Expression<UpdatingMessage>) exprs[0];
         exprNew = (Expression<Object>) exprs[1];
-        keepButtons = parseResult.expr.contains("keeping buttons") || parseResult.expr.contains("and keep buttons");
+        keepComponents = parseResult.expr.contains("keep");
         return true;
     }
 
     @Override
-    protected void execute(Event e) {
-        DiSkyErrorHandler.executeHandleCode(e, Event -> {
-            UpdatingMessage message = exprMessage.getSingle(e);
-            Object newValue = exprNew.getSingle(e);
-            if (message == null || newValue == null) return;
+    public void runEffect(Event e) {
+        UpdatingMessage message = exprMessage.getSingle(e);
+        Object newValue = exprNew.getSingle(e);
+        if (message == null || newValue == null) return;
 
-            MessageAction action;
-            MessageBuilder toSend = null;
-            /* Message cast */
-            switch (newValue.getClass().getSimpleName()) {
-                case "EmbedBuilder":
-                    toSend = new MessageBuilder().setEmbed(((EmbedBuilder) newValue).build());
-                    break;
-                case "String":
-                    toSend = new MessageBuilder(newValue.toString());
-                    break;
-                case "MessageBuilder":
-                    toSend = (MessageBuilder) newValue;
-                    break;
-                case "Message":
-                    toSend = new MessageBuilder((Message) newValue);
-                    break;
-            }
-            if (toSend == null) {
-                Skript.error("[DiSky] Cannot parse or cast the message in the edit message effect!");
-                return;
-            }
-            if (keepButtons) {
-                List<ActionRow> rows = new ArrayList<>(message.getMessage().getActionRows());
-                message.getMessage().editMessage(toSend.build()).setActionRows(rows).queue();
-            } else {
-                message.getMessage().editMessage(toSend.build()).queue();
-            }
-        });
+        MessageBuilder toSend = null;
+        /* Message cast */
+        switch (newValue.getClass().getSimpleName()) {
+            case "EmbedBuilder":
+                toSend = new MessageBuilder().setEmbeds(((EmbedBuilder) newValue).build());
+                break;
+            case "String":
+                toSend = new MessageBuilder(newValue.toString());
+                break;
+            case "MessageBuilder":
+                toSend = (MessageBuilder) newValue;
+                break;
+        }
+        if (toSend == null) {
+            Skript.error("[DiSky] Cannot parse or cast the message in the edit message effect!");
+            return;
+        }
+
+        MessageAction action;
+        if (keepComponents) {
+            List<ActionRow> rows = new ArrayList<>(message.getMessage().getActionRows());
+            action = message.getMessage().editMessage(toSend.build()).setActionRows(rows);
+        } else {
+            action = message.getMessage().editMessage(toSend.build());
+        }
+        Utils.handleRestAction(action,
+                msg -> restart(),
+                null
+        );
     }
 
     @Override

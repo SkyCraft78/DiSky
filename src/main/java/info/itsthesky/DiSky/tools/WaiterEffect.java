@@ -4,6 +4,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,7 @@ public abstract class WaiterEffect extends Effect {
 
     private @Nullable TriggerItem next;
     private Event event;
+    private Object localVars;
 
     public abstract boolean initEffect(Expression<?>[] expressions, int i, Kleenean kleenean, SkriptParser.ParseResult parseResult);
 
@@ -26,18 +28,10 @@ public abstract class WaiterEffect extends Effect {
 
     public abstract void runEffect(Event e);
 
-    protected void resume() {
-        setNext(next == null ? null : next);
-    }
-
-    protected void restart() {
-        resume();
-        runItems();
-    }
-
     @Override
     protected void execute(Event e) {
         next = getNext();
+        localVars = copyVar(e);
         event = e;
     }
 
@@ -47,12 +41,16 @@ public abstract class WaiterEffect extends Effect {
         // We init the next item (can be null)
         next = getNext();
         event = e;
-        // Then we force an enabling before doing anything stupid
-        resume();
         // And we finally can execute the effect itself.
+        Variables.setLocalVariables(e, localVars);
         runEffect(e);
         // We overriding it, no need to return the next trigger item
+        // The execution will always be stopped, we always returning null here.
         return null;
+    }
+
+    protected void restart() {
+        runItems();
     }
 
     protected void runItems(Event e) {
@@ -60,12 +58,13 @@ public abstract class WaiterEffect extends Effect {
         TriggerItem.walk(next, e);
     }
 
-    protected void runItems() {
-        runItems(this.event);
+    protected Object copyVar(Event e) {
+        Object vars = Variables.removeLocals(e);
+        Variables.setLocalVariables(e, vars);
+        return vars;
     }
 
-    protected void pause() {
-        next = getNext();
-        setNext(null);
+    protected void runItems() {
+        runItems(this.event);
     }
 }

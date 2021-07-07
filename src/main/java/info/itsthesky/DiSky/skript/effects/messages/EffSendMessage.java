@@ -78,7 +78,6 @@ public class EffSendMessage extends WaiterEffect {
         }
 
         /* Channel cast with consumer */
-        pause();
         if (entity instanceof GuildChannel) {
             runChannel((MessageChannel) entity, e, builder, component);
             return;

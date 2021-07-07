@@ -1,6 +1,7 @@
 package info.itsthesky.disky.skript.scope.textchannels;
 
 import ch.njol.skript.Skript;
+import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
@@ -47,12 +48,11 @@ public class EffCreateTextChannel extends WaiterEffect {
         TextChannelBuilder builder = exprBuilder.getSingle(e);
         Guild guild = exprGuild.getSingle(e);
         if (builder == null || guild == null) return;
-        pause();
         Utils.handleRestAction(
                 builder.createChannel(guild),
                 channel -> {
                     if (var != null)
-                        Utils.setSkriptVariable(var, channel, e);
+                        var.change(e, new TextChannel[] {channel}, Changer.ChangeMode.SET);
                     restart();
                 },
                 null

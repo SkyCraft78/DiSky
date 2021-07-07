@@ -62,7 +62,11 @@ public class Utils extends ListenerAdapter {
     }
 
     public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression) {
-        return expression == null ? null : (expression.getSingle(e) == null ? null : expression.getSingle(e));
+        return verifyVar(e, expression, null);
+    }
+
+    public static <T> T verifyVar(@NotNull Event e, @Nullable Expression<T> expression, T defaultValue) {
+        return expression == null ? defaultValue : (expression.getSingle(e) == null ? defaultValue : expression.getSingle(e));
     }
 
     public static @Nullable Variable<?> parseVar(Expression<?> expression, boolean shouldBeList) {
@@ -455,8 +459,16 @@ public class Utils extends ListenerAdapter {
         variable.change(event, new Object[] {value}, Changer.ChangeMode.SET);
     }
 
-    public static <T> void setSkriptList(Variable<T> variable, Event event, Object... values) {
-        variable.change(event, values, Changer.ChangeMode.SET);
+    public static <T> void setSkriptList(Variable<T> variable, Event event, List<?> values) {
+        List<Object> list = Collections.singletonList(values);
+        String name = variable.getName().getDefaultVariableName();
+
+        int separatorLength = Variable.SEPARATOR.length() + 1;
+        name = name.substring(0, (name.length() - separatorLength));
+        name = name.toLowerCase() + Variable.SEPARATOR;
+        for (int i = 1; i < list.size()+1; i++){
+            Variables.setVariable(name + i, list.get(i-1), event, variable.isLocal());
+        }
     }
 
     @Nullable

@@ -13,6 +13,7 @@ import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.bukkit.Bukkit;
@@ -82,7 +83,7 @@ public class EffRetrieveMessage extends Effect {
             Variables.setLocalVariables(e, localVars);
 
         if (variable != null && message != null) {
-            variable.change(e, new Object[] {message}, Changer.ChangeMode.SET);
+            variable.change(e, new Object[] {UpdatingMessage.from(message)}, Changer.ChangeMode.SET);
         }
 
         if (getNext() != null) {
