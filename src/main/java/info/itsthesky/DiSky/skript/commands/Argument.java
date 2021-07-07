@@ -19,7 +19,6 @@ import java.util.WeakHashMap;
 
 /**
  * @author Peter Güttinger
- * edited minorly for Vixio, and then edited majorly for DiSky by ItsTheSky
  */
 public class Argument<T> {
 
@@ -36,7 +35,7 @@ public class Argument<T> {
 
     private final boolean optional;
 
-    private transient WeakHashMap<Event, T[]> current = new WeakHashMap<>();
+    private final transient WeakHashMap<Event, T[]> current = new WeakHashMap<>();
 
     private Argument(@Nullable final String name, final @Nullable Expression<? extends T> def, final ClassInfo<T> type, final boolean single, final int index, final boolean optional) {
         this.name = name;

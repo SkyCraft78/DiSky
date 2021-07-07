@@ -126,7 +126,8 @@ public class EffReplyWith extends WaiterEffect {
                 .sendMessage(toSend.build());
         action = Utils.parseComponents(action, components);
 
-        Utils.handleRestAction(
+        variable.change(event, new UpdatingMessage[] {UpdatingMessage.from(action.complete())}, Changer.ChangeMode.SET);
+        /* Utils.handleRestAction(
                 action,
                 msg -> {
                     if (variable != null)
@@ -137,7 +138,7 @@ public class EffReplyWith extends WaiterEffect {
                     restart();
                 },
                 null
-        );
+        ); */
     }
 
     @Override

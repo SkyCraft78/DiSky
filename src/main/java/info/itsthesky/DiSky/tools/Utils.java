@@ -89,6 +89,31 @@ public class Utils extends ListenerAdapter {
         return action.addActionRows(parseRows(components).toArray(new ActionRow[0]));
     }
 
+    /**
+     * @author Sky
+     */
+    @SuppressWarnings("unchecked")
+    public static @Nullable Object pasteVarMaps(Object first, Object second) {
+        try {
+            Field firstHashMapField = ReflectionUtils.getField(first.getClass(), "hashMap");
+            Field firstTreeMapField = ReflectionUtils.getField(first.getClass(), "treeMap");
+
+            Field secondHashMapField = ReflectionUtils.getField(second.getClass(), "hashMap");
+            Field secondTreeMapField = ReflectionUtils.getField(second.getClass(), "treeMap");
+
+            HashMap<String, Object> firstHashMap = ReflectionUtils.getFieldValue(firstHashMapField, first);
+            HashMap<String, Object> firstTreeMap = ReflectionUtils.getFieldValue(firstTreeMapField, first);
+
+            ((HashMap<String, Object>) secondTreeMapField.get(null)).putAll(firstTreeMap);
+            ((HashMap<String, Object>) secondHashMapField.get(null)).putAll(firstHashMap);
+
+            return second;
+
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public static MessageAction parseComponents(MessageAction action, Object... components) {
         return action.setActionRows(parseRows(components).toArray(new ActionRow[0]));
     }

@@ -100,6 +100,7 @@ public class EffUploadFile extends WaiterEffect {
         Object f = exprFile.getSingle(e);
         String fileName = Utils.verifyVar(e, exprFileName, "image.png");
         if (!interaction && entity == null) return;
+        if (f == null) return;
 
         /* Message cast */
         MessageBuilder toSend = null;
@@ -150,6 +151,7 @@ public class EffUploadFile extends WaiterEffect {
         if (stream == null) return;
 
         RestAction<Message> action;
+        Message message;
 
         // Mean we reply to the interaction with a file
         if (interaction) {
@@ -157,36 +159,38 @@ public class EffUploadFile extends WaiterEffect {
             Validate.notNull(event); // Just in case of anything, should not be null lmao
 
             if (toSend == null) {
-                action = event
+                message = event
                         .getHook()
-                        .sendFile(stream, fileName);
+                        .sendFile(stream, fileName).complete();
             } else {
-                action = event
+                message = event
                         .getHook()
                         .sendMessage(toSend.build())
-                        .addFile(stream, fileName);
+                        .addFile(stream, fileName).complete();
             }
 
         } else {
 
             if (toSend == null) {
-                action = channel
-                        .sendFile(stream, fileName);
+                message = channel
+                        .sendFile(stream, fileName).complete();
             } else {
-                action = channel
+                message = channel
                         .sendMessage(toSend.build())
-                        .addFile(stream, fileName);
+                        .addFile(stream, fileName).complete();
             }
 
         }
 
-        Utils.handleRestAction(action,
+        if (variable != null)
+            variable.change(e, (message == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(message)}), Changer.ChangeMode.SET);
+        /*Utils.handleRestAction(action,
                 message -> {
                     if (variable != null)
                         variable.change(e, (message == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(message)}), Changer.ChangeMode.SET);
                     restart();
                 },
-                null);
+                null);*/
     }
 
     @Override
