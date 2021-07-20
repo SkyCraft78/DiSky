@@ -12,11 +12,11 @@ import javax.annotation.Nullable;
 
 /**
  * Way to make SimplePropertyExpression return multiple objects
- * Copyright (C) 2021 @Olyno
+ * Copyright (C) 2021 @Olyno and edited by Sky
  */
 public abstract class MultiplyPropertyExpression<F, T> extends SimpleExpression<T> {
 
-    private Expression<? extends F> expr;
+    public Expression<? extends F> expr;
 
     protected static <T> void register(final Class<? extends Expression<T>> c, final Class<T> type, final String property, final String fromType) {
         Skript.registerExpression(c, type, ExpressionType.SIMPLE,

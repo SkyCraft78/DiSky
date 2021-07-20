@@ -65,13 +65,17 @@ public class Types {
 				Category.class,
 				"category",
 				"categor(y|ies)",
-				input -> BotManager.search(bot -> bot.getCategoryById(input))
+				AbstractChannel::getName,
+				input -> BotManager.search(bot -> bot.getCategoryById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				User.class,
 				"user",
 				"users?",
-				input -> BotManager.search(bot -> bot.getUserById(input))
+				User::getName,
+				input -> BotManager.search(bot -> bot.getUserById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				Member.class,
@@ -85,13 +89,17 @@ public class Types {
 				Role.class,
 				"role",
 				"roles?",
-				input -> BotManager.search(bot -> bot.getRoleById(input))
+				Role::getName,
+				input -> BotManager.search(bot -> bot.getRoleById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				VoiceChannel.class,
 				"voicechannel",
 				"voicechannels?",
-				input -> BotManager.search(bot -> bot.getVoiceChannelById(input))
+				AbstractChannel::getName,
+				input -> BotManager.search(bot -> bot.getVoiceChannelById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				TextChannel.class,
@@ -113,7 +121,9 @@ public class Types {
 				Guild.class,
 				"guild",
 				"guilds?",
-				input -> BotManager.search(bot -> bot.getGuildById(input))
+				Guild::getName,
+				input -> BotManager.search(bot -> bot.getGuildById(input)),
+				false
 		).register();
 		new DiSkyType<>(
 				CategoryBuilder.class,
@@ -166,7 +176,10 @@ public class Types {
 		new DiSkyType<>(
 				Emote.class,
 				"emote",
-				"emotes?"
+				"emotes?",
+				Emote::getName,
+				null,
+				false
 		).register();
 		DiSkyType.fromEnum(
 				Badge.class,
@@ -203,13 +216,17 @@ public class Types {
 				EmbedBuilder.class,
 				"embed",
 				"embeds?",
-				null
+				embed -> embed.getDescriptionBuilder().toString(),
+				null,
+				false
 		).register();
 		new DiSkyType<>(
 				CommandObject.class,
 				"discordcommand",
 				"discordcommands?",
-				null
+				CommandObject::getName,
+				null,
+				false
 		).register();
 		new DiSkyType<>(
 				Invite.class,
