@@ -54,6 +54,15 @@ public class ExprMessageButtonsRow extends MultiplyPropertyExpression<UpdatingMe
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public boolean init(Expression<?>[] expr, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+        if (parseResult.expr.contains("inventory"))
+            return false;
+        this.expr = (Expression<UpdatingMessage>) expr[0];
+        return true;
+    }
+
+    @Override
     protected String getPropertyName() {
         return "components";
     }
