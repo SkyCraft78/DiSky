@@ -3,6 +3,7 @@ package info.itsthesky.disky.managers.cache;
 import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.skript.events.bot.BotJoin;
 import info.itsthesky.disky.skript.events.member.MemberJoin;
+import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -43,18 +44,20 @@ public class InviteTracker extends ListenerAdapter {
     {
         final Guild guild = event.getGuild();
         final Invite[] inv = new Invite[] {null};
-        guild.retrieveInvites().complete().forEach(invite ->
-        {
-            if (inv[0] == null) return;
-            final String code = invite.getCode();
-            final CachedInvite cachedInvite = inviteCache.get(code);
-            if (cachedInvite == null) return;
-            if (invite.getUses() == cachedInvite.getUses()) return;
-            cachedInvite.incrementUses();
-            inv[0] = invite;
-        });
+        guild.retrieveInvites().queue(invites -> {
+                    invites.forEach(invite ->
+                    {
+                        if (inv[0] == null) return;
+                        final String code = invite.getCode();
+                        final CachedInvite cachedInvite = inviteCache.get(code);
+                        if (cachedInvite == null) return;
+                        if (invite.getUses() == cachedInvite.getUses()) return;
+                        cachedInvite.incrementUses();
+                        inv[0] = invite;
+                    });
+                },
+                DiSkyErrorHandler::logException);
         //MemberJoin.usedInvite = inv[0];
-        BotJoin.usedInvite = inv[0];
     }
 
     @Override
@@ -82,8 +85,9 @@ public class InviteTracker extends ListenerAdapter {
             long start = System.currentTimeMillis();
             try {
                 guild.retrieveInvites().queue(is -> {
-                    for (Invite invite : is) inviteCache.put(invite.getCode(), new CachedInvite(invite));
-                });
+                            for (Invite invite : is) inviteCache.put(invite.getCode(), new CachedInvite(invite));
+                        },
+                        DiSkyErrorHandler::logException);
             } catch (InsufficientPermissionException e) {
                 if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', need permission: " + e.getPermission().getName());
             } catch (Exception ex) {
