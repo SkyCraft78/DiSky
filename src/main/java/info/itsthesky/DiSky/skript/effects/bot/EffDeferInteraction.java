@@ -14,7 +14,9 @@ import info.itsthesky.disky.tools.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.bukkit.event.Event;
 
 import java.util.Arrays;
@@ -44,20 +46,18 @@ public class EffDeferInteraction extends AsyncEffect {
 
     @Override
     protected void execute(Event e) {
-        DiSkyErrorHandler.executeHandleCode(e, event -> {
-            GenericInteractionCreateEvent interaction;
-            try  {
-                interaction = ((InteractionEvent) event).getInteractionEvent();
-            } catch (ClassCastException exception) {
-                Skript.error("[DiSky] Cannot cast a non-interaction event in a defer effect! Excepted slash command or button event, but got "+e.getEventName()+" event!");
-                return;
-            }
-            if (interaction instanceof ButtonClickEvent) {
-                ((ButtonClickEvent) interaction).deferEdit().queue();
-            } else {
-                interaction.deferReply().queue();
-            }
-        });
+        GenericInteractionCreateEvent interaction;
+        try  {
+            interaction = ((InteractionEvent) e).getInteractionEvent();
+        } catch (ClassCastException exception) {
+            Skript.error("[DiSky] Cannot cast a non-interaction event in a defer effect! Excepted slash command or button event, but got "+e.getEventName()+" event!");
+            return;
+        }
+        if (interaction instanceof SlashCommandEvent) {
+            ((GenericComponentInteractionCreateEvent) interaction).deferEdit().queue(null, DiSkyErrorHandler::logException);
+        } else {
+            interaction.deferReply().queue(null, DiSkyErrorHandler::logException);
+        }
     }
 
     @Override
