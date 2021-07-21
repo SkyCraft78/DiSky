@@ -2,16 +2,18 @@ package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.*;
-import ch.njol.util.Validate;
-import info.itsthesky.disky.tools.*;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser;
+import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
+import ch.njol.util.Pair;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.NodeInformation;
+import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
@@ -20,7 +22,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.requests.RestAction;
 import org.bukkit.event.Event;
 
 import javax.imageio.ImageIO;
@@ -56,7 +57,7 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
     private Expression<Object> exprChannel;
     private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
-    private boolean interaction = false;
+    private boolean inInteraction = false;
     private NodeInformation info;
 
     @SuppressWarnings("unchecked")
@@ -70,9 +71,9 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
 
         info = new NodeInformation();
 
-        interaction = Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class);
+        inInteraction = Arrays.asList(ScriptLoader.getCurrentEvents()[0].getInterfaces()).contains(InteractionEvent.class);
 
-        if (exprChannel == null && !interaction) {
+        if (exprChannel == null && !inInteraction) {
             Skript.error("Need to specific a channel if you are not using the upload effect in an interaction event!");
             return false;
         }
@@ -89,11 +90,13 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
 
     @Override
     public void runEffect(Event e) {
-        Object entity = exprChannel.getSingle(e);
+        Object entity = Utils.verifyVar(e, exprChannel);
         Object content = exprContent == null ? null : exprContent.getSingle(e);
         Object f = exprFile.getSingle(e);
-        String fileName = Utils.verifyVar(e, exprFileName, "image.png");
-        if (!interaction && entity == null) return;
+        String fileName = Utils.verifyVar(e, exprFileName, null);
+        if (!inInteraction)
+            if (entity == null)
+                return;
         if (f == null) return;
 
         /* Message cast */
@@ -116,7 +119,7 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
 
         /* Channel Cast */
         MessageChannel channel = null;
-        if (!interaction) {
+        if (!inInteraction) {
             switch (entity.getClass().getSimpleName()) {
                 case "TextChannel":
                 case "TextChannelImpl":
@@ -136,40 +139,35 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
                     break;
             }
         }
-        if (!interaction && channel == null) {
+        if (!inInteraction && channel == null) {
             Skript.error("[DiSky] Cannot parse or cast the message channel in the upload effect!");
             return;
         }
 
-        InputStream stream = convert(f);
-        if (stream == null) return;
-
-        RestAction<Message> action;
-        Message message;
+        Pair<InputStream, String> pairs = convert(f);
+        InputStream stream = pairs.getKey();
+        if (fileName == null)
+            fileName = pairs.getValue();
+        if (stream == null) {
+            throw new NullPointerException("The InputStream should not be null");
+        }
 
         // Mean we reply to the interaction with a file
-        if (interaction) {
+        if (inInteraction) {
             GenericInteractionCreateEvent event = ((InteractionEvent) e).getInteractionEvent();
-            Validate.notNull(event); // Just in case of anything, should not be null lmao
 
             if (toSend == null) {
-                Utils.handleRestAction(
-                        event
-                                .getHook()
-                                .sendFile(stream, fileName),
-                        msg -> restart(UpdatingMessage.from(msg)),
-                        null
-                );
-            } else {
-                Utils.handleRestAction(
-                        event
-                                .getHook()
-                                .sendMessage(toSend.build())
-                                .addFile(stream, fileName),
-                        msg -> restart(UpdatingMessage.from(msg)),
-                        null
-                );
+                Skript.error("[DiSky] In order to send file as response as an interaction, you MUST specify a text content!");
+                return;
             }
+
+            Utils.handleRestAction(
+                    event
+                            .reply(toSend.build())
+                            .addFile(stream, fileName),
+                    msg -> restart(null),
+                    null
+            );
 
         } else {
 
@@ -198,13 +196,21 @@ public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
         return "upload " + exprFile.toString(e, debug) + " in channel or to user " + exprChannel.toString(e, debug);
     }
 
-    public InputStream convert(Object entity) {
-        if (entity instanceof BufferedImage) return getStreamFromImage((BufferedImage) entity);
-        if (Utils.containURL(entity.toString())) {
-            return getStreamFromURL(entity.toString());
+    public Pair<InputStream, String> convert(Object entity) {
+        InputStream is;
+        String fileName;
+        if (entity instanceof BufferedImage) {
+            is = getStreamFromImage((BufferedImage) entity);
+            fileName = "image.png";
+        } else if (Utils.containURL(entity.toString())) {
+            is = getStreamFromURL(entity.toString());
+            fileName = "file" + getExtensionFromUrl(entity.toString());
         } else {
-            return getStreamFromFile(new File(entity.toString()));
+            File file = new File(entity.toString());
+            is = getStreamFromFile(file);
+            fileName = file.getName();
         }
+        return new Pair<>(is, fileName);
     }
 
     public InputStream getStreamFromImage(BufferedImage image) {
