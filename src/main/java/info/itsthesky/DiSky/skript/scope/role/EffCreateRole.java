@@ -5,23 +5,21 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.WaiterEffect;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
 
 @Name("Create role builder in Guild")
 @Description("Create the role from a role builder in a specific guild")
 @Examples("create role builder in event-guild\ncreate role in event-guild and store it in {_role}")
 @Since("1.4")
-public class EffCreateRole extends WaiterEffect {
+public class EffCreateRole extends WaiterEffect<Object> {
 
     static {
         Skript.registerEffect(EffCreateRole.class,
