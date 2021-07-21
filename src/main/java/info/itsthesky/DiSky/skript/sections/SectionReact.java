@@ -64,7 +64,7 @@ public class SectionReact extends DiSkySection {
             if (emote.isEmote()) {
                 message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
             } else {
-                message.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+                message.addReaction(emote.getAsMention()).queue(null, DiSkyErrorHandler::logException);
             }
 
             String idToCompare = message.getJDA().getSelfUser().getId();

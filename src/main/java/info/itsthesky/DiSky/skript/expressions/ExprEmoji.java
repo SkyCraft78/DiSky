@@ -34,7 +34,9 @@ public class ExprEmoji extends SimpleExpression<Emote> {
         if (emote.length == 0) return new Emote[0];
         List<Emote> emojis = new ArrayList<>();
         List<Emote> finalEmotes = new ArrayList<>();
-        for (String input : emote) emojis.add(Utils.unicodeFrom(input, guild));
+        for (String input : emote) {
+            emojis.add(Utils.unicodeFrom(input, guild));
+        }
         for (Emote emote1 : emojis) {
             if (!emote1.getAsMention().contains(":")) {
                 finalEmotes.add(emote1);

@@ -56,7 +56,7 @@ public class EffAddReaction extends AsyncEffect {
                 if (emote.isEmote()) {
                     message1.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
                 } else {
-                    message1.addReaction(emote.getName()).queue(null, DiSkyErrorHandler::logException);
+                    message1.addReaction(emote.getAsMention()).queue(null, DiSkyErrorHandler::logException);
                 }
             }
         });
