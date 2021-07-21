@@ -29,7 +29,7 @@ import org.bukkit.event.Event;
         "\t\tset timestamp of embed to now\n" +
         "\tsend last embed to text channel with id \"818182473502294066\"")
 @Since("1.0")
-public class EffSendMessage extends WaiterEffect<Object> {
+public class EffSendMessage extends WaiterEffect<UpdatingMessage> {
 
     static {
         Skript.registerEffect(EffSendMessage.class,
@@ -39,7 +39,6 @@ public class EffSendMessage extends WaiterEffect<Object> {
     private Expression<Object> exprMessage;
     private Expression<Object> exprChannel;
     private Expression<Object> exprComponents;
-    private Variable<?> variable;
     private Expression<JDA> exprBot;
 
     @Override
@@ -54,7 +53,7 @@ public class EffSendMessage extends WaiterEffect<Object> {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
         } else {
-            variable = (Variable<?>) var;
+            setChangedVariable((Variable<UpdatingMessage>) var);
         }
         return true;
     }
@@ -104,11 +103,7 @@ public class EffSendMessage extends WaiterEffect<Object> {
         MessageAction action = channel.sendMessage(builder.build());
         action = Utils.parseComponents(action, components);
         action.queue(
-                message -> {
-                    if (variable != null)
-                        variable.change(event, new UpdatingMessage[] {UpdatingMessage.from(message)}, Changer.ChangeMode.SET);
-                    restart();
-                }
+                msg -> restart(UpdatingMessage.from(msg))
         );
 
     }

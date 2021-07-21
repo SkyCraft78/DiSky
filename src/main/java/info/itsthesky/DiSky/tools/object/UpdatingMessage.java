@@ -82,7 +82,8 @@ public class UpdatingMessage implements ISnowflake {
     }
 
     public static UpdatingMessage from(@NotNull Message message) {
-        Validate.notNull(message);
+        if (message == null)
+            return null;
         // DataMessages are from built message builders and don't have IDs
         if (message instanceof DataMessage || MESSAGE_MAP.get(message.getId()) == null) {
             return new UpdatingMessage(message);
