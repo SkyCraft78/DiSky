@@ -2,44 +2,27 @@ package info.itsthesky.disky.skript.effects.messages;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
-import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
-import info.itsthesky.disky.tools.WaiterEffect;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.events.InteractionEvent;
-import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
-import info.itsthesky.disky.tools.DiSkyErrorHandler;
-import info.itsthesky.disky.tools.events.LogEvent;
 import info.itsthesky.disky.tools.events.MessageEvent;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.object.ButtonBuilder;
-import info.itsthesky.disky.tools.object.ButtonRow;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Name("Reply with Message")
 @Description("Reply with a message to channel-based events (work with private message too!). You can get the sent message using 'and store it in {_var}' pattern! Personal message only works with INTERACTION (slash commands / webhooks) and will make the message only visible for the user who done the interaction.")
@@ -47,7 +30,7 @@ import java.util.List;
         "reply with personal message \"Only you can see that message :eyes:\"",
         "reply with \"Hello World !\" and store it in {_msg}"})
 @Since("1.0")
-public class EffReplyWith extends WaiterEffect {
+public class EffReplyWith extends WaiterEffect<UpdatingMessage> {
 
     static {
         Skript.registerEffect(EffReplyWith.class,
@@ -57,7 +40,6 @@ public class EffReplyWith extends WaiterEffect {
     private Expression<Object> exprMessage;
     private Expression<Object> exprComponents;
     private boolean ephemeral = false;
-    private Variable<?> variable;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -69,7 +51,7 @@ public class EffReplyWith extends WaiterEffect {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
         } else {
-            variable = (Variable<?>) var;
+            setChangedVariable((Variable<UpdatingMessage>) var);
         }
         ephemeral = parseResult.expr.contains("reply with personal") || parseResult.expr.contains("reply with hidden");
 
@@ -126,23 +108,15 @@ public class EffReplyWith extends WaiterEffect {
                 .sendMessage(toSend.build());
         action = Utils.parseComponents(action, components);
 
-        variable.change(event, new UpdatingMessage[] {UpdatingMessage.from(action.complete())}, Changer.ChangeMode.SET);
-        /* Utils.handleRestAction(
+        Utils.handleRestAction(
                 action,
-                msg -> {
-                    if (variable != null)
-                        Utils.setSkriptVariable(variable,
-                                msg == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(msg)},
-                                event
-                        );
-                    restart();
-                },
+                msg -> restart(msg == null ? null : UpdatingMessage.from(msg)),
                 null
-        ); */
+        );
     }
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "reply with message " + exprMessage.toString(e, debug) + variable != null ? " and store it in " + variable.toString(e, debug) : "";
+        return "reply with message " + exprMessage.toString(e, debug) + changedVariable != null ? " and store it in " + changedVariable.toString(e, debug) : "";
     }
 }

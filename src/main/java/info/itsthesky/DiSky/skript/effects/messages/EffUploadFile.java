@@ -7,15 +7,12 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
-import ch.njol.skript.variables.Variables;
 import ch.njol.util.Validate;
-import info.itsthesky.disky.skript.expressions.messages.ExprLastMessage;
 import info.itsthesky.disky.tools.*;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.DiSky;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,9 +21,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.requests.RestAction;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -49,7 +44,7 @@ import java.util.Arrays;
         "\t\t\tstop\n" +
         "\t\tupload arg-1 with content arg-2 to event-channel")
 @Since("1.4, 1.10 (added locale files & custom content)")
-public class EffUploadFile extends WaiterEffect {
+public class EffUploadFile extends WaiterEffect<UpdatingMessage> {
 
     static {
         Skript.registerEffect(EffUploadFile.class,
@@ -59,7 +54,6 @@ public class EffUploadFile extends WaiterEffect {
     private Expression<Object> exprFile;
     private Expression<String> exprFileName;
     private Expression<Object> exprChannel;
-    private Variable<?> variable;
     private Expression<JDA> exprBot;
     private Expression<Object> exprContent;
     private boolean interaction = false;
@@ -88,7 +82,7 @@ public class EffUploadFile extends WaiterEffect {
             Skript.error("Cannot store the message in a non-variable expression");
             return false;
         } else {
-            variable = (Variable<?>) var;
+            setChangedVariable((Variable) var);
         }
         return true;
     }
@@ -159,38 +153,44 @@ public class EffUploadFile extends WaiterEffect {
             Validate.notNull(event); // Just in case of anything, should not be null lmao
 
             if (toSend == null) {
-                message = event
-                        .getHook()
-                        .sendFile(stream, fileName).complete();
+                Utils.handleRestAction(
+                        event
+                                .getHook()
+                                .sendFile(stream, fileName),
+                        msg -> restart(UpdatingMessage.from(msg)),
+                        null
+                );
             } else {
-                message = event
-                        .getHook()
-                        .sendMessage(toSend.build())
-                        .addFile(stream, fileName).complete();
+                Utils.handleRestAction(
+                        event
+                                .getHook()
+                                .sendMessage(toSend.build())
+                                .addFile(stream, fileName),
+                        msg -> restart(UpdatingMessage.from(msg)),
+                        null
+                );
             }
 
         } else {
 
             if (toSend == null) {
-                message = channel
-                        .sendFile(stream, fileName).complete();
+                Utils.handleRestAction(
+                        channel
+                                .sendFile(stream, fileName),
+                        msg -> restart(UpdatingMessage.from(msg)),
+                        null
+                );
             } else {
-                message = channel
-                        .sendMessage(toSend.build())
-                        .addFile(stream, fileName).complete();
+                Utils.handleRestAction(
+                        channel
+                                .sendMessage(toSend.build())
+                                .addFile(stream, fileName),
+                        msg -> restart(UpdatingMessage.from(msg)),
+                        null
+                );
             }
 
         }
-
-        if (variable != null)
-            variable.change(e, (message == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(message)}), Changer.ChangeMode.SET);
-        /*Utils.handleRestAction(action,
-                message -> {
-                    if (variable != null)
-                        variable.change(e, (message == null ? new UpdatingMessage[0] : new UpdatingMessage[] {UpdatingMessage.from(message)}), Changer.ChangeMode.SET);
-                    restart();
-                },
-                null);*/
     }
 
     @Override

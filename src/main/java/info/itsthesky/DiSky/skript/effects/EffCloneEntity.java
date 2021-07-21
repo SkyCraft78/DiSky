@@ -1,25 +1,16 @@
 package info.itsthesky.disky.skript.effects;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.classes.Changer;
 import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import ch.njol.skript.effects.Delay;
 import ch.njol.skript.lang.*;
-import ch.njol.skript.timings.SkriptTimings;
-import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.WaiterEffect;
-import info.itsthesky.disky.tools.object.UpdatingMessage;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.requests.RestAction;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.Nullable;
 
 @Name("Clone Discord Entity")
 @Description("Clone an existing discord entity (channel, category or role) in another guild.")
@@ -31,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
         "\t\tclone arg-1 and store it in {_c}\n" +
         "\t\treply with \"Channel cloned: %mention tag of {_c}%\"")
 @Since("1.5.3")
-public class EffCloneEntity extends WaiterEffect {
+public class EffCloneEntity extends WaiterEffect<Object> {
 
     static {
         Skript.registerEffect(EffCloneEntity.class,
@@ -40,7 +31,6 @@ public class EffCloneEntity extends WaiterEffect {
 
     private Expression<Object> exprEntity;
     private Expression<Guild> exprGuild;
-    private Variable<?> var;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -52,8 +42,8 @@ public class EffCloneEntity extends WaiterEffect {
             Skript.error("Cannot store the cloned entity in a non-variable expression");
             return false;
         } else {
-            this.var = (Variable<?>) var;
-            if (this.var.isList()) {
+            setChangedVariable((Variable<Object>) var);
+            if (changedVariable.isList()) {
                 Skript.error("Cannot store a single entity in a list variable!");
                 return false;
             }
@@ -70,21 +60,13 @@ public class EffCloneEntity extends WaiterEffect {
         if (entity instanceof GuildChannel) {
             Utils.handleRestAction(
                     ((GuildChannel) entity).createCopy(guild == null ? ((GuildChannel) entity).getGuild() : guild),
-                    channel -> {
-                        if (var != null)
-                            var.change(e, new GuildChannel[] {channel}, Changer.ChangeMode.SET);
-                        restart();
-                    },
+                    channel -> restart(new GuildChannel[] {channel}),
                     null
             );
         } else {
             Utils.handleRestAction(
                     ((Role) entity).createCopy(guild == null ? ((Role) entity).getGuild() : guild),
-                    role -> {
-                        if (var != null)
-                            var.change(e, new Role[] {role}, Changer.ChangeMode.SET);
-                        restart();
-                    },
+                    role -> restart(new Role[] {role}),
                     null
             );
         }
@@ -92,6 +74,6 @@ public class EffCloneEntity extends WaiterEffect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "clone discord entity " + exprEntity.toString(e, debug);
+        return "clone discord entity " + exprEntity.toString(e, debug) + " and store it in " + changedVariable.toString(e, debug);
     }
 }

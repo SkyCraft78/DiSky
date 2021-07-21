@@ -9,10 +9,10 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.*;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.bukkit.event.Event;
@@ -26,7 +26,7 @@ import java.util.List;
         "wait 3 second\n" +
         "edit message {_msg} to show \":x: ... has been edited\"")
 @Since("1.2")
-public class EffEditMessage extends WaiterEffect {
+public class EffEditMessage extends WaiterEffect<Object> {
 
     static {
         Skript.registerEffect(EffEditMessage.class,

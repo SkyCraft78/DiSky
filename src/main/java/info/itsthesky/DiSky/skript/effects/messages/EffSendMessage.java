@@ -11,7 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
-import info.itsthesky.disky.tools.WaiterEffect;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -29,7 +29,7 @@ import org.bukkit.event.Event;
         "\t\tset timestamp of embed to now\n" +
         "\tsend last embed to text channel with id \"818182473502294066\"")
 @Since("1.0")
-public class EffSendMessage extends WaiterEffect {
+public class EffSendMessage extends WaiterEffect<Object> {
 
     static {
         Skript.registerEffect(EffSendMessage.class,

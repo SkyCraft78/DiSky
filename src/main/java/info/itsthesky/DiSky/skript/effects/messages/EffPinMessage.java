@@ -5,15 +5,13 @@ import ch.njol.skript.doc.Description;
 import ch.njol.skript.doc.Examples;
 import ch.njol.skript.doc.Name;
 import ch.njol.skript.doc.Since;
-import info.itsthesky.disky.tools.AsyncEffect;
-import ch.njol.skript.lang.Effect;
+import info.itsthesky.disky.tools.async.AsyncEffect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.UpdatingMessage;
-import net.dv8tion.jda.api.entities.Message;
 import org.bukkit.event.Event;
 @Name("Pin / Unpin Message")
 @Description("Pin or unpin any message from a channel.")

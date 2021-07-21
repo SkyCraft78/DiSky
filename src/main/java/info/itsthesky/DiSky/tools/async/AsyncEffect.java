@@ -1,4 +1,4 @@
-package info.itsthesky.disky.tools;
+package info.itsthesky.disky.tools.async;
 
 import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.events.bukkit.SkriptStartEvent;
