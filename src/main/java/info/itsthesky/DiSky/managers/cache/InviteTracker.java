@@ -81,7 +81,7 @@ public class InviteTracker extends ListenerAdapter {
 
     private void attemptInviteCaching(final Guild guild) {
         Utils.async(() -> {
-            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Started invite cache for guild " + guild.getName() + "...");
+            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Starting cache of invites for guild " + guild.getName() + "...");
             long start = System.currentTimeMillis();
             try {
                 guild.retrieveInvites().queue(is -> {
@@ -89,11 +89,11 @@ public class InviteTracker extends ListenerAdapter {
                         },
                         DiSkyErrorHandler::logException);
             } catch (InsufficientPermissionException e) {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', need permission: " + e.getPermission().getName());
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for "event-invite" value in "member join" event for guild '"+guild.getName()+"', since the bot doesn't have the: " + e.getPermission().getName() " permission!);
             } catch (Exception ex) {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', error: " + ex.getMessage());
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for "event-invite" value in "member join" event for guild '"+guild.getName()+"', error: " + ex.getMessage());
             }
-            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Invite cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching invites for guild " + guild.getName() + ", Took " + (start - System.currentTimeMillis()) + "ms!");
         });
     }
 
