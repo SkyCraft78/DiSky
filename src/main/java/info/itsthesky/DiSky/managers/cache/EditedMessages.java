@@ -37,7 +37,7 @@ public class EditedMessages extends ListenerAdapter {
             }
         });
         if (finalMessage.get() == null) {
-            DiSky.getInstance().getLogger().warning("DiSky cannnot retrieve the cached message '"+id+"', since it was not cached!");
+            DiSky.getInstance().getLogger().warning("DiSky cannot retrieve the cached message '"+id+"', since it was not cached!");
         }
         return finalMessage.get();
     }
