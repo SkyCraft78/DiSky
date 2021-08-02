@@ -36,12 +36,12 @@ public class RetrieveBanned extends MultipleWaiterEffect<User> {
         exprGuild = (Expression<Guild>) exprs[0];
         Expression<?> var = exprs[1];
         if (var != null && !(var instanceof Variable)) {
-            Skript.error("Cannot store the message in a non-variable expression");
+            Skript.error("Cannot store the user in a non-variable expression");
             return false;
         } else {
             setChangedVariable((Variable) var);
             if (!changedVariable.isList()) {
-                Skript.error("Cannot store a list of messages into a non-list variable!");
+                Skript.error("Cannot store a list of users into a non-list variable!");
                 return false;
             }
         }
