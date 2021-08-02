@@ -30,16 +30,16 @@ public class GuildLogs extends ListenerAdapter {
         Utils.async(() -> {
             long before = System.currentTimeMillis();
             if (Utils.INFO_CACHE)
-                DiSky.getInstance().getLogger().info("Starting logs cache for guild " + guild.getName() + " ...");
+                DiSky.getInstance().getLogger().info("Starting cache logs for guild " + guild.getName() + " ...");
             guild.retrieveAuditLogs().queue(
                     logs -> {
                         LOGS_STORAGE.put(guild.getIdLong(), logs);
                         if (Utils.INFO_CACHE)
-                            DiSky.getInstance().getLogger().info("Logs cache for guild " + guild.getName() + " finished in " + (before - System.currentTimeMillis()) + "ms !");
+                            DiSky.getInstance().getLogger().info("Finished caching logs for guild" + guild.getName() + "! Took" + (before - System.currentTimeMillis()) + "ms !");
                     },
                     ex -> {
                         if (Utils.INFO_CACHE)
-                            DiSky.getInstance().getLogger().severe("Cannot cache logs for the guild " + guild.getName() + " because of an internal error: " + ex.getMessage());
+                            DiSky.getInstance().getLogger().severe("DiSky cannot cache logs for guild " + guild.getName() + " because of an internal error: " + ex.getMessage());
                     });
         });
     }
