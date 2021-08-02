@@ -75,7 +75,7 @@ public class EditedMessages extends ListenerAdapter {
     public void onReady(ReadyEvent e) {
         for (Guild guild : e.getJDA().getGuilds()) {
             Utils.async(() -> {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Starting cache for "message edit" event for guild " + guild.getName() + "...");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Starting cache of "message edit" event for guild " + guild.getName() + "...");
                 long start = System.currentTimeMillis();
                 for (TextChannel channel : guild.getTextChannels()) {
                     try {
