@@ -35,7 +35,7 @@ public class GuildLogs extends ListenerAdapter {
                     logs -> {
                         LOGS_STORAGE.put(guild.getIdLong(), logs);
                         if (Utils.INFO_CACHE)
-                            DiSky.getInstance().getLogger().info("Finished caching logs for guild" + guild.getName() + "! Took" + (before - System.currentTimeMillis()) + "ms !");
+                            DiSky.getInstance().getLogger().info("Finished caching logs for guild" + guild.getName() + ", Took" + (before - System.currentTimeMillis()) + "ms !");
                     },
                     ex -> {
                         if (Utils.INFO_CACHE)
