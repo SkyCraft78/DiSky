@@ -89,9 +89,9 @@ public class InviteTracker extends ListenerAdapter {
                         },
                         DiSkyErrorHandler::logException);
             } catch (InsufficientPermissionException e) {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for "event-invite" value in "member join" event for guild '"+guild.getName()+"', since the bot doesn't have the: " + e.getPermission().getName() " permission!);
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for \"event-invite\" value in \"member join\" event for guild '"+guild.getName()+"', since the bot doesn't have the: " + e.getPermission().getName() " permission!);
             } catch (Exception ex) {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for "event-invite" value in "member join" event for guild '"+guild.getName()+"', error: " + ex.getMessage());
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky cannot cache invites for \"event-invite\" value in \"member join\" event for guild '"+guild.getName()+"', error: " + ex.getMessage());
             }
             if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching invites for guild " + guild.getName() + ", Took " + (start - System.currentTimeMillis()) + "ms!");
         });
