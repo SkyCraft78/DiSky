@@ -30,7 +30,7 @@ public class GuildLogs extends ListenerAdapter {
         Utils.async(() -> {
             long before = System.currentTimeMillis();
             if (Utils.INFO_CACHE)
-                DiSky.getInstance().getLogger().info("Starting cache logs for guild " + guild.getName() + " ...");
+                DiSky.getInstance().getLogger().info("Starting cache of logs for guild " + guild.getName() + " ...");
             guild.retrieveAuditLogs().queue(
                     logs -> {
                         LOGS_STORAGE.put(guild.getIdLong(), logs);
