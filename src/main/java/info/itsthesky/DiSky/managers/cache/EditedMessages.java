@@ -86,7 +86,7 @@ public class EditedMessages extends ListenerAdapter {
                             }
                         });
                     } catch (MissingAccessException ex) {
-                        if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache messages for "message edit" event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+                        if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache messages for \"message edit\" event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
                     }
                 }
                 if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching messages for \"message edit\" event for guild " + guild.getName() + "! Took " + (start - System.currentTimeMillis()) + "ms!");
