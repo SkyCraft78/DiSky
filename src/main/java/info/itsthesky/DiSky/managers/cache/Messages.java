@@ -83,7 +83,7 @@ public class Messages extends ListenerAdapter {
                         if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache messages for "message delete" event, since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
                     }
                 }
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching of "message delete" event for guild " + guild.getName() + ", Took " + (start - System.currentTimeMillis()) + "ms!");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching messages for "message delete" event for guild " + guild.getName() + ", Took " + (start - System.currentTimeMillis()) + "ms!");
             });
         }
     }
