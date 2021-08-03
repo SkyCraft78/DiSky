@@ -37,7 +37,7 @@ public class Messages extends ListenerAdapter {
             }
         });
         if (finalMessage.get() == null) {
-            DiSky.getInstance().getLogger().warning("DiSky can't retrieve the cached message '"+id+"', since it was not cached!");
+            DiSky.getInstance().getLogger().warning("DiSky cannot retrieve the cached message '"+id+"', since it was not cached!");
         }
         return finalMessage.get();
     }
@@ -70,7 +70,7 @@ public class Messages extends ListenerAdapter {
     public void onReady(ReadyEvent e) {
         for (Guild guild : e.getJDA().getGuilds()) {
             Utils.async(() -> {
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Started message delete cache for guild " + guild.getName() + "...");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Starting cache of \"message delete\" event for guild " + guild.getName() + "...");
                 long start = System.currentTimeMillis();
                 for (TextChannel channel : guild.getTextChannels()) {
                     try {
@@ -80,10 +80,10 @@ public class Messages extends ListenerAdapter {
                                 cachedMessages.add(new CachedMessage(message));
                         });
                     } catch (MissingAccessException ex) {
-                        if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache message for the message delete event since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
+                        if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().warning("DiSky cannot cache messages for \"message delete\" event, since the bot doesn't have the " + ex.getPermission().getName() + " permission!");
                     }
                 }
-                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Message delete cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+                if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Finished caching messages for \"message delete\" event for guild " + guild.getName() + ", Took " + (start - System.currentTimeMillis()) + "ms!");
             });
         }
     }

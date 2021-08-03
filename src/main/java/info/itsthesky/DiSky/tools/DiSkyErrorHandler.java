@@ -42,7 +42,7 @@ public class DiSkyErrorHandler {
         } else if (ex instanceof IllegalStateException) {
 
             if (ex.getMessage().equalsIgnoreCase("Cannot build an empty embed!")) {
-                logger.warning("You're trying to build an embed, however, you don't set any title, author of description! (The embed is empty)");
+                logger.warning("DiSky tried to build an embed, however, there is no title, author nor description! (The embed is empty)");
             }
 
         } else if (ex instanceof ErrorResponseException) {
