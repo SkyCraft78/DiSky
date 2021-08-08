@@ -47,7 +47,7 @@ public class EffDeferInteraction extends AsyncEffect {
     protected void execute(Event e) {
         GenericInteractionCreateEvent interaction;
         try  {
-            interaction = ((InteractionEvent) e).getInteractionEvent();
+            interaction = ((InteractionEvent) e).getInteractionEvent().deferEdit().queue(null, DiSkyErrorHandler::logException);
         } catch (ClassCastException exception) {
             Skript.error("[DiSky] Cannot cast a non-interaction event in a defer effect! Excepted slash command or button event, but got "+e.getEventName()+" event!");
             return;
