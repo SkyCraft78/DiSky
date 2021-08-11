@@ -9,13 +9,13 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.skript.events.other.DiSkyError;
+import info.itsthesky.disky.tools.emojis.UnicodePointEntry;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.async.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
-import net.dv8tion.jda.api.events.interaction.GenericComponentInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.*;
 import org.bukkit.event.Event;
 
 import java.util.Arrays;
@@ -54,8 +54,10 @@ public class EffDeferInteraction extends AsyncEffect {
         }
         if (interaction instanceof SlashCommandEvent) {
             ((GenericComponentInteractionCreateEvent) interaction).deferEdit().queue(null, DiSkyErrorHandler::logException);
-        } else {
-            interaction.deferReply().queue(null, DiSkyErrorHandler::logException);
+        } else if (interaction instanceof ButtonClickEvent) {
+            ((ButtonClickEvent) interaction).deferEdit().queue(null, DiSkyErrorHandler::logException);
+        } else if (interaction instanceof SelectionMenuEvent) {
+            ((SelectionMenuEvent) interaction).deferEdit().queue(null, DiSkyErrorHandler::logException);
         }
     }
 
