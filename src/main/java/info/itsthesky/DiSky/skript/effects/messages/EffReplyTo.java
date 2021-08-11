@@ -80,7 +80,8 @@ public class EffReplyTo extends AsyncEffect {
 
             storedMessage = action.complete();
             ExprLastMessage.lastMessage = UpdatingMessage.from(storedMessage);
-            var.change(e, new Object[] {UpdatingMessage.from(storedMessage)}, Changer.ChangeMode.SET);
+            if (var != null)
+                var.change(e, new Object[] {UpdatingMessage.from(storedMessage)}, Changer.ChangeMode.SET);
         });
     }
 
