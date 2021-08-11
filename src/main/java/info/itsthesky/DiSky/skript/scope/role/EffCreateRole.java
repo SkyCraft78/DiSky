@@ -9,17 +9,19 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.object.RoleBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.event.Event;
 
 @Name("Create role builder in Guild")
 @Description("Create the role from a role builder in a specific guild")
 @Examples("create role builder in event-guild\ncreate role in event-guild and store it in {_role}")
 @Since("1.4")
-public class EffCreateRole extends WaiterEffect<Object> {
+public class EffCreateRole extends WaiterEffect<Role> {
 
     static {
         Skript.registerEffect(EffCreateRole.class,
@@ -28,15 +30,13 @@ public class EffCreateRole extends WaiterEffect<Object> {
 
     private Expression<RoleBuilder> exprBuilder;
     private Expression<Guild> exprGuild;
-    private Variable<?> var;
 
     @SuppressWarnings("unchecked")
     @Override
     public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprBuilder = (Expression<RoleBuilder>) exprs[0];
         exprGuild = (Expression<Guild>) exprs[1];
-        if (Utils.parseVar(exprs[2]) == null) return false;
-        var = Utils.parseVar(exprs[2]);
+        setChangedVariable((Variable<Role>) exprs[2]);
         return true;
     }
 
@@ -49,9 +49,8 @@ public class EffCreateRole extends WaiterEffect<Object> {
         Utils.handleRestAction(
                 builder.create(guild),
                 role -> {
-                    if (var != null)
-                        Utils.setSkriptVariable(var, role, e);
-                    restart();
+                    role.getGuild().modifyRolePositions().selectPosition(role).moveTo(builder.getPosition()).queue(null, DiSkyErrorHandler::logException);
+                    restart(role);
                 },
                 null
         );

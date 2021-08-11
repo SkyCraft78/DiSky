@@ -11,6 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.Variable;
 import ch.njol.util.Kleenean;
 import info.itsthesky.disky.tools.Utils;
+import info.itsthesky.disky.tools.async.WaiterEffect;
 import info.itsthesky.disky.tools.object.InviteBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -22,7 +23,7 @@ import org.bukkit.event.Event;
 @Description("Create the invite builder in a specific text channel, and optionally get it.")
 @Examples("create invite builder in event-channel\ncreate invite builder in event-channel and store it in {_voice}")
 @Since("1.7")
-public class EffCreateInvite extends Effect {
+public class EffCreateInvite extends WaiterEffect<Invite> {
 
     static {
         Skript.registerEffect(EffCreateInvite.class,
@@ -31,32 +32,27 @@ public class EffCreateInvite extends Effect {
 
     private Expression<InviteBuilder> exprBuilder;
     private Expression<GuildChannel> exprChannel;
-    private Expression<Object> exprVar;
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
+    public boolean initEffect(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprBuilder = (Expression<InviteBuilder>) exprs[0];
         exprChannel = (Expression<GuildChannel>) exprs[1];
-        exprVar = (Expression<Object>) exprs[2];
+        setChangedVariable((Variable<Invite>) exprs[2]);
         return true;
     }
 
     @Override
-    protected void execute(Event e) {
+    public void runEffect(Event e) {
         InviteBuilder builder = exprBuilder.getSingle(e);
         GuildChannel channel = exprChannel.getSingle(e);
         if (builder == null || channel == null) return;
         if (!channel.getType().equals(ChannelType.TEXT)) return;
-        if (channel == null) return;
-        Invite invite = builder.build((TextChannel) channel);
-        if (exprVar == null) return;
-        if (!(exprVar instanceof Variable)) return;
-        Variable variable = (Variable) exprVar;
-        Utils.setSkriptVariable(
-                variable,
-                invite,
-                e);
+        Utils.handleRestAction(
+                builder.build((TextChannel) channel),
+                this::restart,
+                null
+        );
     }
 
     @Override

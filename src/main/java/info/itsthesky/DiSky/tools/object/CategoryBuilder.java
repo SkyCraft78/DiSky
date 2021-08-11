@@ -2,6 +2,7 @@ package info.itsthesky.disky.tools.object;
 
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 public class CategoryBuilder {
 
@@ -13,11 +14,10 @@ public class CategoryBuilder {
         this.position = 1;
     }
 
-    public Category build(Guild guild) {
+    public ChannelAction<Category> build(Guild guild) {
         return guild
                 .createCategory(this.name)
-                .setPosition(this.position)
-                .complete();
+                .setPosition(this.position);
     }
 
     public void setPosition(int position) {

@@ -21,7 +21,7 @@ import org.bukkit.event.Event;
 @Description("Create the channel builder in a specific guild, and optionally get the text channel created.")
 @Examples("create channel builder in event-guild\ncreate channel in event-guild and store it in {_channel}")
 @Since("1.0")
-public class EffCreateTextChannel extends WaiterEffect<Object> {
+public class EffCreateTextChannel extends WaiterEffect<TextChannel> {
 
     static {
         Skript.registerEffect(EffCreateTextChannel.class,
@@ -30,7 +30,6 @@ public class EffCreateTextChannel extends WaiterEffect<Object> {
 
     private Expression<TextChannelBuilder> exprBuilder;
     private Expression<Guild> exprGuild;
-    private Variable<?> var;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -38,7 +37,7 @@ public class EffCreateTextChannel extends WaiterEffect<Object> {
         exprBuilder = (Expression<TextChannelBuilder>) exprs[0];
         exprGuild = (Expression<Guild>) exprs[1];
         if (Utils.parseVar(exprs[2]) == null) return false;
-        var = Utils.parseVar(exprs[2]);
+        setChangedVariable((Variable<TextChannel>) exprs[2]);
         return true;
     }
 
@@ -49,11 +48,7 @@ public class EffCreateTextChannel extends WaiterEffect<Object> {
         if (builder == null || guild == null) return;
         Utils.handleRestAction(
                 builder.createChannel(guild),
-                channel -> {
-                    if (var != null)
-                        var.change(e, new TextChannel[] {channel}, Changer.ChangeMode.SET);
-                    restart();
-                },
+                this::restart,
                 null
         );
     }

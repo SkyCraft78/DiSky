@@ -4,6 +4,7 @@ import info.itsthesky.disky.DiSky;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 public class VoiceChannelBuilder {
 
@@ -16,7 +17,7 @@ public class VoiceChannelBuilder {
         this.name = "Default Name";
     }
 
-    public VoiceChannel build(Guild guild) {
+    public ChannelAction<VoiceChannel> build(Guild guild) {
         if (this.bitrate != null && bitrate < 8000 || bitrate != null && bitrate > guild.getMaxBitrate()) {
             DiSky.getInstance().getLogger().severe("You're trying to set a voice channel bitrate to " + bitrate +". However, this value can't be smaller than 8000 or greater than " + guild.getMaxBitrate() + " !");
             this.bitrate = null;
@@ -25,8 +26,7 @@ public class VoiceChannelBuilder {
                 .createVoiceChannel(this.name)
                 .setParent(this.parent == null ? null : this.parent)
                 .setUserlimit(this.userLimit == null ? null : this.userLimit)
-                .setBitrate(this.bitrate == null ? null : this.bitrate)
-                .complete();
+                .setBitrate(this.bitrate == null ? null : this.bitrate);
     }
 
     public String getName() {

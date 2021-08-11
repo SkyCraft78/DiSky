@@ -2,6 +2,7 @@ package info.itsthesky.disky.tools.object;
 
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.InviteAction;
 
 public class InviteBuilder {
 
@@ -13,13 +14,12 @@ public class InviteBuilder {
         temp = true;
     }
 
-    public Invite build(TextChannel channel) {
+    public InviteAction build(TextChannel channel) {
         return channel
                 .createInvite()
                 .setMaxAge(maxAge == null ? null : maxAge.intValue())
                 .setMaxUses(maxUse)
-                .setTemporary(temp)
-                .complete();
+                .setTemporary(temp);
     }
 
     public Number getMaxAge() {
