@@ -14,7 +14,7 @@ public class GuildBoostTier extends DiSkyEvent<GuildUpdateBoostTierEvent> {
 
     static {
         DiSkyEvent.register("Guild Boost Tier Update", GuildBoostTier.class, EvtGuildBoostTier.class,
-                "[guild] boost tier (update|change)]")
+                "[guild] boost tier (update|change)")
                 .setName("Guild Boost Tier Update");
 
        EventValues.registerEventValue(EvtGuildBoostTier.class, String.class, new Getter<String, EvtGuildBoostTier>() {
