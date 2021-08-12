@@ -1,6 +1,6 @@
 package info.itsthesky.disky.tools.object;
 
-import com.vdurmont.emoji.EmojiParser;
+import info.itsthesky.disky.tools.emojis.EmojiParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;

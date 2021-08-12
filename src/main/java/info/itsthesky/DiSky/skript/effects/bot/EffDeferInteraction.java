@@ -9,8 +9,6 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import info.itsthesky.disky.skript.events.other.DiSkyError;
-import info.itsthesky.disky.tools.emojis.UnicodePointEntry;
 import info.itsthesky.disky.tools.events.InteractionEvent;
 import info.itsthesky.disky.tools.async.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;

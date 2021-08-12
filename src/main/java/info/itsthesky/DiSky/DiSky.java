@@ -2,11 +2,11 @@ package info.itsthesky.disky;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
+import info.itsthesky.disky.tools.emojis.Emoji;
+import info.itsthesky.disky.tools.emojis.EmojiManager;
 import info.itsthesky.disky.managers.BotManager;
 import info.itsthesky.disky.managers.music.AudioUtils;
 import info.itsthesky.disky.tools.*;
-import info.itsthesky.disky.tools.emojis.EmojiUnicodePointAndValueMaker;
-import info.itsthesky.disky.tools.emojis.UnicodePointEntry;
 import info.itsthesky.disky.tools.versions.VSkript22;
 import info.itsthesky.disky.tools.versions.VSkript23;
 import info.itsthesky.disky.tools.versions.VSkript26;
@@ -18,6 +18,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +34,6 @@ public class DiSky extends JavaPlugin {
     private static DiSky instance;
     private Logger logger;
     private static PluginManager pluginManager;
-    private static List<UnicodePointEntry> LOADED_EMOTES;
     public static VersionAdapter SKRIPT_ADAPTER;
     public static boolean SKIMAGE_INSTALLED;
     public static SkriptAddon SKRIPT_ADDON;
