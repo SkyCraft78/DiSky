@@ -67,14 +67,6 @@ public class DiSky extends JavaPlugin {
             return;
         }
 
-        log("Loading the emote library ...");
-        final EmojiUnicodePointAndValueMaker marker = new EmojiUnicodePointAndValueMaker();
-        try {
-            LOADED_EMOTES = marker.build();
-        } catch (IOException e) {
-            error("Cannot load the emotes: " + e.getMessage());
-        }
-
         RestAction.setDefaultFailure(DiSkyErrorHandler::logException);
 
         SKIMAGE_INSTALLED = ReflectionUtils.classExist("info.itsthesky.SkImage.SkImage");

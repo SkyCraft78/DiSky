@@ -13,10 +13,15 @@ import info.itsthesky.disky.DiSky;
 import info.itsthesky.disky.tools.NodeInformation;
 import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.SlashCommand;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.utils.Checks;
 import org.bukkit.event.Event;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @Name("Add Slash Command Option")
 @Description("Add an (require or not) option to a specific command builder. See OptionType for possible sort of input!")
@@ -27,14 +32,15 @@ public class EffAddOption extends Effect {
 
     static {
         Skript.registerEffect(EffAddOption.class,
-                "[" + Utils.getPrefixName() + "] register option [with type] %optiontype% with (id|name) %string% [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%",
-                "[" + Utils.getPrefixName() + "] register require option [with type] %optiontype% with (id|name) %string% [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%"
+                "[" + Utils.getPrefixName() + "] register option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%",
+                "[" + Utils.getPrefixName() + "] register require option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%"
         );
     }
 
     private boolean isRequire;
     private Expression<OptionType> exprType;
     private Expression<String> exprName;
+    private Expression<Object> exprPredifValues;
     private Expression<String> exprDesc;
     private Expression<SlashCommand> exprBuilder;
     private NodeInformation information;
@@ -44,8 +50,9 @@ public class EffAddOption extends Effect {
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
         exprType = (Expression<OptionType>) exprs[0];
         exprName = (Expression<String>) exprs[1];
-        exprDesc = (Expression<String>) exprs[2];
-        exprBuilder = (Expression<SlashCommand>) exprs[3];
+        exprDesc = (Expression<String>) exprs[3];
+        exprBuilder = (Expression<SlashCommand>) exprs[4];
+        exprPredifValues = (Expression<Object>) exprs[2];
         isRequire = matchedPattern != 0;
         information = new NodeInformation();
         return true;
@@ -56,16 +63,34 @@ public class EffAddOption extends Effect {
         OptionType type = exprType.getSingle(e);
         String name = exprName.getSingle(e);
         String desc = exprDesc.getSingle(e);
+        Object[] predifValues = Utils.verifyVars(e, exprPredifValues);
+
+        if (exprPredifValues != null && !(type.equals(OptionType.STRING) || type.equals(OptionType.INTEGER))) {
+            DiSky.error("You cannot have predefined value for the " + type.name().toLowerCase(Locale.ROOT) + " type! It only support STRING and INTEGER!");
+            return;
+        }
+
         SlashCommand builder = exprBuilder.getSingle(e);
         if (name == null || desc == null || type == null || builder == null) return;
         if (!Checks.ALPHANUMERIC_WITH_DASH.matcher(name).find()) {
             DiSky.error("The specified ID in an option of slash command cannot have any space! " + information.getDebugLabel());
             return;
         }
+        final List<Command.Choice> choices = new ArrayList<>();
+        for (String s : Utils.valuesToString(predifValues))
+            choices.add(new Command.Choice(s, safeID(s)));
+
         builder.addOption(
                 new OptionData(type, name, desc)
+                        .addChoices(choices)
                         .setRequired(isRequire)
         );
+    }
+
+    private String safeID(String input) {
+        return input
+                .toLowerCase(Locale.ROOT)
+                .replaceAll(" ", "_");
     }
 
     @Override
