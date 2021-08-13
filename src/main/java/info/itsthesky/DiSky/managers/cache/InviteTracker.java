@@ -93,7 +93,7 @@ public class InviteTracker extends ListenerAdapter {
             } catch (Exception ex) {
                 if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().severe("DiSky can't catch invite for the event-invite in member join for guild '"+guild.getName()+"', error: " + ex.getMessage());
             }
-            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Invite cache for guild " + guild.getName() + " finished! Took " + (start - System.currentTimeMillis()) + "ms!");
+            if (Utils.INFO_CACHE) DiSky.getInstance().getLogger().info("Invite cache for guild " + guild.getName() + " finished! Took " + (System.currentTimeMillis() - start) + "ms!");
         });
     }
 
