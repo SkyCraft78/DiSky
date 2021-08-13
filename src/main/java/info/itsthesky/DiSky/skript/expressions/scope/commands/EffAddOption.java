@@ -32,8 +32,8 @@ public class EffAddOption extends Effect {
 
     static {
         Skript.registerEffect(EffAddOption.class,
-                "[" + Utils.getPrefixName() + "] register option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%",
-                "[" + Utils.getPrefixName() + "] register require option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%"
+                "[" + Utils.getPrefixName() + "] register option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %-objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%",
+                "[" + Utils.getPrefixName() + "] register require option [with type] %optiontype% with (id|name) %string% [[and] with pre( |-)defined value[s] %-objects%] [and] [with] [(desc|description)] %string% to [command] [builder] %commandbuilder%"
         );
     }
 
@@ -65,7 +65,8 @@ public class EffAddOption extends Effect {
         String desc = exprDesc.getSingle(e);
         Object[] predifValues = Utils.verifyVars(e, exprPredifValues);
 
-        if (exprPredifValues != null && !(type.equals(OptionType.STRING) || type.equals(OptionType.INTEGER))) {
+        boolean acceptChoices = type.equals(OptionType.STRING) || type.equals(OptionType.INTEGER);
+        if (exprPredifValues != null && !(acceptChoices)) {
             DiSky.error("You cannot have predefined value for the " + type.name().toLowerCase(Locale.ROOT) + " type! It only support STRING and INTEGER!");
             return;
         }
@@ -80,11 +81,11 @@ public class EffAddOption extends Effect {
         for (String s : Utils.valuesToString(predifValues))
             choices.add(new Command.Choice(s, safeID(s)));
 
-        builder.addOption(
-                new OptionData(type, name, desc)
-                        .addChoices(choices)
-                        .setRequired(isRequire)
-        );
+        OptionData data = new OptionData(type, name, desc).setRequired(isRequire);
+        if (acceptChoices)
+            data = data.addChoices(choices);
+
+        builder.addOption(data);
     }
 
     private String safeID(String input) {
