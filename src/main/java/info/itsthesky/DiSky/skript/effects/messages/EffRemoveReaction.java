@@ -8,6 +8,7 @@ import ch.njol.skript.doc.Since;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import info.itsthesky.disky.skript.expressions.ExprEmoji;
 import info.itsthesky.disky.tools.async.AsyncEffect;
 import info.itsthesky.disky.tools.DiSkyErrorHandler;
 import info.itsthesky.disky.tools.Utils;
@@ -18,6 +19,8 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.event.Event;
+
+import java.util.function.Predicate;
 
 @Name("Remove Reaction")
 @Description("Remove a specific reaction, from user on message.")
@@ -59,13 +62,13 @@ public class EffRemoveReaction extends AsyncEffect {
             } else if (entity instanceof Member) {
                 user = ((Member) entity).getUser();
             } else {
-                user = Utils.searchMember((JDA) entity, ((JDA) entity).getSelfUser().getId()).getUser();
+                user = message.getMessage().getGuild().getMemberById(((JDA) entity).getSelfUser().getId()).getUser();
             }
 
             for (MessageReaction messageReaction : message.getMessage().getReactions()) {
                 for (Emote emote : this.exprEmote.getAll(e)) {
-                    if (messageReaction.getReactionEmote().getName().equalsIgnoreCase(emote.getName())) {
-                        messageReaction.removeReaction(user).queue();
+                    if (Utils.areEmojiSimilar(messageReaction.getReactionEmote(), emote)) {
+                        messageReaction.removeReaction(user).queue(null, DiSkyErrorHandler::logException);
                     }
                 }
             }
@@ -74,7 +77,7 @@ public class EffRemoveReaction extends AsyncEffect {
 
     @Override
     public String toString(Event e, boolean debug) {
-        return "remove the event-reaction from the user";
+        return "remove "+ exprEmote.toString(e, debug) +" added by " + exprUser.toString(e, debug) + " from " + exprUpdatingMessage.toString(e, debug);
     }
 
 }

@@ -11,6 +11,7 @@ import info.itsthesky.disky.tools.Utils;
 import info.itsthesky.disky.tools.object.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +30,16 @@ public class ExprEmoji extends SimpleExpression<Emote> {
 
     @Override
     protected Emote[] get(Event e) {
-        String[] emote = name.getAll(e);
+        String[] emotes = name.getAll(e);
         Guild guild = this.guild == null ? null : this.guild.getSingle(e);
-        if (emote.length == 0) return new Emote[0];
+        if (emotes.length == 0) return new Emote[0];
+        return convert(guild, emotes).toArray(new Emote[0]);
+    }
+
+    public static List<Emote> convert(@Nullable Guild guild, String... emotes) {
         List<Emote> emojis = new ArrayList<>();
         List<Emote> finalEmotes = new ArrayList<>();
-        for (String input : emote) {
+        for (String input : emotes) {
             emojis.add(Utils.unicodeFrom(input, guild));
         }
         for (Emote emote1 : emojis) {
@@ -45,7 +50,7 @@ public class ExprEmoji extends SimpleExpression<Emote> {
             if (emote1.getAsMention().startsWith("<:") && emote1.getAsMention().endsWith(">"))
                 finalEmotes.add(emote1);
         }
-        return finalEmotes.toArray(new Emote[0]);
+        return finalEmotes;
     }
 
     @Override

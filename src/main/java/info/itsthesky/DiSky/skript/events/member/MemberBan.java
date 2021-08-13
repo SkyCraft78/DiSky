@@ -33,7 +33,7 @@ public class MemberBan extends DiSkyEvent<GuildBanEvent> {
             }
         }, 0);
 
-       EventValues.registerEventValue(EvtMemberBan.class, JDA.class, new Getter<JDA, EvtMemberBan>() {
+        EventValues.registerEventValue(EvtMemberBan.class, JDA.class, new Getter<JDA, EvtMemberBan>() {
             @Override
             public JDA get(EvtMemberBan event) {
                 return event.getJDAEvent().getJDA();

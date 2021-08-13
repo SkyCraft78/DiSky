@@ -277,13 +277,11 @@ public class Utils extends ListenerAdapter {
     }
 
     public static boolean areEmojiSimilar(MessageReaction.ReactionEmote first, Emote second) {
-        //ev.getReaction().getReactionEmote().isEmote() ? new Emote(ev.getReaction().getReactionEmote().getEmote()).equals(emote) : Utils.unicodeFrom(ev.getReaction().getReactionEmote().getAsReactionCode()).equals(emote)
         if (first.isEmote()) {
             Emote f = new Emote(first.getEmote());
             return f.getName().equalsIgnoreCase(second.getName());
         } else {
-            String name = first.getName();
-            return name.equalsIgnoreCase(second.getName());
+            return EmojiParser.parseToUnicode(first.getAsReactionCode()).equals(second.getAsMention());
         }
     }
 
