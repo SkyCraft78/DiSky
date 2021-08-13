@@ -62,7 +62,6 @@ public class ExprMessageContent extends SimplePropertyExpression<Object, String>
 
 			if (entity instanceof WebhookMessageBuilder) {
 				WebhookMessageBuilder builder = (WebhookMessageBuilder) entity;
-				System.out.println(content);
 				builder.setContent(content);
 				ScopeWebhookMessage.lastBuilder.setContent(content);
 			}
