@@ -61,11 +61,7 @@ public class SectionReact extends DiSkySection {
             if (bot != null)
                 message = bot.getTextChannelById(message.getId()).retrieveMessageById(message.getId()).complete();
 
-            if (emote.isEmote()) {
-                message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
-            } else {
-                message.addReaction(emote.getAsMention()).queue(null, DiSkyErrorHandler::logException);
-            }
+            Utils.addEmoteToMessage(emote, message);
 
             String idToCompare = message.getJDA().getSelfUser().getId();
             Message finalMessage = message;

@@ -148,6 +148,18 @@ public class Utils extends ListenerAdapter {
         );
     }
 
+    public static void addEmoteToMessage(Emote emote, Message message) {
+        if (emote.isAnimated()) {
+            message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+        } else {
+            if (emote.isEmote()) {
+                message.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
+            } else {
+                message.addReaction(emote.getAsMention()).queue(null, DiSkyErrorHandler::logException);
+            }
+        }
+    }
+
     public static List<ActionRow> parseRows(Object... components) {
         components = safeArray(components);
         // We assume it's a "SET" action

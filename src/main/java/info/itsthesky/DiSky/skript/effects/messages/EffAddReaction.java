@@ -53,11 +53,7 @@ public class EffAddReaction extends AsyncEffect {
                 message1 = bot.getTextChannelById(message.getMessage().getId()).getHistory().getMessageById(message1.getId());
 
             for (Emote emote : emotes) {
-                if (emote.isEmote()) {
-                    message1.addReaction(emote.getEmote()).queue(null, DiSkyErrorHandler::logException);
-                } else {
-                    message1.addReaction(emote.getAsMention()).queue(null, DiSkyErrorHandler::logException);
-                }
+                Utils.addEmoteToMessage(emote, message1);
             }
         });
     }
