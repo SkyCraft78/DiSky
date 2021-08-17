@@ -38,7 +38,7 @@ public class ScopeBotBuilder extends EffectSection {
 
     @Override
     protected void execute(Event e) {
-        lastBuilder = JDABuilder.createDefault("dsq");
+        lastBuilder = JDABuilder.createDefault("");
         runSection(e);
     }
 
